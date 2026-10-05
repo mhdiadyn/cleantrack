@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <defs>
+    <linearGradient id="ctGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0d9488"/>
+      <stop offset="50%" stop-color="#14b8a6"/>
+      <stop offset="100%" stop-color="#10b981"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="16" fill="url(#ctGrad)"/>
+  <!-- Sparkles & Broom/Check Icon -->
+  <path d="M44 14l-4 8 8-4-8-4 4 8z" fill="#fef08a" opacity="0.9"/>
+  <path d="M46.5 21.5L25.8 42.2c-.8.8-2 .8-2.8 0l-3.2-3.2c-.8-.8-.8-2 0-2.8L40.5 15.5c.8-.8 2-.8 2.8 0l3.2 3.2c.8.8.8 2 0 2.8z" fill="#ffffff"/>
+  <path d="M19.5 39.5l5 5-7.5 7.5c-1.5 1.5-4 .5-4.5-1.5l-1-4.5 8-6.5z" fill="#ccfbf1"/>
+  <circle cx="48" cy="40" r="3" fill="#ffffff" opacity="0.8"/>
+  <circle cx="16" cy="20" r="2" fill="#ffffff" opacity="0.7"/>
+</svg>

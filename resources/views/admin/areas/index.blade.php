@@ -1,0 +1,141 @@
+@extends('layouts.app')
+
+@section('title', 'Data Master Area')
+@section('header_title', 'Master Data Area Kebersihan')
+@section('header_subtitle', 'Kelola daftar seluruh ruangan, fasilitas, dan area yang dipantau')
+
+@section('content')
+<div class="space-y-6">
+
+    <!-- Action Bar & Filters -->
+    <div class="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <form method="GET" action="{{ route('admin.areas.index') }}" class="flex-1 flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-1">
+                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                <input type="text" 
+                       name="search" 
+                       value="{{ request('search') }}" 
+                       placeholder="Cari nama area, lokasi, keterangan..." 
+                       class="w-full pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent">
+            </div>
+
+            <select name="status" onchange="this.form.submit()" class="px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-teal-500">
+                <option value="">Semua Status</option>
+                <option value="aktif" {{ request('status') === 'aktif' ? 'selected' : '' }}>Aktif Saja</option>
+                <option value="nonaktif" {{ request('status') === 'nonaktif' ? 'selected' : '' }}>Nonaktif Saja</option>
+            </select>
+
+            <button type="submit" class="px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white rounded-xl text-xs font-bold transition-colors">
+                Filter
+            </button>
+
+            @if(request()->hasAny(['search', 'status']))
+                <a href="{{ route('admin.areas.index') }}" class="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-xs font-semibold flex items-center justify-center transition-colors">
+                    Reset
+                </a>
+            @endif
+        </form>
+
+        <div>
+            <a href="{{ route('admin.areas.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs shadow-md shadow-teal-500/20 transition-all">
+                <i class="fa-solid fa-plus"></i>
+                <span>Tambah Area Baru</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Area Table Card -->
+    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-slate-700">
+                <thead class="bg-slate-50 text-slate-500 font-bold uppercase text-[10px] tracking-wider border-b border-slate-100">
+                    <tr>
+                        <th class="py-3.5 px-4 text-center w-12">No</th>
+                        <th class="py-3.5 px-4">Nama Area</th>
+                        <th class="py-3.5 px-4">Lokasi Gedung / Lantai</th>
+                        <th class="py-3.5 px-4">Keterangan</th>
+                        <th class="py-3.5 px-4 text-center">Total Riwayat</th>
+                        <th class="py-3.5 px-4 text-center">Status</th>
+                        <th class="py-3.5 px-4 text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    @forelse($areas as $index => $area)
+                        <tr class="hover:bg-slate-50/80 transition-colors">
+                            <td class="py-3.5 px-4 text-center font-medium text-slate-400">
+                                {{ $areas->firstItem() + $index }}
+                            </td>
+                            <td class="py-3.5 px-4 font-bold text-slate-900">
+                                <a href="{{ route('admin.areas.show', $area->id) }}" class="hover:text-teal-600 transition-colors">
+                                    {{ $area->name }}
+                                </a>
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-600 font-medium">
+                                <i class="fa-solid fa-location-dot text-teal-600 mr-1 text-[11px]"></i>
+                                {{ $area->location }}
+                            </td>
+                            <td class="py-3.5 px-4 text-slate-500 max-w-xs truncate">
+                                {{ $area->description ?? '-' }}
+                            </td>
+                            <td class="py-3.5 px-4 text-center">
+                                <span class="px-2.5 py-1 rounded-full bg-slate-100 font-bold text-[11px] text-slate-700">
+                                    {{ $area->cleaning_monitorings_count }} kali
+                                </span>
+                            </td>
+                            <td class="py-3.5 px-4 text-center">
+                                @if($area->is_active)
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                                        Aktif
+                                    </span>
+                                @else
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-slate-100 text-slate-500 border border-slate-200">
+                                        <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                                        Nonaktif
+                                    </span>
+                                @endif
+                            </td>
+                            <td class="py-3.5 px-4 text-center">
+                                <div class="flex items-center justify-center gap-1.5">
+                                    <a href="{{ route('admin.areas.show', $area->id) }}" 
+                                       class="p-1.5 rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-700 transition-colors" title="Detail Area">
+                                        <i class="fa-solid fa-eye text-xs"></i>
+                                    </a>
+                                    <a href="{{ route('admin.areas.edit', $area->id) }}" 
+                                       class="p-1.5 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-700 transition-colors" title="Edit Area">
+                                        <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                    </a>
+                                    <form action="{{ route('admin.areas.destroy', $area->id) }}" 
+                                          method="POST" 
+                                          onsubmit="return confirm('Apakah Anda yakin ingin menghapus area {{ $area->name }}? Seluruh riwayat pemeriksaan pada area ini juga akan terhapus.')" 
+                                          class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="p-1.5 rounded-lg bg-rose-50 hover:bg-rose-100 text-rose-700 transition-colors" title="Hapus Area">
+                                            <i class="fa-solid fa-trash text-xs"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="7" class="py-10 text-center text-slate-400">
+                                <i class="fa-solid fa-map-location-dot text-3xl mb-2 block"></i>
+                                Tidak ada data area yang sesuai dengan kriteria pencarian.
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+
+        @if($areas->hasPages())
+            <div class="p-4 border-t border-slate-100">
+                {{ $areas->links() }}
+            </div>
+        @endif
+    </div>
+
+</div>
+@endsection
