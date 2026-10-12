@@ -2,10 +2,10 @@
 
 @php
     $classes = match($status) {
-        'Sudah Dibersihkan' => 'bg-emerald-50 text-emerald-700 border-emerald-200 ring-emerald-600/20',
-        'Sedang Dibersihkan' => 'bg-amber-50 text-amber-700 border-amber-200 ring-amber-600/20',
-        'Perlu Dibersihkan' => 'bg-rose-50 text-rose-700 border-rose-200 ring-rose-600/20',
-        default => 'bg-slate-50 text-slate-700 border-slate-200 ring-slate-600/20',
+        'Sudah Dibersihkan' => 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60 ring-emerald-600/20',
+        'Sedang Dibersihkan' => 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/60 ring-amber-600/20',
+        'Perlu Dibersihkan' => 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800/60 ring-rose-600/20',
+        default => 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 ring-slate-600/20',
     };
 
     $dotClass = match($status) {

@@ -1,9 +1,46 @@
 @import 'tailwindcss';
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+html.dark {
+    color-scheme: dark;
+    background-color: #090d16;
+}
+
+html.dark body {
+    background-color: #090d16;
+    color: #f1f5f9;
+}
+
+/* Deep Dark Mode Consistency */
+.dark input[type="text"],
+.dark input[type="date"],
+.dark input[type="time"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark select,
+.dark textarea {
+    background-color: #0f172a;
+    color: #f1f5f9;
+    border-color: #1e293b;
+}
+
+.dark input[type="text"]:focus,
+.dark input[type="date"]:focus,
+.dark input[type="time"]:focus,
+.dark input[type="email"]:focus,
+.dark input[type="password"]:focus,
+.dark select:focus,
+.dark textarea:focus {
+    border-color: #dc2626;
+}
+
+

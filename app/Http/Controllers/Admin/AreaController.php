@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Area;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class AreaController extends Controller
@@ -56,6 +57,11 @@ class AreaController extends Controller
             'name' => ['required', 'string', 'max:255', 'unique:areas,name'],
             'location' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'floor' => ['nullable', 'integer', 'min:1', 'max:20'],
+            'pos_x' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'pos_y' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'photo_360' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:51200'],
+            'photo_type' => ['nullable', 'string', 'in:panorama_360,standard'],
             'is_active' => ['nullable', 'boolean'],
         ], [
             'name.required' => 'Nama area wajib diisi.',
@@ -64,9 +70,23 @@ class AreaController extends Controller
             'location.required' => 'Lokasi area wajib diisi.',
             'location.max' => 'Lokasi area maksimal 255 karakter.',
             'description.max' => 'Keterangan maksimal 1000 karakter.',
+            'photo_360.image' => 'Foto ruangan harus berupa file gambar valid.',
+            'photo_360.max' => 'Ukuran foto maksimal 50 MB.',
         ]);
 
         $validated['is_active'] = $request->has('is_active') ? (bool) $request->is_active : true;
+        $validated['floor'] = $request->input('floor', 1);
+        $validated['pos_x'] = $request->input('pos_x', 50);
+        $validated['pos_y'] = $request->input('pos_y', 50);
+        $validated['photo_type'] = $request->input('photo_type', 'panorama_360');
+
+        if ($request->hasFile('photo_360')) {
+            $file = $request->file('photo_360');
+            $filename = 'area360_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+            $path = 'areas_360/'.$filename;
+            Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
+            $validated['photo_360'] = $path;
+        }
 
         Area::create($validated);
 
@@ -101,6 +121,11 @@ class AreaController extends Controller
             'name' => ['required', 'string', 'max:255', 'unique:areas,name,'.$area->id],
             'location' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'floor' => ['nullable', 'integer', 'min:1', 'max:20'],
+            'pos_x' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'pos_y' => ['nullable', 'numeric', 'min:0', 'max:100'],
+            'photo_360' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:51200'],
+            'photo_type' => ['nullable', 'string', 'in:panorama_360,standard'],
             'is_active' => ['nullable', 'boolean'],
         ], [
             'name.required' => 'Nama area wajib diisi.',
@@ -109,9 +134,26 @@ class AreaController extends Controller
             'location.required' => 'Lokasi area wajib diisi.',
             'location.max' => 'Lokasi area maksimal 255 karakter.',
             'description.max' => 'Keterangan maksimal 1000 karakter.',
+            'photo_360.image' => 'Foto ruangan harus berupa file gambar valid.',
+            'photo_360.max' => 'Ukuran foto maksimal 50 MB.',
         ]);
 
         $validated['is_active'] = $request->has('is_active') ? (bool) $request->is_active : false;
+        $validated['floor'] = $request->input('floor', $area->floor);
+        $validated['pos_x'] = $request->input('pos_x', $area->pos_x);
+        $validated['pos_y'] = $request->input('pos_y', $area->pos_y);
+
+        if ($request->filled('photo_type')) {
+            $validated['photo_type'] = $request->input('photo_type');
+        }
+
+        if ($request->hasFile('photo_360')) {
+            $file = $request->file('photo_360');
+            $filename = 'area360_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+            $path = 'areas_360/'.$filename;
+            Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
+            $validated['photo_360'] = $path;
+        }
 
         $area->update($validated);
 
@@ -127,5 +169,92 @@ class AreaController extends Controller
         $area->delete();
 
         return redirect()->route('admin.areas.index')->with('success', "Area '{$name}' berhasil dihapus.");
+    }
+
+    /**
+     * Quick update for 360 photo or standard photo from gallery or area viewer.
+     */
+    public function updatePhoto360(Request $request, Area $area): RedirectResponse
+    {
+        $request->validate([
+            'photo_360' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:51200'],
+            'photo_type' => ['nullable', 'string', 'in:panorama_360,standard'],
+        ], [
+            'photo_360.required' => 'File foto wajib dipilih.',
+            'photo_360.image' => 'File harus berupa gambar.',
+            'photo_360.max' => 'Ukuran file foto maksimal 50 MB.',
+            'photo_360.uploaded' => 'Upload gagal. Periksa batas ukuran upload PHP lalu coba lagi.',
+        ]);
+
+        $file = $request->file('photo_360');
+
+        if (! $file || ! $file->isValid()) {
+            return back()
+                ->withErrors(['photo_360' => 'Upload gagal. Periksa batas ukuran upload PHP lalu coba lagi.'])
+                ->withInput();
+        }
+
+        $photoType = $request->input('photo_type', 'panorama_360');
+        $filename = 'area360_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+        $path = 'areas_360/'.$filename;
+        Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
+
+        if ($area->photo_360 && Storage::disk('public')->exists($area->photo_360)) {
+            Storage::disk('public')->delete($area->photo_360);
+        }
+
+        $area->update([
+            'photo_360' => $path,
+            'photo_type' => $photoType,
+        ]);
+
+        $typeName = $photoType === 'standard' ? 'Foto biasa (standar)' : 'Foto panorama 360°';
+
+        return back()->with('success', "{$typeName} untuk area '{$area->name}' berhasil diperbarui!");
+    }
+
+    /**
+     * Upload photo with area_id specified in request body.
+     */
+    public function uploadPhoto360General(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'area_id' => ['required', 'exists:areas,id'],
+            'photo_360' => ['required', 'image', 'mimes:jpeg,png,jpg,webp', 'max:51200'],
+            'photo_type' => ['nullable', 'string', 'in:panorama_360,standard'],
+        ], [
+            'area_id.required' => 'Silakan pilih ruangan / area terlebih dahulu.',
+            'area_id.exists' => 'Area yang dipilih tidak valid.',
+            'photo_360.required' => 'File foto wajib dipilih.',
+            'photo_360.image' => 'File harus berupa gambar.',
+            'photo_360.max' => 'Ukuran file foto maksimal 50 MB.',
+        ]);
+
+        $area = Area::findOrFail($request->input('area_id'));
+        $file = $request->file('photo_360');
+
+        if (! $file || ! $file->isValid()) {
+            return back()
+                ->withErrors(['photo_360' => 'Upload gagal. Periksa batas ukuran upload PHP lalu coba lagi.'])
+                ->withInput();
+        }
+
+        $photoType = $request->input('photo_type', 'panorama_360');
+        $filename = 'area360_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
+        $path = 'areas_360/'.$filename;
+        Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
+
+        if ($area->photo_360 && Storage::disk('public')->exists($area->photo_360)) {
+            Storage::disk('public')->delete($area->photo_360);
+        }
+
+        $area->update([
+            'photo_360' => $path,
+            'photo_type' => $photoType,
+        ]);
+
+        $typeName = $photoType === 'standard' ? 'Foto biasa (standar)' : 'Foto panorama 360°';
+
+        return back()->with('success', "{$typeName} untuk area '{$area->name}' berhasil diperbarui!");
     }
 }

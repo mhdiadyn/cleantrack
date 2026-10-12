@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FloorPlanController;
+use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\Petugas\DashboardController as PetugasDashboardController;
 use App\Http\Controllers\ProfileController;
@@ -39,6 +41,13 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
+    // Interactive Floor Plan (Denah Ruangan)
+    Route::get('/denah', [FloorPlanController::class, 'index'])->name('floorplan.index');
+    Route::get('/api/floorplan/data', [FloorPlanController::class, 'getMapData'])->name('floorplan.data');
+
+    // Room Media Gallery & 360 Virtual Views (Galeri Keseluruhan Ruangan)
+    Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery.index');
+
     // Monitoring Operations accessible by authenticated users
     Route::get('/monitoring/create', [MonitoringController::class, 'create'])->name('monitoring.create');
     Route::post('/monitoring', [MonitoringController::class, 'store'])->name('monitoring.store');
@@ -52,6 +61,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
     // Master Data Area
+    Route::post('areas/{area}/update-360', [AreaController::class, 'updatePhoto360'])->name('areas.update-360');
+    Route::post('areas/upload-360', [AreaController::class, 'uploadPhoto360General'])->name('areas.upload-360-general');
     Route::resource('areas', AreaController::class);
 
     // User Management
@@ -64,6 +75,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     // Reports
     Route::get('/laporan', [ReportController::class, 'index'])->name('reports.index');
     Route::get('/laporan/cetak', [ReportController::class, 'print'])->name('reports.print');
+    Route::get('/laporan/excel', [ReportController::class, 'exportExcel'])->name('reports.excel');
+    Route::get('/laporan/word', [ReportController::class, 'exportWord'])->name('reports.word');
 });
 
 // Global alias for monitoring index so navigation links work seamlessly
