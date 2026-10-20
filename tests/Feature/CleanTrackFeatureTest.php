@@ -268,6 +268,10 @@ class CleanTrackFeatureTest extends TestCase
         // Filter comparison tab
         $responseComparison = $this->actingAs($petugas)->get(route('gallery.index', ['type' => 'comparison']));
         $responseComparison->assertStatus(200);
+
+        // Search in gallery
+        $responseSearch = $this->actingAs($petugas)->get(route('gallery.index', ['search' => 'Toilet']));
+        $responseSearch->assertStatus(200);
     }
 
     public function test_admin_can_upload_a_360_photo_for_an_area(): void
@@ -279,13 +283,54 @@ class CleanTrackFeatureTest extends TestCase
         $response = $this->actingAs($admin)
             ->from(route('gallery.index'))
             ->post(route('admin.areas.update-360', $area), [
-                'photo_360' => UploadedFile::fake()->image('panorama.jpg'),
+                'photo_360' => UploadedFile::fake()->image('panorama.html')->mimeType('image/jpeg'),
             ]);
 
         $response->assertRedirect(route('gallery.index'));
         $area->refresh();
         $this->assertStringStartsWith('areas_360/', $area->photo_360);
+        $this->assertNotSame('html', pathinfo($area->photo_360, PATHINFO_EXTENSION));
         Storage::disk('public')->assertExists($area->photo_360);
+    }
+
+    public function test_area_form_uploads_ignore_client_provided_file_extensions(): void
+    {
+        Storage::fake('public');
+        $admin = User::where('role', 'admin')->first();
+
+        $this->actingAs($admin)
+            ->post(route('admin.areas.store'), [
+                'name' => 'Area Upload Test',
+                'location' => 'Gedung A',
+                'floor' => 1,
+                'pos_x' => 50,
+                'pos_y' => 50,
+                'is_active' => 1,
+                'photo_360' => UploadedFile::fake()->image('created-area.html')->mimeType('image/jpeg'),
+            ])
+            ->assertRedirect(route('admin.areas.index'));
+
+        $createdArea = Area::where('name', 'Area Upload Test')->firstOrFail();
+        $this->assertNotSame('html', pathinfo($createdArea->photo_360, PATHINFO_EXTENSION));
+        Storage::disk('public')->assertExists($createdArea->photo_360);
+
+        $existingArea = Area::firstOrFail();
+
+        $this->actingAs($admin)
+            ->put(route('admin.areas.update', $existingArea), [
+                'name' => $existingArea->name,
+                'location' => $existingArea->location,
+                'floor' => $existingArea->floor,
+                'pos_x' => $existingArea->pos_x,
+                'pos_y' => $existingArea->pos_y,
+                'is_active' => 1,
+                'photo_360' => UploadedFile::fake()->image('updated-area.html')->mimeType('image/jpeg'),
+            ])
+            ->assertRedirect(route('admin.areas.index'));
+
+        $existingArea->refresh();
+        $this->assertNotSame('html', pathinfo($existingArea->photo_360, PATHINFO_EXTENSION));
+        Storage::disk('public')->assertExists($existingArea->photo_360);
     }
 
     public function test_admin_can_upload_360_via_general_endpoint(): void
@@ -298,12 +343,13 @@ class CleanTrackFeatureTest extends TestCase
             ->from(route('gallery.index'))
             ->post(route('admin.areas.upload-360-general'), [
                 'area_id' => $area->id,
-                'photo_360' => UploadedFile::fake()->image('panorama360.jpg'),
+                'photo_360' => UploadedFile::fake()->image('panorama360.html')->mimeType('image/jpeg'),
             ]);
 
         $response->assertRedirect(route('gallery.index'));
         $area->refresh();
         $this->assertStringStartsWith('areas_360/', $area->photo_360);
+        $this->assertNotSame('html', pathinfo($area->photo_360, PATHINFO_EXTENSION));
         Storage::disk('public')->assertExists($area->photo_360);
     }
 
@@ -553,5 +599,24 @@ class CleanTrackFeatureTest extends TestCase
         $response->assertSessionHasErrors('current_password');
         $petugas->refresh();
         $this->assertTrue(Hash::check('password123', $petugas->password));
+    }
+
+    public function test_admin_users_show_route_redirects_to_edit(): void
+    {
+        $admin = User::where('role', 'admin')->first();
+        $user = User::where('role', 'petugas')->first();
+
+        $response = $this->actingAs($admin)->get(route('admin.users.show', $user));
+        $response->assertRedirect(route('admin.users.edit', $user));
+    }
+
+    public function test_admin_delete_monitoring_redirects_to_admin_monitoring_index(): void
+    {
+        $admin = User::where('role', 'admin')->first();
+        $monitoring = CleaningMonitoring::first();
+
+        $response = $this->actingAs($admin)->delete(route('admin.monitoring.destroy', $monitoring));
+        $response->assertRedirect(route('admin.monitoring.index'));
+        $this->assertDatabaseMissing('cleaning_monitorings', ['id' => $monitoring->id]);
     }
 }

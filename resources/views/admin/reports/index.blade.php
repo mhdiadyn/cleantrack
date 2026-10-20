@@ -8,32 +8,32 @@
 <div class="space-y-6">
 
     <!-- Filter Card -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+    <div class="card-clean p-6">
         <form method="GET" action="{{ route('admin.reports.index') }}" class="space-y-4">
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 
                 <!-- Tanggal Awal -->
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Tanggal Awal</label>
+                    <label class="label-clean">Tanggal Awal</label>
                     <input type="date" 
                            name="start_date" 
                            value="{{ $startDate }}" 
-                           class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500">
+                           class="input-clean text-xs">
                 </div>
 
                 <!-- Tanggal Akhir -->
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Tanggal Akhir</label>
+                    <label class="label-clean">Tanggal Akhir</label>
                     <input type="date" 
                            name="end_date" 
                            value="{{ $endDate }}" 
-                           class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500">
+                           class="input-clean text-xs">
                 </div>
 
                 <!-- Filter Area -->
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Filter Area</label>
-                    <select name="area_id" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <label class="label-clean">Filter Area</label>
+                    <select name="area_id" class="input-clean text-xs">
                         <option value="">Semua Area</option>
                         @foreach($areas as $area)
                             <option value="{{ $area->id }}" {{ request('area_id') == $area->id ? 'selected' : '' }}>
@@ -45,8 +45,8 @@
 
                 <!-- Filter Petugas -->
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Filter Petugas</label>
-                    <select name="user_id" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <label class="label-clean">Filter Petugas</label>
+                    <select name="user_id" class="input-clean text-xs">
                         <option value="">Semua Petugas</option>
                         @foreach($petugasList as $p)
                             <option value="{{ $p->id }}" {{ request('user_id') == $p->id ? 'selected' : '' }}>
@@ -58,8 +58,8 @@
 
                 <!-- Filter Status -->
                 <div>
-                    <label class="block text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">Filter Status</label>
-                    <select name="status" class="w-full px-3 py-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-xl text-xs focus:outline-none focus:ring-2 focus:ring-red-500">
+                    <label class="label-clean">Filter Status</label>
+                    <select name="status" class="input-clean text-xs">
                         <option value="">Semua Status</option>
                         @foreach(['Belum Diperiksa', 'Perlu Dibersihkan', 'Sedang Dibersihkan', 'Sudah Dibersihkan'] as $st)
                             <option value="{{ $st }}" {{ request('status') === $st ? 'selected' : '' }}>{{ $st }}</option>
@@ -70,28 +70,28 @@
             </div>
 
             <!-- Action buttons -->
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-3 border-t border-slate-100 dark:border-slate-800">
-                <span class="text-xs text-slate-500 dark:text-slate-400">
-                    Periode: <b class="text-slate-800 dark:text-slate-200">{{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }}</b> s/d <b class="text-slate-800 dark:text-slate-200">{{ \Carbon\Carbon::parse($endDate)->format('d/m/Y') }}</b>
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 pt-3 border-t border-[#eae8e7] dark:border-[#2e3030]">
+                <span class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5]">
+                    Periode: <b class="text-[#1b1c1c] dark:text-white">{{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }}</b> s/d <b class="text-[#1b1c1c] dark:text-white">{{ \Carbon\Carbon::parse($endDate)->format('d/m/Y') }}</b>
                 </span>
 
                 <div class="flex flex-wrap items-center gap-2">
-                    <a href="{{ route('admin.reports.index') }}" class="px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 rounded-xl text-xs font-semibold transition-colors">
+                    <a href="{{ route('admin.reports.index') }}" class="btn-outline-neutral text-xs">
                         Reset
                     </a>
-                    <button type="submit" class="px-4 py-2 bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 dark:hover:bg-slate-600 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer">
-                        <i class="fa-solid fa-filter"></i>
+                    <button type="submit" class="btn-primary text-xs">
+                        <i class="fa-solid fa-filter text-xs"></i>
                         <span>Filter</span>
                     </button>
-                    <a href="{{ route('admin.reports.excel', request()->query()) }}" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-600/20 transition-all flex items-center gap-1.5" title="Download Format Excel">
+                    <a href="{{ route('admin.reports.excel', request()->query()) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#00822d] hover:bg-[#006622] text-white font-semibold text-xs transition-colors" title="Download Format Excel">
                         <i class="fa-solid fa-file-excel"></i>
                         <span>Excel</span>
                     </a>
-                    <a href="{{ route('admin.reports.word', request()->query()) }}" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold shadow-md shadow-blue-600/20 transition-all flex items-center gap-1.5" title="Download Format Word">
+                    <a href="{{ route('admin.reports.word', request()->query()) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-semibold text-xs transition-colors" title="Download Format Word">
                         <i class="fa-solid fa-file-word"></i>
                         <span>Word</span>
                     </a>
-                    <a href="{{ route('admin.reports.print', request()->query()) }}" target="_blank" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-xl text-xs font-bold shadow-md shadow-red-500/20 transition-all flex items-center gap-1.5">
+                    <a href="{{ route('admin.reports.print', request()->query()) }}" target="_blank" class="btn-secondary text-xs">
                         <i class="fa-solid fa-print"></i>
                         <span>Cetak PDF</span>
                     </a>
@@ -104,112 +104,112 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         
         <!-- Total Pemeriksaan -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
+        <div class="card-clean card-clean-hover p-5 flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Pemeriksaan</span>
-                <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/60 text-red-600 dark:text-red-400 flex items-center justify-center text-sm font-bold">
+                <span class="text-xs font-semibold text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">Total Pemeriksaan</span>
+                <div class="w-9 h-9 rounded-xl bg-[#fff1f0] text-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3] flex items-center justify-center text-sm">
                     <i class="fa-solid fa-clipboard-check"></i>
                 </div>
             </div>
-            <div class="mt-4">
-                <h3 class="text-2xl font-black text-slate-900 dark:text-slate-100">{{ $totalPemeriksaan }}</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Laporan masuk pada periode ini</p>
+            <div class="mt-3">
+                <h3 class="font-heading text-2xl font-semibold text-[#1b1c1c] dark:text-white">{{ $totalPemeriksaan }}</h3>
+                <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-0.5">Laporan pada periode ini</p>
             </div>
         </div>
 
         <!-- Jumlah Area Bersih -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
+        <div class="card-clean card-clean-hover p-5 flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Kondisi Bersih</span>
-                <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-sm font-bold">
-                    <i class="fa-solid fa-sparkles"></i>
+                <span class="text-xs font-semibold text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">Kondisi Bersih</span>
+                <div class="w-9 h-9 rounded-xl bg-[#daffd5] text-[#006622] dark:bg-[#003912] dark:text-[#83fc8e] flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-circle-check"></i>
                 </div>
             </div>
-            <div class="mt-4">
-                <h3 class="text-2xl font-black text-emerald-600 dark:text-emerald-400">{{ $totalBersih }}</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Sesuai standar kebersihan</p>
+            <div class="mt-3">
+                <h3 class="font-heading text-2xl font-semibold text-[#006622] dark:text-[#83fc8e]">{{ $totalBersih }}</h3>
+                <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-0.5">Sesuai standar kebersihan</p>
             </div>
         </div>
 
         <!-- Jumlah Area Kotor -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
+        <div class="card-clean card-clean-hover p-5 flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Kondisi Kotor</span>
-                <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/60 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm font-bold">
+                <span class="text-xs font-semibold text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">Kondisi Kotor</span>
+                <div class="w-9 h-9 rounded-xl bg-[#fef3c7] text-[#b45309] dark:bg-[#451a03] dark:text-[#fcd34d] flex items-center justify-center text-sm">
                     <i class="fa-solid fa-broom"></i>
                 </div>
             </div>
-            <div class="mt-4">
-                <h3 class="text-2xl font-black text-amber-600 dark:text-amber-400">{{ $totalKotor }}</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Tercatat kotor / sangat kotor</p>
+            <div class="mt-3">
+                <h3 class="font-heading text-2xl font-semibold text-[#b45309] dark:text-[#fcd34d]">{{ $totalKotor }}</h3>
+                <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-0.5">Kotor atau sangat kotor</p>
             </div>
         </div>
 
         <!-- Jumlah Area Perlu Dibersihkan -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
+        <div class="card-clean card-clean-hover p-5 flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Perlu Dibersihkan</span>
-                <div class="w-10 h-10 rounded-xl bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 flex items-center justify-center text-sm font-bold">
+                <span class="text-xs font-semibold text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">Perlu Tindakan</span>
+                <div class="w-9 h-9 rounded-xl bg-[#ffdad6] text-[#ba1a1a] dark:bg-[#410002] dark:text-[#ffb4ab] flex items-center justify-center text-sm">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
             </div>
-            <div class="mt-4">
-                <h3 class="text-2xl font-black text-rose-600 dark:text-rose-400">{{ $totalPerluDibersihkan }}</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Status perlu tindakan segera</p>
+            <div class="mt-3">
+                <h3 class="font-heading text-2xl font-semibold text-[#ba1a1a] dark:text-[#ffb4ab]">{{ $totalPerluDibersihkan }}</h3>
+                <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-0.5">Perlu pembersihan segera</p>
             </div>
         </div>
 
     </div>
 
     <!-- Data Table -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
-        <div class="p-5 sm:px-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Detail Rekapitulasi Monitoring</h3>
-            <span class="text-xs text-slate-500 dark:text-slate-400">Menampilkan {{ $monitorings->count() }} dari {{ $monitorings->total() }} baris</span>
+    <div class="card-clean overflow-hidden">
+        <div class="p-5 border-b border-[#eae8e7] dark:border-[#2e3030] flex items-center justify-between">
+            <h3 class="font-heading text-sm font-semibold text-[#1b1c1c] dark:text-white">Detail Rekapitulasi Monitoring</h3>
+            <span class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5]">Menampilkan {{ $monitorings->count() }} dari {{ $monitorings->total() }} baris</span>
         </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-700 dark:text-slate-300">
-                <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-wider border-b border-slate-100 dark:border-slate-800">
+            <table class="w-full text-left text-xs text-[#1b1c1c] dark:text-[#f2f0f0]">
+                <thead class="bg-[#f5f3f3] dark:bg-[#262727] text-[#5c3f3f] dark:text-[#c8c6c5] font-semibold uppercase text-[11px] tracking-wider border-b border-[#eae8e7] dark:border-[#2e3030]">
                     <tr>
-                        <th class="py-3.5 px-4 text-center w-12">No</th>
-                        <th class="py-3.5 px-4">Nama Area</th>
-                        <th class="py-3.5 px-4">Lokasi & Lt</th>
-                        <th class="py-3.5 px-4">Petugas</th>
-                        <th class="py-3.5 px-4">Waktu Pengerjaan</th>
-                        <th class="py-3.5 px-4">Kondisi</th>
-                        <th class="py-3.5 px-4">Status</th>
-                        <th class="py-3.5 px-4">Catatan</th>
-                        <th class="py-3.5 px-4 text-center">Aksi</th>
+                        <th class="py-3 px-4 text-center w-12">No</th>
+                        <th class="py-3 px-4">Nama Area</th>
+                        <th class="py-3 px-4">Lokasi & Lt</th>
+                        <th class="py-3 px-4">Petugas</th>
+                        <th class="py-3 px-4">Waktu Pengerjaan</th>
+                        <th class="py-3 px-4">Kondisi</th>
+                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-4">Catatan</th>
+                        <th class="py-3 px-4 text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody class="divide-y divide-[#eae8e7] dark:divide-[#2e3030]">
                     @forelse($monitorings as $index => $item)
-                        <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
-                            <td class="py-3.5 px-4 text-center font-medium text-slate-400 dark:text-slate-500">
+                        <tr class="hover:bg-[#fbf9f8] dark:hover:bg-[#262727]/60 transition-colors">
+                            <td class="py-3.5 px-4 text-center font-medium text-[#5c3f3f] dark:text-[#8c8282]">
                                 {{ $monitorings->firstItem() + $index }}
                             </td>
                             <td class="py-3.5 px-4">
-                                <span class="font-bold text-slate-900 dark:text-slate-100 block">{{ $item->area->name ?? '-' }}</span>
-                                <span class="text-[10px] font-mono text-red-600 dark:text-red-400 font-semibold">{{ $item->area->code ?? '' }}</span>
+                                <span class="font-semibold text-[#1b1c1c] dark:text-white block">{{ $item->area->name ?? '-' }}</span>
+                                <span class="text-[10px] font-mono font-semibold text-[#dc143c] dark:text-[#ffb3b3]">{{ $item->area->code ?? '' }}</span>
                             </td>
-                            <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400">
-                                {{ $item->area->location ?? '-' }} <span class="font-semibold text-slate-700 dark:text-slate-300">(Lt {{ $item->area->floor ?? '1' }})</span>
+                            <td class="py-3.5 px-4 text-[#5c3f3f] dark:text-[#c8c6c5]">
+                                {{ $item->area->location ?? '-' }} <span class="text-[11px]">(Lt {{ $item->area->floor ?? '1' }})</span>
                             </td>
-                            <td class="py-3.5 px-4 font-medium text-slate-800 dark:text-slate-200">
+                            <td class="py-3.5 px-4 font-medium text-[#1b1c1c] dark:text-white">
                                 {{ $item->user->name ?? '-' }}
                             </td>
-                            <td class="py-3.5 px-4 text-slate-700 dark:text-slate-300">
-                                <div class="flex items-center gap-1.5 font-bold">
-                                    <i class="fa-regular fa-clock text-slate-400 text-[10px]"></i>
+                            <td class="py-3.5 px-4 text-[#5c3f3f] dark:text-[#c8c6c5]">
+                                <div class="flex items-center gap-1.5 font-semibold text-[#1b1c1c] dark:text-white">
+                                    <i class="fa-regular fa-clock text-[#5c3f3f] dark:text-[#8c8282] text-[10px]"></i>
                                     <span>{{ $item->formatted_start_time ?: substr($item->check_time, 0, 5) }}</span>
                                     <span>-</span>
                                     <span>{{ $item->formatted_end_time ?: substr($item->check_time, 0, 5) }}</span>
                                 </div>
-                                <div class="text-[10px] text-slate-400 mt-0.5">
+                                <div class="text-[10px] text-[#5c3f3f] dark:text-[#8c8282] mt-0.5">
                                     {{ \Carbon\Carbon::parse($item->check_date)->format('d/m/Y') }}
                                     @if($item->duration_text)
-                                        • <span class="text-emerald-600 dark:text-emerald-400 font-semibold">{{ $item->duration_text }}</span>
+                                        &bull; <span class="text-[#006622] dark:text-[#83fc8e] font-semibold">{{ $item->duration_text }}</span>
                                     @endif
                                 </div>
                             </td>
@@ -219,20 +219,20 @@
                             <td class="py-3.5 px-4">
                                 <x-badge-status :status="$item->status" />
                             </td>
-                            <td class="py-3.5 px-4 text-slate-600 dark:text-slate-400 max-w-xs truncate">
+                            <td class="py-3.5 px-4 text-[#5c3f3f] dark:text-[#c8c6c5] max-w-xs truncate">
                                 {{ $item->notes ?? '-' }}
                             </td>
                             <td class="py-3.5 px-4 text-center">
                                 <a href="{{ route('monitoring.show', $item->id) }}" 
-                                   class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-red-50 dark:bg-red-950/60 hover:bg-red-100 dark:hover:bg-red-900/60 text-red-700 dark:text-red-300 font-bold text-[11px] transition-colors">
-                                    <i class="fa-solid fa-eye"></i>
+                                   class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold text-[#dc143c] dark:text-[#ffb3b3] hover:bg-[#fff1f0] dark:hover:bg-[#3b0b14] transition-colors">
+                                    <i class="fa-solid fa-eye text-xs"></i>
                                     <span>Detail</span>
                                 </a>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="9" class="py-12 text-center text-slate-400 dark:text-slate-500">
+                            <td colspan="9" class="py-12 text-center text-[#5c3f3f] dark:text-[#c8c6c5]">
                                 Tidak ada data monitoring dalam periode filter yang dipilih.
                             </td>
                         </tr>
@@ -242,7 +242,7 @@
         </div>
 
         @if($monitorings->hasPages())
-            <div class="p-4 border-t border-slate-100 dark:border-slate-800">
+            <div class="p-4 border-t border-[#eae8e7] dark:border-[#2e3030]">
                 {{ $monitorings->links() }}
             </div>
         @endif

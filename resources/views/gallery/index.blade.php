@@ -37,30 +37,28 @@
         </div>
     @endif
 
-    <!-- Hero Header Merah Putih -->
-    <div class="bg-gradient-to-r from-red-700 via-red-600 to-rose-600 rounded-2xl p-6 sm:p-8 text-white shadow-xl shadow-red-500/10 relative overflow-hidden">
-        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-
-        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <!-- Header Section -->
+    <div class="card-clean p-6 sm:p-8 border-l-4 border-l-crimson relative">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold uppercase tracking-wider mb-3">
-                    <span class="w-2 h-2 rounded-full bg-red-200 animate-pulse"></span>
+                <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-status-info-bg text-status-info text-xs font-semibold uppercase tracking-wider mb-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-status-info animate-pulse"></span>
                     Visual Facility Showcase
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-                    <svg class="w-8 h-8 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <h1 class="text-2xl sm:text-3xl font-semibold font-heading text-neutral-900 tracking-tight flex items-center gap-3">
+                    <svg class="w-7 h-7 text-crimson" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     Galeri Keseluruhan Ruangan & 360°
                 </h1>
-                <p class="text-red-100 text-sm mt-1 max-w-2xl">
+                <p class="text-neutral-500 text-sm mt-1 max-w-2xl font-sans">
                     Koleksi dokumentasi foto fasilitas, inspeksi sebelum vs sesudah pembersihan, dan tur visual 360° interaktif di seluruh area gedung.
                 </p>
             </div>
 
             <div class="flex items-center gap-3">
-                <a href="{{ route('floorplan.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-red-600 hover:bg-red-50 text-xs sm:text-sm font-bold rounded-xl shadow-md transition-all hover:scale-105">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ route('floorplan.index') }}" class="btn-secondary text-xs sm:text-sm flex items-center gap-2">
+                    <svg class="w-4 h-4 text-crimson" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                     </svg>
                     Buka Denah Gedung
@@ -71,91 +69,91 @@
 
     <!-- Stats Counter Bar -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+        <div class="card-clean p-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/60 text-red-600 flex items-center justify-center font-bold">
+                <div class="w-10 h-10 rounded-xl bg-crimson-surface text-crimson flex items-center justify-center font-bold">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                 </div>
                 <div>
-                    <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Dokumentasi</span>
-                    <h4 class="text-lg font-bold text-slate-900 dark:text-white">{{ $totalPhotos }} Foto</h4>
+                    <span class="text-xs text-neutral-500 font-medium">Dokumentasi</span>
+                    <h4 class="text-lg font-semibold font-heading text-neutral-900">{{ $totalPhotos }} Foto</h4>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+        <div class="card-clean p-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-purple-100 dark:bg-purple-950/60 text-purple-600 flex items-center justify-center font-bold">
+                <div class="w-10 h-10 rounded-xl bg-purple-50 text-purple-700 flex items-center justify-center font-bold">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
                 </div>
                 <div>
-                    <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Panorama 360°</span>
-                    <h4 class="text-lg font-bold text-slate-900 dark:text-white">{{ $total360 }} Area</h4>
+                    <span class="text-xs text-neutral-500 font-medium">Panorama 360°</span>
+                    <h4 class="text-lg font-semibold font-heading text-neutral-900">{{ $total360 }} Area</h4>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+        <div class="card-clean p-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/60 text-sky-600 flex items-center justify-center font-bold">
+                <div class="w-10 h-10 rounded-xl bg-status-info-bg text-status-info flex items-center justify-center font-bold">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                 </div>
                 <div>
-                    <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Foto Standar HD</span>
-                    <h4 class="text-lg font-bold text-slate-900 dark:text-white">{{ $totalStandard }} Area</h4>
+                    <span class="text-xs text-neutral-500 font-medium">Foto Standar HD</span>
+                    <h4 class="text-lg font-semibold font-heading text-neutral-900">{{ $totalStandard }} Area</h4>
                 </div>
             </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center justify-between">
+        <div class="card-clean p-4 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-600 flex items-center justify-center font-bold">
+                <div class="w-10 h-10 rounded-xl bg-status-success-bg text-status-success flex items-center justify-center font-bold">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                     </svg>
                 </div>
                 <div>
-                    <span class="text-xs text-slate-500 dark:text-slate-400 font-medium">Sebelum / Sesudah</span>
-                    <h4 class="text-lg font-bold text-slate-900 dark:text-white">{{ $totalComparisons }} Sesi</h4>
+                    <span class="text-xs text-neutral-500 font-medium">Sebelum / Sesudah</span>
+                    <h4 class="text-lg font-semibold font-heading text-neutral-900">{{ $totalComparisons }} Sesi</h4>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Filter & Category Nav -->
-    <div class="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm">
+    <div class="card-clean p-4">
         <form method="GET" action="{{ route('gallery.index') }}" class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
             <!-- Tabs / Types -->
             <div class="flex flex-wrap items-center gap-2">
                 <a href="{{ route('gallery.index', array_merge(request()->query(), ['type' => 'all'])) }}" 
-                   class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all {{ $selectedType === 'all' ? 'bg-red-600 text-white shadow-md shadow-red-600/20' : 'bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 hover:bg-slate-200' }}">
+                   class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all {{ $selectedType === 'all' ? 'bg-crimson text-white shadow-xs' : 'bg-neutral-100 text-neutral-700 hover:bg-neutral-200' }}">
                     Semua Foto
                 </a>
                 <a href="{{ route('gallery.index', array_merge(request()->query(), ['type' => '360'])) }}" 
-                   class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 {{ $selectedType === '360' ? 'bg-purple-600 text-white shadow-md shadow-purple-600/20' : 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 hover:bg-purple-100' }}">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 {{ $selectedType === '360' ? 'bg-purple-700 text-white shadow-xs' : 'bg-purple-50 text-purple-700 hover:bg-purple-100' }}">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                     </svg>
                     360° Virtual Tour
                 </a>
                 <a href="{{ route('gallery.index', array_merge(request()->query(), ['type' => 'standard'])) }}" 
-                   class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 {{ $selectedType === 'standard' ? 'bg-sky-600 text-white shadow-md shadow-sky-600/20' : 'bg-sky-50 dark:bg-sky-950/40 text-sky-700 dark:text-sky-300 hover:bg-sky-100' }}">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 {{ $selectedType === 'standard' ? 'bg-sky-700 text-white shadow-xs' : 'bg-sky-50 text-sky-700 hover:bg-sky-100' }}">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
                     Foto Ruangan Standar
                 </a>
                 <a href="{{ route('gallery.index', array_merge(request()->query(), ['type' => 'comparison'])) }}" 
-                   class="px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center gap-1.5 {{ $selectedType === 'comparison' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/20' : 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100' }}">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                   class="px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-1.5 {{ $selectedType === 'comparison' ? 'bg-emerald-700 text-white shadow-xs' : 'bg-emerald-50 text-emerald-800 hover:bg-emerald-100' }}">
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
                     </svg>
                     Sebelum vs Sesudah
@@ -163,8 +161,8 @@
             </div>
 
             <!-- Area & Search Dropdowns -->
-            <div class="flex flex-wrap items-center gap-3">
-                <select name="area_id" onchange="this.form.submit()" class="px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-red-500">
+            <div class="flex flex-wrap items-center gap-2.5">
+                <select name="area_id" onchange="this.form.submit()" class="input-clean text-xs py-1.5 px-3">
                     <option value="">Semua Ruangan</option>
                     @foreach($areas as $area)
                         <option value="{{ $area->id }}" {{ $selectedAreaId == $area->id ? 'selected' : '' }}>
@@ -173,7 +171,7 @@
                     @endforeach
                 </select>
 
-                <select name="status" onchange="this.form.submit()" class="px-3 py-2 bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 rounded-xl text-xs font-semibold text-slate-700 dark:text-slate-200 focus:ring-2 focus:ring-red-500">
+                <select name="status" onchange="this.form.submit()" class="input-clean text-xs py-1.5 px-3">
                     <option value="">Semua Status</option>
                     <option value="bersih" {{ $selectedStatus === 'bersih' ? 'selected' : '' }}>Bersih</option>
                     <option value="perlu_tindakan" {{ $selectedStatus === 'perlu_tindakan' ? 'selected' : '' }}>Perlu Tindakan</option>
@@ -187,22 +185,22 @@
 
     <!-- Dedicated Room Showcase Area (Panorama 360 & Foto Standar) -->
     @if(($selectedType === '360' || $selectedType === 'standard' || $selectedType === 'all') && $areasWith360->count() > 0)
-        <div class="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 rounded-2xl p-6 text-white shadow-xl border border-slate-800">
+        <div class="bg-neutral-900 rounded-2xl p-6 text-white shadow-xs border border-neutral-800">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-5">
                 <div class="flex items-center gap-2">
                     <span class="px-2.5 py-1 rounded-md bg-white/10 border border-white/20 text-white text-xs font-black uppercase tracking-wider">Facility Visual Showcase</span>
-                    <h3 class="font-bold text-lg text-white">Dokumentasi Visual & Tur Virtual Ruangan</h3>
+                    <h3 class="font-semibold font-heading text-lg text-white">Dokumentasi Visual & Tur Virtual Ruangan</h3>
                 </div>
                 <div class="flex items-center gap-3">
                     @if(auth()->user()->role === 'admin')
-                        <button type="button" onclick="openUpload360Modal()" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-600/30 transition-all cursor-pointer">
+                        <button type="button" onclick="openUpload360Modal()" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-crimson hover:bg-crimson-dark text-white text-xs font-semibold shadow-xs transition-all cursor-pointer">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
                             </svg>
                             Upload / Ganti Foto Ruangan
                         </button>
                     @endif
-                    <span class="text-xs text-slate-300 font-medium hidden md:inline">Klik foto untuk melihat dalam ukuran penuh / interaktif</span>
+                    <span class="text-xs text-neutral-400 font-medium hidden md:inline">Klik foto untuk melihat dalam ukuran penuh / interaktif</span>
                 </div>
             </div>
 
@@ -223,7 +221,7 @@
                                  class="h-40 bg-slate-800 relative overflow-hidden flex items-center justify-center cursor-pointer">
                                 <img src="{{ $area->photo_360_url }}" alt="{{ $area->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-80"
                                      onerror="this.src='https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80'">
-                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent"></div>
+                                <div class="absolute inset-0 bg-neutral-950/40"></div>
                                 
                                 <div class="absolute inset-0 flex flex-col items-center justify-center gap-2">
                                     <span class="w-11 h-11 rounded-full {{ $badgeBg }} text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
@@ -232,7 +230,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                                         </svg>
                                     </span>
-                                    <span class="text-[10px] font-bold text-white {{ $subBadgeBg }} px-2.5 py-0.5 rounded-full backdrop-blur-sm">{{ $subBadgeText }}</span>
+                                    <span class="text-[10px] font-bold text-white {{ $subBadgeBg }} px-2.5 py-0.5 rounded-full">{{ $subBadgeText }}</span>
                                 </div>
                             </div>
                         @else
@@ -241,7 +239,7 @@
                                  class="h-40 bg-slate-800 relative overflow-hidden flex items-center justify-center cursor-pointer">
                                 <img src="{{ $area->photo_360_url }}" alt="{{ $area->name }}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 opacity-70"
                                      onerror="this.src='https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=600&q=80'">
-                                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                                <div class="absolute inset-0 bg-neutral-950/40"></div>
                                 
                                 <div class="absolute inset-0 flex flex-col items-center justify-center gap-2">
                                     <span class="w-11 h-11 rounded-full {{ $badgeBg }} text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
@@ -360,7 +358,7 @@
                 <!-- Footer Info -->
                 <div class="px-4 py-3 bg-slate-50 dark:bg-slate-800/80 border-t border-slate-100 dark:border-slate-700 text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between">
                     <span>Petugas: <strong class="text-slate-700 dark:text-slate-200">{{ $monitoring->user->name ?? '-' }}</strong></span>
-                    <span>{{ $monitoring->check_date->format('d M Y H:i') }}</span>
+                    <span>{{ $monitoring->check_date->format('d M Y') }} {{ substr($monitoring->check_time, 0, 5) }} WIB</span>
                 </div>
             </div>
         @empty
@@ -503,21 +501,21 @@
 
 @if(auth()->user()->role === 'admin')
 <!-- Edit / Upload Foto Modal (Mendukung Panorama 360 & Foto Standar) -->
-<div id="edit360Modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4" onclick="closeEdit360Modal()">
-    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[95vh] overflow-y-auto" onclick="event.stopPropagation()">
-        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+<div id="edit360Modal" class="fixed inset-0 z-50 hidden bg-neutral-900/60 backdrop-blur-xs flex items-center justify-center p-4" onclick="closeEdit360Modal()">
+    <div class="card-clean max-w-xl w-full p-6 space-y-4 max-h-[95vh] overflow-y-auto" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-between border-b border-border-clean pb-3">
             <div class="flex items-center gap-2.5">
-                <div class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/60 text-red-600 flex items-center justify-center font-bold">
+                <div class="w-10 h-10 rounded-xl bg-crimson-surface text-crimson flex items-center justify-center font-bold">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                 </div>
                 <div>
-                    <h3 class="font-bold text-slate-900 dark:text-white text-base">Upload & Ganti Foto Ruangan</h3>
-                    <p id="edit360AreaName" class="text-xs text-slate-500 dark:text-slate-400">Pilih jenis foto yang tepat agar tampilan tidak melengkung atau gepeng</p>
+                    <h3 class="font-semibold font-heading text-neutral-900 text-base">Upload & Ganti Foto Ruangan</h3>
+                    <p id="edit360AreaName" class="text-xs text-neutral-500">Pilih jenis foto yang tepat agar tampilan tidak melengkung atau gepeng</p>
                 </div>
             </div>
-            <button onclick="closeEdit360Modal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1">
+            <button onclick="closeEdit360Modal()" class="text-neutral-400 hover:text-neutral-600 p-1">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -529,10 +527,10 @@
 
             <!-- Area Selector (Khusus modal general) -->
             <div id="areaSelectorContainer" class="hidden">
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                    Pilih Ruangan / Area <span class="text-red-500">*</span>
+                <label class="label-clean mb-1.5">
+                    Pilih Ruangan / Area <span class="text-crimson">*</span>
                 </label>
-                <select id="modalAreaSelect" name="area_id" class="w-full px-4 py-2.5 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 rounded-xl text-sm focus:ring-2 focus:ring-red-500">
+                <select id="modalAreaSelect" name="area_id" class="input-clean text-sm w-full">
                     <option value="">-- Pilih Ruangan --</option>
                     @foreach($areas as $area)
                         <option value="{{ $area->id }}">{{ $area->code }} - {{ $area->name }} (Lt {{ $area->floor }})</option>
@@ -542,12 +540,12 @@
 
             <!-- Pilihan Jenis Foto (Radio Cards) -->
             <div>
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                    Pilih Jenis Foto yang Diunggah <span class="text-red-500">*</span>
+                <label class="label-clean mb-1.5">
+                    Pilih Jenis Foto yang Diunggah <span class="text-crimson">*</span>
                 </label>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <!-- Opsi 1: Panorama 360 -->
-                    <label id="cardOption360" class="relative flex flex-col p-3.5 rounded-xl border-2 cursor-pointer transition-all border-purple-500 bg-purple-50/50 dark:bg-purple-950/30">
+                    <label id="cardOption360" class="relative flex flex-col p-3.5 rounded-xl border-2 cursor-pointer transition-all border-purple-500 bg-purple-50/50">
                         <div class="flex items-center justify-between mb-1.5">
                             <div class="flex items-center gap-2">
                                 <span class="w-7 h-7 rounded-lg bg-purple-600 text-white flex items-center justify-center text-xs">
@@ -555,17 +553,17 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                                     </svg>
                                 </span>
-                                <span class="font-bold text-xs text-slate-900 dark:text-white">Panorama 360°</span>
+                                <span class="font-semibold text-xs text-neutral-900">Panorama 360°</span>
                             </div>
                             <input type="radio" name="photo_type" value="panorama_360" checked onchange="handlePhotoTypeChange(this.value)" class="text-purple-600 focus:ring-purple-500">
                         </div>
-                        <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
+                        <p class="text-[11px] text-neutral-600 leading-snug">
                             Foto panorama penuh 360° dari kamera 360 (rasio ideal 2:1). Ditampilkan di viewer bola 360°.
                         </p>
                     </label>
 
                     <!-- Opsi 2: Foto Standar / Biasa -->
-                    <label id="cardOptionStandard" class="relative flex flex-col p-3.5 rounded-xl border-2 cursor-pointer transition-all border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/40 hover:border-sky-400">
+                    <label id="cardOptionStandard" class="relative flex flex-col p-3.5 rounded-xl border-2 cursor-pointer transition-all border-border-clean bg-neutral-50 hover:border-sky-400">
                         <div class="flex items-center justify-between mb-1.5">
                             <div class="flex items-center gap-2">
                                 <span class="w-7 h-7 rounded-lg bg-sky-600 text-white flex items-center justify-center text-xs">
@@ -574,11 +572,11 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
                                     </svg>
                                 </span>
-                                <span class="font-bold text-xs text-slate-900 dark:text-white">Foto Biasa (Standar)</span>
+                                <span class="font-semibold text-xs text-neutral-900">Foto Biasa (Standar)</span>
                             </div>
                             <input type="radio" name="photo_type" value="standard" onchange="handlePhotoTypeChange(this.value)" class="text-sky-600 focus:ring-sky-500">
                         </div>
-                        <p class="text-[11px] text-slate-600 dark:text-slate-400 leading-snug">
+                        <p class="text-[11px] text-neutral-600 leading-snug">
                             Foto ruangan biasa dari kamera HP / DSLR. Ditampilkan proporsional tanpa distorsi melengkung.
                         </p>
                     </label>
@@ -587,15 +585,15 @@
 
             <!-- Upload File Input -->
             <div>
-                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider mb-2">
-                    Pilih File Foto Baru <span class="text-red-500">*</span>
+                <label class="label-clean mb-1.5">
+                    Pilih File Foto Baru <span class="text-crimson">*</span>
                 </label>
-                <div class="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-red-500 rounded-xl p-5 text-center transition-colors cursor-pointer bg-slate-50 dark:bg-slate-800/50" onclick="document.getElementById('modal_photo_360').click()">
-                    <svg class="w-10 h-10 text-red-500 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="border-2 border-dashed border-border-clean hover:border-crimson rounded-xl p-5 text-center transition-colors cursor-pointer bg-neutral-50" onclick="document.getElementById('modal_photo_360').click()">
+                    <svg class="w-10 h-10 text-crimson mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
-                    <p id="fileLabel360" class="text-sm font-semibold text-slate-700 dark:text-slate-200">Klik untuk memilih file foto (JPG, PNG, WebP)</p>
-                    <p id="fileSubHint360" class="text-xs text-slate-400 mt-1">Resolusi tinggi dipertahankan (Maksimal 50 MB)</p>
+                    <p id="fileLabel360" class="text-sm font-semibold text-neutral-800">Klik untuk memilih file foto (JPG, PNG, WebP)</p>
+                    <p id="fileSubHint360" class="text-xs text-neutral-400 mt-1">Resolusi tinggi dipertahankan (Maksimal 50 MB)</p>
                 </div>
                 <input type="file" id="modal_photo_360" name="photo_360" accept="image/*" class="hidden" required onchange="handleFileSelected(this)">
             </div>
@@ -604,16 +602,16 @@
             <div id="aspectRatioWarningBox" class="hidden rounded-xl border p-3 text-xs flex items-start gap-3">
                 <span id="warningIcon" class="text-base shrink-0">⚠️</span>
                 <div class="flex-1">
-                    <p id="warningText" class="font-medium text-slate-800 dark:text-slate-200 leading-relaxed"></p>
+                    <p id="warningText" class="font-medium text-neutral-800 leading-relaxed"></p>
                     <button type="button" id="btnQuickSwitchType" class="mt-2 inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold text-white shadow-xs cursor-pointer"></button>
                 </div>
             </div>
 
             <div class="flex items-center justify-end gap-3 pt-2">
-                <button type="button" onclick="closeEdit360Modal()" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <button type="button" onclick="closeEdit360Modal()" class="btn-secondary text-xs py-2 px-4">
                     Batal
                 </button>
-                <button type="submit" class="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-md shadow-red-600/30 transition-all cursor-pointer">
+                <button type="submit" class="btn-primary text-xs py-2 px-5">
                     Simpan & Update Foto
                 </button>
             </div>

@@ -7,110 +7,108 @@
 @section('content')
 <div class="space-y-6">
 
-    <!-- Welcome Greeting Banner (Merah Putih Header) -->
-    <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-red-700 via-red-600 to-rose-600 text-white p-6 sm:p-8 shadow-xl shadow-red-500/10">
-        <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+    <!-- Welcome Greeting Card (Corporate Clean) -->
+    <div class="bg-white dark:bg-[#1f2020] rounded-xl border border-[#eae8e7] dark:border-[#2e3030] p-6 shadow-[0px_4px_12px_rgba(0,0,0,0.05)] border-l-4 border-l-[#dc143c]">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
-                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-white/20 text-white border border-white/30 mb-3 backdrop-blur-sm">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
-                    Sistem Monitoring Real-Time
-                </span>
-                <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Selamat Datang, {{ Auth::user()->name }}!</h2>
-                <p class="text-red-100 text-xs sm:text-sm mt-1 max-w-2xl">
-                    Pantau seluruh kondisi kebersihan area fasilitas secara visual di denah interaktif, cek foto 360°, dan kelola laporan kebersihan secara terpadu.
+                <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#daffd5] text-[#006622] border border-[#b2e5be] dark:bg-[#003912] dark:text-[#83fc8e] dark:border-[#00531a] mb-2.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#00822d]"></span>
+                    <span>Monitoring Real-Time</span>
+                </div>
+                <h2 class="font-heading text-xl sm:text-2xl font-semibold text-[#1b1c1c] dark:text-white">
+                    Selamat Datang, {{ Auth::user()->name }}
+                </h2>
+                <p class="text-xs sm:text-sm text-[#5c3f3f] dark:text-[#c8c6c5] mt-1 max-w-2xl">
+                    Pantau kondisi kebersihan area fasilitas secara visual di denah interaktif, cek dokumentasi foto 360°, dan kelola laporan kebersihan harian.
                 </p>
             </div>
-            <div class="flex flex-wrap items-center gap-3">
-                <a href="{{ route('floorplan.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white text-red-600 hover:bg-red-50 font-bold text-xs shadow-md transition-all hover:scale-105">
-                    <i class="fa-solid fa-map-location-dot"></i>
-                    <span>Buka Denah Gedung</span>
-                </a>
-                <a href="{{ route('gallery.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-red-800/80 hover:bg-red-900 text-white border border-red-400/40 font-semibold text-xs transition-all">
-                    <i class="fa-solid fa-images"></i>
-                    <span>Galeri & 360°</span>
-                </a>
-                <a href="{{ route('monitoring.create') }}" class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs shadow-md transition-all">
-                    <i class="fa-solid fa-plus"></i>
+            <div class="flex flex-wrap items-center gap-2.5">
+                <a href="{{ route('monitoring.create') }}" class="btn-primary">
+                    <i class="fa-solid fa-plus text-xs"></i>
                     <span>Catat Baru</span>
+                </a>
+                <a href="{{ route('floorplan.index') }}" class="btn-secondary">
+                    <i class="fa-solid fa-map-location-dot text-xs"></i>
+                    <span>Denah Gedung</span>
+                </a>
+                <a href="{{ route('gallery.index') }}" class="btn-outline-neutral">
+                    <i class="fa-solid fa-images text-xs"></i>
+                    <span>Galeri & 360°</span>
                 </a>
             </div>
         </div>
-        <!-- Decorative subtle pattern -->
-        <div class="absolute right-0 top-0 translate-x-1/4 -translate-y-1/4 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none"></div>
     </div>
 
     <!-- 5 Statistics Cards -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         
         <!-- 1. Total Area -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
+        <div class="card-clean card-clean-hover p-5 flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Total Area</span>
-                <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 flex items-center justify-center text-sm font-bold">
+                <span class="text-xs font-semibold text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">Total Area</span>
+                <div class="w-9 h-9 rounded-xl bg-[#fff1f0] text-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3] flex items-center justify-center text-sm">
                     <i class="fa-solid fa-building"></i>
                 </div>
             </div>
-            <div class="mt-4">
-                <h3 class="text-2xl font-black text-slate-800 dark:text-slate-100">{{ $totalAreas }}</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1">
-                    <span class="text-red-600 dark:text-red-400 font-semibold">Area Aktif</span> terdaftar
-                </p>
+            <div class="mt-3">
+                <h3 class="font-heading text-2xl font-semibold text-[#1b1c1c] dark:text-white">{{ $totalAreas }}</h3>
+                <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-0.5">Area aktif terdaftar</p>
             </div>
         </div>
 
         <!-- 2. Area Sudah Bersih -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
+        <div class="card-clean card-clean-hover p-5 flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sudah Bersih</span>
-                <div class="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-sm font-bold">
+                <span class="text-xs font-semibold text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">Sudah Bersih</span>
+                <div class="w-9 h-9 rounded-xl bg-[#daffd5] text-[#006622] dark:bg-[#003912] dark:text-[#83fc8e] flex items-center justify-center text-sm">
                     <i class="fa-solid fa-circle-check"></i>
                 </div>
             </div>
-            <div class="mt-4">
-                <h3 class="text-2xl font-black text-emerald-600 dark:text-emerald-400">{{ $areaSudahBersih }}</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Area bersih optimal</p>
+            <div class="mt-3">
+                <h3 class="font-heading text-2xl font-semibold text-[#006622] dark:text-[#83fc8e]">{{ $areaSudahBersih }}</h3>
+                <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-0.5">Kondisi optimal</p>
             </div>
         </div>
 
         <!-- 3. Area Sedang Dibersihkan -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
+        <div class="card-clean card-clean-hover p-5 flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Sedang Dibersihkan</span>
-                <div class="w-10 h-10 rounded-xl bg-amber-50 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-sm font-bold">
-                    <i class="fa-solid fa-spinner fa-spin"></i>
+                <span class="text-xs font-semibold text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">Sedang Dibersihkan</span>
+                <div class="w-9 h-9 rounded-xl bg-[#e0f2fe] text-[#0369a1] dark:bg-[#082f49] dark:text-[#7dd3fc] flex items-center justify-center text-sm">
+                    <i class="fa-solid fa-arrows-rotate"></i>
                 </div>
             </div>
-            <div class="mt-4">
-                <h3 class="text-2xl font-black text-amber-600 dark:text-amber-400">{{ $areaSedangDibersihkan }}</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Dalam pengerjaan</p>
+            <div class="mt-3">
+                <h3 class="font-heading text-2xl font-semibold text-[#0369a1] dark:text-[#7dd3fc]">{{ $areaSedangDibersihkan }}</h3>
+                <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-0.5">Dalam pengerjaan</p>
             </div>
         </div>
 
         <!-- 4. Area Perlu Dibersihkan -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
+        <div class="card-clean card-clean-hover p-5 flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Perlu Dibersihkan</span>
-                <div class="w-10 h-10 rounded-xl bg-red-50 dark:bg-red-950/50 text-red-600 dark:text-red-400 flex items-center justify-center text-sm font-bold">
+                <span class="text-xs font-semibold text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">Perlu Tindakan</span>
+                <div class="w-9 h-9 rounded-xl bg-[#ffdad6] text-[#ba1a1a] dark:bg-[#410002] dark:text-[#ffb4ab] flex items-center justify-center text-sm">
                     <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
             </div>
-            <div class="mt-4">
-                <h3 class="text-2xl font-black text-red-600 dark:text-red-400">{{ $areaPerluDibersihkan }}</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Membutuhkan tindakan</p>
+            <div class="mt-3">
+                <h3 class="font-heading text-2xl font-semibold text-[#ba1a1a] dark:text-[#ffb4ab]">{{ $areaPerluDibersihkan }}</h3>
+                <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-0.5">Perlu dibersihkan</p>
             </div>
         </div>
 
         <!-- 5. Total Pemeriksaan Hari Ini -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-xs hover:shadow-md transition-all">
+        <div class="card-clean card-clean-hover p-5 flex flex-col justify-between">
             <div class="flex items-center justify-between">
-                <span class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Laporan Hari Ini</span>
-                <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 flex items-center justify-center text-sm font-bold">
+                <span class="text-xs font-semibold text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">Laporan Hari Ini</span>
+                <div class="w-9 h-9 rounded-xl bg-[#f5f3f3] text-[#5c3f3f] dark:bg-[#262727] dark:text-[#c8c6c5] flex items-center justify-center text-sm">
                     <i class="fa-solid fa-clipboard-list"></i>
                 </div>
             </div>
-            <div class="mt-4">
-                <h3 class="text-2xl font-black text-slate-900 dark:text-white">{{ $totalChecksToday }}</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Inspeksi tercatat hari ini</p>
+            <div class="mt-3">
+                <h3 class="font-heading text-2xl font-semibold text-[#1b1c1c] dark:text-white">{{ $totalChecksToday }}</h3>
+                <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-0.5">Inspeksi tercatat</p>
             </div>
         </div>
     </div>
@@ -119,13 +117,15 @@
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
         <!-- Status Kebersihan Chart -->
-        <div class="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs">
+        <div class="lg:col-span-2 card-clean p-6">
             <div class="flex items-center justify-between mb-4">
                 <div>
-                    <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Distribusi Status Monitoring</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">Jumlah rekapitulasi data berdasarkan status kebersihan</p>
+                    <h3 class="font-heading text-sm font-semibold text-[#1b1c1c] dark:text-white">Distribusi Status Monitoring</h3>
+                    <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5]">Jumlah pemeriksaan kebersihan berdasarkan status operasional</p>
                 </div>
-                <span class="text-xs font-semibold px-2.5 py-1 bg-red-50 dark:bg-red-950/60 text-red-700 dark:text-red-300 rounded-lg">Grafik Status</span>
+                <span class="text-xs font-semibold px-2.5 py-1 bg-[#fff1f0] dark:bg-[#3b0b14] text-[#dc143c] dark:text-[#ffb3b3] rounded-lg">
+                    Status
+                </span>
             </div>
             <div class="h-64 relative">
                 <canvas id="statusChart"></canvas>
@@ -133,81 +133,81 @@
         </div>
 
         <!-- Kondisi Kebersihan Chart -->
-        <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col justify-between">
+        <div class="card-clean p-6 flex flex-col justify-between">
             <div>
                 <div class="flex items-center justify-between mb-4">
                     <div>
-                        <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Kondisi Kebersihan</h3>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Kategori penilaian kebersihan area</p>
+                        <h3 class="font-heading text-sm font-semibold text-[#1b1c1c] dark:text-white">Kondisi Kebersihan</h3>
+                        <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5]">Penilaian fisik hasil pemeriksaan</p>
                     </div>
                 </div>
-                <div class="h-48 relative flex items-center justify-center">
+                <div class="h-44 relative flex items-center justify-center">
                     <canvas id="conditionChart"></canvas>
                 </div>
             </div>
 
-            <div class="grid grid-cols-2 gap-2 mt-4 pt-4 border-t border-slate-100 dark:border-slate-800 text-xs">
+            <div class="grid grid-cols-2 gap-2.5 mt-4 pt-4 border-t border-[#eae8e7] dark:border-[#2e3030] text-xs">
                 <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-md bg-emerald-500"></span>
-                    <span class="text-slate-600 dark:text-slate-400">Bersih: <b class="text-slate-800 dark:text-slate-200">{{ $conditionCounts['Bersih'] }}</b></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#00822d]"></span>
+                    <span class="text-[#5c3f3f] dark:text-[#c8c6c5]">Bersih: <b class="text-[#1b1c1c] dark:text-white">{{ $conditionCounts['Bersih'] }}</b></span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-md bg-amber-500"></span>
-                    <span class="text-slate-600 dark:text-slate-400">Cukup: <b class="text-slate-800 dark:text-slate-200">{{ $conditionCounts['Cukup Bersih'] }}</b></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#0284c7]"></span>
+                    <span class="text-[#5c3f3f] dark:text-[#c8c6c5]">Cukup: <b class="text-[#1b1c1c] dark:text-white">{{ $conditionCounts['Cukup Bersih'] }}</b></span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-md bg-orange-500"></span>
-                    <span class="text-slate-600 dark:text-slate-400">Kotor: <b class="text-slate-800 dark:text-slate-200">{{ $conditionCounts['Kotor'] }}</b></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#d97706]"></span>
+                    <span class="text-[#5c3f3f] dark:text-[#c8c6c5]">Kotor: <b class="text-[#1b1c1c] dark:text-white">{{ $conditionCounts['Kotor'] }}</b></span>
                 </div>
                 <div class="flex items-center gap-2">
-                    <span class="w-3 h-3 rounded-md bg-red-600"></span>
-                    <span class="text-slate-600 dark:text-slate-400">Sgt Kotor: <b class="text-slate-800 dark:text-slate-200">{{ $conditionCounts['Sangat Kotor'] }}</b></span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-[#dc143c]"></span>
+                    <span class="text-[#5c3f3f] dark:text-[#c8c6c5]">Sgt Kotor: <b class="text-[#1b1c1c] dark:text-white">{{ $conditionCounts['Sangat Kotor'] }}</b></span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Monitoring Terbaru Table -->
-    <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
-        <div class="p-5 sm:px-6 border-b border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+    <div class="card-clean overflow-hidden">
+        <div class="p-5 border-b border-[#eae8e7] dark:border-[#2e3030] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">Monitoring Terbaru</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400">10 data pemeriksaan kebersihan terakhir yang tercatat di sistem</p>
+                <h3 class="font-heading text-sm font-semibold text-[#1b1c1c] dark:text-white">Monitoring Terbaru</h3>
+                <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5]">10 catatan pemeriksaan kebersihan terakhir yang masuk</p>
             </div>
-            <a href="{{ route('admin.monitoring.index') }}" class="text-xs font-bold text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 flex items-center gap-1">
+            <a href="{{ route('admin.monitoring.index') }}" class="text-xs font-semibold text-[#dc143c] dark:text-[#ffb3b3] hover:underline flex items-center gap-1">
                 <span>Lihat Semua Riwayat</span>
-                <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <i class="fa-solid fa-arrow-right text-[10px]"></i>
             </a>
         </div>
 
         <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs text-slate-700 dark:text-slate-300">
-                <thead class="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 font-bold uppercase text-[10px] tracking-wider border-b border-slate-100 dark:border-slate-800">
+            <table class="w-full text-left text-xs text-[#1b1c1c] dark:text-[#f2f0f0]">
+                <thead class="bg-[#f5f3f3] dark:bg-[#262727] text-[#5c3f3f] dark:text-[#c8c6c5] font-semibold uppercase text-[11px] tracking-wider border-b border-[#eae8e7] dark:border-[#2e3030]">
                     <tr>
-                        <th class="py-3.5 px-4 text-center w-12">No</th>
-                        <th class="py-3.5 px-4">Area & Lokasi</th>
-                        <th class="py-3.5 px-4">Petugas</th>
-                        <th class="py-3.5 px-4">Kondisi</th>
-                        <th class="py-3.5 px-4">Status</th>
-                        <th class="py-3.5 px-4">Tanggal</th>
-                        <th class="py-3.5 px-4">Jam</th>
-                        <th class="py-3.5 px-4 text-center">Aksi</th>
+                        <th class="py-3 px-4 text-center w-12">No</th>
+                        <th class="py-3 px-4">Area & Lokasi</th>
+                        <th class="py-3 px-4">Petugas</th>
+                        <th class="py-3 px-4">Kondisi</th>
+                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-4">Tanggal</th>
+                        <th class="py-3 px-4">Jam</th>
+                        <th class="py-3 px-4 text-center">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody class="divide-y divide-[#eae8e7] dark:divide-[#2e3030]">
                     @forelse($recentMonitorings as $index => $item)
-                        <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 transition-colors">
-                            <td class="py-3.5 px-4 text-center font-medium text-slate-400 dark:text-slate-500">{{ $index + 1 }}</td>
+                        <tr class="hover:bg-[#fbf9f8] dark:hover:bg-[#262727]/60 transition-colors">
+                            <td class="py-3.5 px-4 text-center font-medium text-[#5c3f3f] dark:text-[#8c8282]">{{ $index + 1 }}</td>
                             <td class="py-3.5 px-4">
-                                <div class="font-bold text-slate-900 dark:text-slate-100">{{ $item->area->name ?? '-' }} (Lt {{ $item->area->floor ?? 1 }})</div>
-                                <div class="text-[11px] text-slate-400 dark:text-slate-500">{{ $item->area->location ?? '-' }}</div>
+                                <div class="font-semibold text-[#1b1c1c] dark:text-white">{{ $item->area->name ?? '-' }} (Lt {{ $item->area->floor ?? 1 }})</div>
+                                <div class="text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5]">{{ $item->area->location ?? '-' }}</div>
                             </td>
                             <td class="py-3.5 px-4">
                                 <div class="flex items-center gap-2">
-                                    <div class="w-6 h-6 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-[10px] flex items-center justify-center">
+                                    <div class="w-6 h-6 rounded-lg bg-[#f5f3f3] dark:bg-[#333535] text-[#5c3f3f] dark:text-[#c8c6c5] font-semibold text-[10px] flex items-center justify-center">
                                         {{ strtoupper(substr($item->user->name ?? 'P', 0, 1)) }}
                                     </div>
-                                    <span class="font-medium text-slate-800 dark:text-slate-200">{{ $item->user->name ?? '-' }}</span>
+                                    <span class="font-medium text-[#1b1c1c] dark:text-white">{{ $item->user->name ?? '-' }}</span>
                                 </div>
                             </td>
                             <td class="py-3.5 px-4">
@@ -216,15 +216,15 @@
                             <td class="py-3.5 px-4">
                                 <x-badge-status :status="$item->status" />
                             </td>
-                            <td class="py-3.5 px-4 font-medium text-slate-600 dark:text-slate-400">
+                            <td class="py-3.5 px-4 text-[#5c3f3f] dark:text-[#c8c6c5]">
                                 {{ \Carbon\Carbon::parse($item->check_date)->format('d/m/Y') }}
                             </td>
-                            <td class="py-3.5 px-4 font-medium text-slate-600 dark:text-slate-400">
+                            <td class="py-3.5 px-4 text-[#5c3f3f] dark:text-[#c8c6c5]">
                                 {{ substr($item->check_time, 0, 5) }} WIB
                             </td>
                             <td class="py-3.5 px-4 text-center">
                                 <a href="{{ route('monitoring.show', $item->id) }}" 
-                                   class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 dark:bg-red-950/60 hover:bg-red-100 dark:hover:bg-red-900/60 text-red-700 dark:text-red-300 font-bold text-[11px] transition-colors">
+                                   class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold text-[#dc143c] dark:text-[#ffb3b3] hover:bg-[#fff1f0] dark:hover:bg-[#3b0b14] transition-colors">
                                     <i class="fa-solid fa-eye text-xs"></i>
                                     <span>Detail</span>
                                 </a>
@@ -232,8 +232,8 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="py-8 text-center text-slate-400 dark:text-slate-500">
-                                <i class="fa-solid fa-clipboard-question text-3xl mb-2 block"></i>
+                            <td colspan="8" class="py-10 text-center text-[#5c3f3f] dark:text-[#c8c6c5]">
+                                <i class="fa-regular fa-clipboard text-3xl mb-2 block opacity-40"></i>
                                 Belum ada data pemeriksaan kebersihan hari ini.
                             </td>
                         </tr>
@@ -248,6 +248,10 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const isDark = document.documentElement.classList.contains('dark');
+        const textColor = isDark ? '#c8c6c5' : '#5c3f3f';
+        const gridColor = isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.05)';
+
         // Status Bar Chart
         const statusCtx = document.getElementById('statusChart').getContext('2d');
         new Chart(statusCtx, {
@@ -263,13 +267,13 @@
                         {{ $statusCounts['Belum Diperiksa'] }}
                     ],
                     backgroundColor: [
-                        'rgba(16, 185, 129, 0.85)',
-                        'rgba(245, 158, 11, 0.85)',
-                        'rgba(220, 38, 38, 0.85)',
-                        'rgba(148, 163, 184, 0.85)'
+                        '#00822d',
+                        '#0284c7',
+                        '#d97706',
+                        '#916f6e'
                     ],
                     borderRadius: 8,
-                    maxBarThickness: 45
+                    maxBarThickness: 40
                 }]
             },
             options: {
@@ -280,16 +284,13 @@
                 },
                 scales: {
                     x: {
-                        ticks: { color: document.documentElement.classList.contains('dark') ? '#94a3b8' : '#64748b' },
-                        grid: { color: document.documentElement.classList.contains('dark') ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)' }
+                        ticks: { color: textColor, font: { family: 'Inter', size: 11 } },
+                        grid: { display: false }
                     },
                     y: {
                         beginAtZero: true,
-                        ticks: { 
-                            stepSize: 1,
-                            color: document.documentElement.classList.contains('dark') ? '#94a3b8' : '#64748b'
-                        },
-                        grid: { color: document.documentElement.classList.contains('dark') ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.05)' }
+                        ticks: { stepSize: 1, color: textColor, font: { family: 'Inter', size: 11 } },
+                        grid: { color: gridColor }
                     }
                 }
             }
@@ -309,13 +310,13 @@
                         {{ $conditionCounts['Sangat Kotor'] }}
                     ],
                     backgroundColor: [
-                        '#10b981',
-                        '#f59e0b',
-                        '#ea580c',
-                        '#dc2626'
+                        '#00822d',
+                        '#0284c7',
+                        '#d97706',
+                        '#dc143c'
                     ],
                     borderWidth: 2,
-                    borderColor: document.documentElement.classList.contains('dark') ? '#0f172a' : '#ffffff'
+                    borderColor: isDark ? '#1f2020' : '#ffffff'
                 }]
             },
             options: {
@@ -324,7 +325,7 @@
                 plugins: {
                     legend: { display: false }
                 },
-                cutout: '70%'
+                cutout: '72%'
             }
         });
     });

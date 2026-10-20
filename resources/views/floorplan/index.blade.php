@@ -39,39 +39,36 @@
 @section('content')
 <div class="space-y-6">
     <!-- Header Section -->
-    <div class="bg-gradient-to-r from-red-700 via-red-600 to-rose-600 rounded-2xl p-6 sm:p-8 text-white shadow-xl shadow-red-500/10 relative overflow-hidden">
-        <div class="absolute -right-10 -bottom-10 w-64 h-64 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-        <div class="absolute top-0 right-1/4 w-32 h-32 bg-rose-400/20 rounded-full blur-xl pointer-events-none"></div>
-
-        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="card-clean p-6 sm:p-8 border-l-4 border-l-crimson relative">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold uppercase tracking-wider mb-3">
-                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-full bg-status-info-bg text-status-info text-xs font-semibold uppercase tracking-wider mb-2">
+                    <span class="w-1.5 h-1.5 rounded-full bg-status-info animate-pulse"></span>
                     Live Facility Map
                 </div>
-                <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-white flex items-center gap-3">
-                    <svg class="w-8 h-8 text-white/90" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <h1 class="text-2xl sm:text-3xl font-semibold font-heading text-neutral-900 tracking-tight flex items-center gap-3">
+                    <svg class="w-7 h-7 text-crimson" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                     </svg>
                     Denah Fasilitas Interaktif
                 </h1>
-                <p class="text-red-100 text-sm mt-1 max-w-2xl">
+                <p class="text-neutral-500 text-sm mt-1 max-w-2xl font-sans">
                     Pantau status kebersihan setiap ruangan secara visual, lihat foto ruangan 360°, dan periksa riwayat monitoring secara langsung.
                 </p>
             </div>
 
             <!-- Floor Selector & Actions -->
-            <div class="flex flex-wrap items-center gap-3">
-                <div class="bg-white/20 backdrop-blur-md p-1.5 rounded-xl flex items-center gap-1 border border-white/20">
+            <div class="flex flex-wrap items-center gap-2.5">
+                <div class="bg-neutral-100 p-1 rounded-xl flex items-center gap-1 border border-border-clean">
                     @foreach($floors as $floorNum)
                         <a href="{{ route('floorplan.index', ['floor' => $floorNum]) }}" 
-                           class="px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-200 {{ $currentFloor == $floorNum ? 'bg-white text-red-600 shadow-md scale-105' : 'text-white/90 hover:bg-white/10 hover:text-white' }}">
+                           class="px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all duration-150 {{ $currentFloor == $floorNum ? 'bg-crimson text-white shadow-xs' : 'text-neutral-600 hover:text-neutral-900 hover:bg-neutral-200/60' }}">
                             Lantai {{ $floorNum }}
                         </a>
                     @endforeach
                 </div>
-                <a href="{{ route('gallery.index') }}" class="inline-flex items-center gap-2 px-4 py-2.5 bg-white text-red-600 hover:bg-red-50 text-xs sm:text-sm font-bold rounded-xl shadow-md transition-all hover:scale-105">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="{{ route('gallery.index') }}" class="btn-secondary text-xs sm:text-sm flex items-center gap-2">
+                    <svg class="w-4 h-4 text-crimson" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     Galeri & 360°
@@ -82,51 +79,51 @@
 
     <!-- Stats Summary Row -->
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-3.5">
-            <div class="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+        <div class="card-clean p-4 flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-status-success-bg flex items-center justify-center text-status-success">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                 </svg>
             </div>
             <div>
-                <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Bersih (Optimal)</p>
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ $stats['bersih'] }} <span class="text-xs font-normal text-slate-400">ruang</span></h3>
+                <p class="text-xs font-medium text-neutral-500">Bersih (Optimal)</p>
+                <h3 class="text-lg font-semibold font-heading text-neutral-900">{{ $stats['bersih'] }} <span class="text-xs font-normal text-neutral-400">ruang</span></h3>
             </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-3.5">
-            <div class="w-10 h-10 rounded-xl bg-amber-100 dark:bg-amber-950/50 flex items-center justify-center text-amber-600 dark:text-amber-400">
+        <div class="card-clean p-4 flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-status-warning-bg flex items-center justify-center text-status-warning">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
             </div>
             <div>
-                <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Perlu Tindakan</p>
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ $stats['perlu_tindakan'] }} <span class="text-xs font-normal text-slate-400">ruang</span></h3>
+                <p class="text-xs font-medium text-neutral-500">Perlu Tindakan</p>
+                <h3 class="text-lg font-semibold font-heading text-neutral-900">{{ $stats['perlu_tindakan'] }} <span class="text-xs font-normal text-neutral-400">ruang</span></h3>
             </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-3.5">
-            <div class="w-10 h-10 rounded-xl bg-red-100 dark:bg-red-950/50 flex items-center justify-center text-red-600 dark:text-red-400">
+        <div class="card-clean p-4 flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-status-error-bg flex items-center justify-center text-status-error">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </div>
             <div>
-                <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Kotor</p>
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ $stats['kotor'] }} <span class="text-xs font-normal text-slate-400">ruang</span></h3>
+                <p class="text-xs font-medium text-neutral-500">Kotor</p>
+                <h3 class="text-lg font-semibold font-heading text-neutral-900">{{ $stats['kotor'] }} <span class="text-xs font-normal text-neutral-400">ruang</span></h3>
             </div>
         </div>
 
-        <div class="bg-white dark:bg-slate-800 rounded-xl p-4 border border-slate-200 dark:border-slate-700 shadow-sm flex items-center gap-3.5">
-            <div class="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300">
+        <div class="card-clean p-4 flex items-center gap-3.5">
+            <div class="w-10 h-10 rounded-xl bg-neutral-100 flex items-center justify-center text-neutral-600">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
             </div>
             <div>
-                <p class="text-xs font-medium text-slate-500 dark:text-slate-400">Belum Dicek</p>
-                <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ $stats['belum_dimonitor'] }} <span class="text-xs font-normal text-slate-400">ruang</span></h3>
+                <p class="text-xs font-medium text-neutral-500">Belum Dicek</p>
+                <h3 class="text-lg font-semibold font-heading text-neutral-900">{{ $stats['belum_dimonitor'] }} <span class="text-xs font-normal text-neutral-400">ruang</span></h3>
             </div>
         </div>
     </div>
@@ -294,19 +291,19 @@
 </div>
 
 <!-- Room Details Modal -->
-<div id="roomModal" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="bg-white dark:bg-slate-800 rounded-2xl max-w-lg w-full border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden transition-all transform animate-in fade-in zoom-in-95 duration-200">
+<div id="roomModal" class="fixed inset-0 z-50 hidden bg-neutral-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="card-clean max-w-lg w-full overflow-hidden transition-all transform animate-in fade-in zoom-in-95 duration-200">
         <!-- Modal Header -->
-        <div class="p-5 bg-gradient-to-r from-red-600 to-rose-600 text-white flex items-center justify-between">
+        <div class="p-5 bg-crimson text-white flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center font-bold text-white text-lg">
+                <div class="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center font-bold text-white text-lg">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                     </svg>
                 </div>
                 <div>
-                    <h3 id="modalRoomName" class="font-bold text-lg text-white">Nama Ruangan</h3>
-                    <p id="modalRoomCode" class="text-xs text-red-100 font-mono">CODE-001</p>
+                    <h3 id="modalRoomName" class="font-semibold font-heading text-lg text-white">Nama Ruangan</h3>
+                    <p id="modalRoomCode" class="text-xs text-white/80 font-mono">CODE-001</p>
                 </div>
             </div>
             <button onclick="closeAreaModal()" class="text-white/80 hover:text-white p-1 rounded-lg hover:bg-white/10 transition-colors">
@@ -318,36 +315,36 @@
 
         <!-- Modal Body -->
         <div class="p-6 space-y-4">
-            <div class="flex items-center justify-between p-3 rounded-xl bg-slate-50 dark:bg-slate-700/50">
-                <span class="text-xs font-semibold text-slate-500 dark:text-slate-400">Status Kebersihan:</span>
+            <div class="flex items-center justify-between p-3 rounded-xl bg-neutral-50 border border-border-clean">
+                <span class="text-xs font-semibold text-neutral-500 uppercase tracking-wider">Status Kebersihan:</span>
                 <span id="modalStatusBadge" class="px-3 py-1 rounded-full text-xs font-bold uppercase">Status</span>
             </div>
 
             <div class="space-y-2 text-xs">
-                <div class="flex items-center justify-between text-slate-600 dark:text-slate-300">
+                <div class="flex items-center justify-between text-neutral-600">
                     <span>Lokasi:</span>
-                    <span id="modalFloor" class="font-semibold text-slate-900 dark:text-white">Lantai 1</span>
+                    <span id="modalFloor" class="font-semibold text-neutral-900">Lantai 1</span>
                 </div>
-                <div class="flex items-center justify-between text-slate-600 dark:text-slate-300">
+                <div class="flex items-center justify-between text-neutral-600">
                     <span>Pemeriksaan Terakhir:</span>
-                    <span id="modalLastCheck" class="font-semibold text-slate-900 dark:text-white">-</span>
+                    <span id="modalLastCheck" class="font-semibold text-neutral-900">-</span>
                 </div>
-                <div class="flex items-center justify-between text-slate-600 dark:text-slate-300">
+                <div class="flex items-center justify-between text-neutral-600">
                     <span>Petugas Kebersihan:</span>
-                    <span id="modalOfficer" class="font-semibold text-slate-900 dark:text-white">-</span>
+                    <span id="modalOfficer" class="font-semibold text-neutral-900">-</span>
                 </div>
             </div>
 
-            <div id="modalNotesContainer" class="p-3 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-900/50 hidden">
-                <p class="text-xs font-bold text-amber-800 dark:text-amber-300 mb-1">Catatan Kebersihan:</p>
-                <p id="modalNotes" class="text-xs text-amber-700 dark:text-amber-200">-</p>
+            <div id="modalNotesContainer" class="p-3 bg-status-warning-bg rounded-xl border border-amber-200 hidden">
+                <p class="text-xs font-bold text-status-warning mb-1">Catatan Kebersihan:</p>
+                <p id="modalNotes" class="text-xs text-amber-900 leading-relaxed">-</p>
             </div>
 
             <!-- 360 & Media Action Buttons -->
-            <div class="pt-2 flex flex-col gap-2">
-                <button id="btnOpen360" onclick="launch360FromModal()" class="w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-md transition-all cursor-pointer">
+            <div class="pt-2 flex flex-col gap-2.5">
+                <button id="btnOpen360" onclick="launch360FromModal()" class="btn-primary w-full flex items-center justify-center gap-2 text-xs sm:text-sm py-2.5">
                     <span id="btn360Icon">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                         </svg>
                     </span>
@@ -355,14 +352,14 @@
                 </button>
 
                 <div class="grid grid-cols-2 gap-2">
-                    <a id="btnNewMonitoring" href="{{ route('monitoring.create') }}" class="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 bg-red-600 hover:bg-red-700 text-white text-xs font-bold rounded-xl transition-colors shadow-sm">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <a id="btnNewMonitoring" href="{{ route('monitoring.create') }}" class="btn-secondary justify-center gap-1.5 text-xs py-2">
+                        <svg class="w-4 h-4 text-crimson" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
                         Catat Monitoring
                     </a>
-                    <a href="{{ route('gallery.index') }}" class="inline-flex items-center justify-center gap-1.5 px-3 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 text-xs font-bold rounded-xl transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <a href="{{ route('gallery.index') }}" class="btn-secondary justify-center gap-1.5 text-xs py-2">
+                        <svg class="w-4 h-4 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
                         Lihat Galeri Foto
@@ -527,13 +524,13 @@
             btn360.classList.remove('hidden');
             const isStandard = area.photo_type === 'standard' || (area.latest_monitoring && area.latest_monitoring.photo_360_type === 'standard');
             if (isStandard) {
-                btn360.className = 'w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-bold rounded-xl shadow-md transition-all cursor-pointer';
+                btn360.className = 'w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-neutral-900 hover:bg-neutral-800 text-white font-semibold rounded-xl shadow-xs transition-all cursor-pointer text-xs sm:text-sm';
                 btnLabel.innerText = 'Lihat Foto Ruangan (Standar HD)';
-                btnIcon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`;
+                btnIcon.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`;
             } else {
-                btn360.className = 'w-full inline-flex items-center justify-center gap-2 px-4 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold rounded-xl shadow-md transition-all cursor-pointer';
+                btn360.className = 'w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-crimson hover:bg-crimson-dark text-white font-semibold rounded-xl shadow-xs transition-all cursor-pointer text-xs sm:text-sm';
                 btnLabel.innerText = 'Buka Virtual Tour Foto 360° Ruangan';
-                btnIcon.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>`;
+                btnIcon.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>`;
             }
         } else {
             btn360.classList.add('hidden');

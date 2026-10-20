@@ -51,7 +51,7 @@ class GalleryController extends Controller
             $query->where(function ($q) use ($search) {
                 $q->whereHas('area', function ($sub) use ($search) {
                     $sub->where('name', 'like', "%{$search}%")
-                        ->orWhere('code', 'like', "%{$search}%");
+                        ->orWhere('location', 'like', "%{$search}%");
                 })->orWhere('notes', 'like', "%{$search}%");
             });
         }

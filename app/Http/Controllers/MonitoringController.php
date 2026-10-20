@@ -366,6 +366,6 @@ class MonitoringController extends Controller
 
         $monitoring->delete();
 
-        return redirect()->route('monitoring.index')->with('success', 'Data monitoring berhasil dihapus.');
+        return redirect()->route('admin.monitoring.index')->with('success', 'Data monitoring berhasil dihapus.');
     }
 }

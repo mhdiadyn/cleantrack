@@ -82,9 +82,14 @@ class AreaController extends Controller
 
         if ($request->hasFile('photo_360')) {
             $file = $request->file('photo_360');
-            $filename = 'area360_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-            $path = 'areas_360/'.$filename;
-            Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
+            $path = $file->store('areas_360', 'public');
+
+            if (! $path) {
+                return back()
+                    ->withErrors(['photo_360' => 'Foto 360° gagal disimpan. Silakan coba lagi.'])
+                    ->withInput();
+            }
+
             $validated['photo_360'] = $path;
         }
 
@@ -149,10 +154,19 @@ class AreaController extends Controller
 
         if ($request->hasFile('photo_360')) {
             $file = $request->file('photo_360');
-            $filename = 'area360_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-            $path = 'areas_360/'.$filename;
-            Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
+            $path = $file->store('areas_360', 'public');
+
+            if (! $path) {
+                return back()
+                    ->withErrors(['photo_360' => 'Foto 360° gagal disimpan. Silakan coba lagi.'])
+                    ->withInput();
+            }
+
             $validated['photo_360'] = $path;
+
+            if ($area->photo_360 && Storage::disk('public')->exists($area->photo_360)) {
+                Storage::disk('public')->delete($area->photo_360);
+            }
         }
 
         $area->update($validated);
@@ -166,6 +180,9 @@ class AreaController extends Controller
     public function destroy(Area $area): RedirectResponse
     {
         $name = $area->name;
+        if ($area->photo_360 && Storage::disk('public')->exists($area->photo_360)) {
+            Storage::disk('public')->delete($area->photo_360);
+        }
         $area->delete();
 
         return redirect()->route('admin.areas.index')->with('success', "Area '{$name}' berhasil dihapus.");
@@ -195,9 +212,13 @@ class AreaController extends Controller
         }
 
         $photoType = $request->input('photo_type', 'panorama_360');
-        $filename = 'area360_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-        $path = 'areas_360/'.$filename;
-        Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
+        $path = $file->store('areas_360', 'public');
+
+        if (! $path) {
+            return back()
+                ->withErrors(['photo_360' => 'Foto 360° gagal disimpan. Silakan coba lagi.'])
+                ->withInput();
+        }
 
         if ($area->photo_360 && Storage::disk('public')->exists($area->photo_360)) {
             Storage::disk('public')->delete($area->photo_360);
@@ -240,9 +261,13 @@ class AreaController extends Controller
         }
 
         $photoType = $request->input('photo_type', 'panorama_360');
-        $filename = 'area360_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-        $path = 'areas_360/'.$filename;
-        Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
+        $path = $file->store('areas_360', 'public');
+
+        if (! $path) {
+            return back()
+                ->withErrors(['photo_360' => 'Foto 360° gagal disimpan. Silakan coba lagi.'])
+                ->withInput();
+        }
 
         if ($area->photo_360 && Storage::disk('public')->exists($area->photo_360)) {
             Storage::disk('public')->delete($area->photo_360);

@@ -81,6 +81,14 @@ class UserController extends Controller
     }
 
     /**
+     * Display the specified user.
+     */
+    public function show(User $user): RedirectResponse
+    {
+        return redirect()->route('admin.users.edit', $user);
+    }
+
+    /**
      * Show the form for editing the specified user.
      */
     public function edit(User $user): View

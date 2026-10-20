@@ -6,32 +6,37 @@
     <title>Laporan Monitoring Kebersihan - CleanTrack</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         }
         body {
-            background-color: #f8fafc;
-            color: #1e293b;
+            background-color: #FBF9F8;
+            color: #1B1C1C;
             padding: 24px;
             font-size: 12px;
         }
         .container {
             max-width: 900px;
             margin: 0 auto;
-            background: #ffffff;
+            background: #FFFFFF;
             padding: 32px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 1px solid #EAE8E7;
         }
         .header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            border-bottom: 2px solid #0f766e;
+            border-bottom: 2px solid #DC143C;
             padding-bottom: 16px;
             margin-bottom: 20px;
         }
@@ -41,19 +46,20 @@
             gap: 12px;
         }
         .brand h1 {
-            font-size: 20px;
-            font-weight: 800;
-            color: #0f766e;
+            font-size: 22px;
+            font-weight: 700;
+            color: #DC143C;
+            font-family: 'Poppins', sans-serif;
             letter-spacing: 0.5px;
         }
         .brand p {
             font-size: 11px;
-            color: #64748b;
+            color: #5C3F3F;
         }
         .report-meta {
             text-align: right;
             font-size: 11px;
-            color: #475569;
+            color: #5C3F3F;
         }
         .title {
             text-align: center;
@@ -61,13 +67,14 @@
         }
         .title h2 {
             font-size: 16px;
-            font-weight: 800;
-            color: #0f172a;
+            font-weight: 600;
+            color: #1B1C1C;
+            font-family: 'Poppins', sans-serif;
             text-transform: uppercase;
         }
         .title p {
             font-size: 12px;
-            color: #64748b;
+            color: #5C3F3F;
             margin-top: 4px;
         }
         .summary-grid {
@@ -77,23 +84,24 @@
             margin-bottom: 20px;
         }
         .summary-box {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
+            background: #FBF9F8;
+            border: 1px solid #EAE8E7;
             padding: 12px;
-            border-radius: 6px;
+            border-radius: 8px;
             text-align: center;
         }
         .summary-box .label {
             font-size: 10px;
             text-transform: uppercase;
-            font-weight: 700;
-            color: #64748b;
+            font-weight: 600;
+            color: #5C3F3F;
         }
         .summary-box .val {
             font-size: 18px;
-            font-weight: 800;
-            color: #0f172a;
+            font-weight: 700;
+            color: #1B1C1C;
             margin-top: 4px;
+            font-family: 'Poppins', sans-serif;
         }
         table {
             width: 100%;
@@ -102,31 +110,31 @@
             font-size: 11px;
         }
         th, td {
-            border: 1px solid #cbd5e1;
+            border: 1px solid #EAE8E7;
             padding: 8px 10px;
             text-align: left;
         }
         th {
-            background-color: #f1f5f9;
-            color: #334155;
-            font-weight: 700;
+            background-color: #F5F3F3;
+            color: #1B1C1C;
+            font-weight: 600;
             text-transform: uppercase;
             font-size: 10px;
         }
         tr:nth-child(even) {
-            background-color: #f8fafc;
+            background-color: #FBF9F8;
         }
         .badge {
             display: inline-block;
-            padding: 2px 6px;
-            border-radius: 4px;
+            padding: 2px 8px;
+            border-radius: 9999px;
             font-size: 10px;
-            font-weight: 700;
+            font-weight: 600;
         }
-        .badge-clean { background: #dcfce7; color: #166534; }
-        .badge-dirty { background: #fee2e2; color: #991b1b; }
-        .badge-warning { background: #fef3c7; color: #92400e; }
-        .badge-info { background: #e0f2fe; color: #075985; }
+        .badge-clean { background: #DAFFD5; color: #006622; }
+        .badge-dirty { background: #FFDAD6; color: #BA1A1A; }
+        .badge-warning { background: #FEF3C7; color: #B45309; }
+        .badge-info { background: #E0F2FE; color: #0284C7; }
         
         .signatures {
             display: flex;
@@ -143,8 +151,8 @@
             height: 60px;
         }
         .signature-line {
-            border-bottom: 1px solid #0f172a;
-            font-weight: 700;
+            border-bottom: 1px solid #1B1C1C;
+            font-weight: 600;
             padding-bottom: 4px;
         }
 
@@ -155,19 +163,27 @@
             gap: 8px;
         }
         .btn {
-            background: #0f766e;
+            background: #DC143C;
             color: white;
             border: none;
             padding: 8px 16px;
-            border-radius: 6px;
+            border-radius: 8px;
             font-size: 12px;
-            font-weight: 700;
+            font-weight: 600;
             cursor: pointer;
             text-decoration: none;
+            transition: background-color 0.15s ease;
+        }
+        .btn:hover {
+            background: #B1002C;
         }
         .btn-secondary {
-            background: #e2e8f0;
-            color: #334155;
+            background: #F5F3F3;
+            color: #1B1C1C;
+            border: 1px solid #EAE8E7;
+        }
+        .btn-secondary:hover {
+            background: #EAE8E7;
         }
 
         @media print {
@@ -219,10 +235,10 @@
             <h2>Laporan Rekapitulasi Monitoring Kebersihan</h2>
             <p>Periode: <strong>{{ \Carbon\Carbon::parse($startDate)->format('d/m/Y') }}</strong> sampai <strong>{{ \Carbon\Carbon::parse($endDate)->format('d/m/Y') }}</strong></p>
             @if($selectedArea)
-                <p style="font-size: 11px; color: #0f766e;">Filter Area: {{ $selectedArea->name }}</p>
+                <p style="font-size: 11px; color: #DC143C;">Filter Area: {{ $selectedArea->name }}</p>
             @endif
             @if($selectedPetugas)
-                <p style="font-size: 11px; color: #0f766e;">Filter Petugas: {{ $selectedPetugas->name }}</p>
+                <p style="font-size: 11px; color: #DC143C;">Filter Petugas: {{ $selectedPetugas->name }}</p>
             @endif
         </div>
 

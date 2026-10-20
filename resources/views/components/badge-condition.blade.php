@@ -2,11 +2,11 @@
 
 @php
     $classes = match($condition) {
-        'Bersih' => 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800/60',
-        'Cukup Bersih' => 'bg-sky-50 dark:bg-sky-950/50 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-800/60',
-        'Kotor' => 'bg-amber-50 dark:bg-amber-950/50 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-800/60',
-        'Sangat Kotor' => 'bg-rose-50 dark:bg-rose-950/50 text-rose-700 dark:text-rose-300 border-rose-200 dark:border-rose-800/60',
-        default => 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700',
+        'Bersih' => 'bg-[#daffd5] text-[#006622] border-[#b2e5be] dark:bg-[#003912] dark:text-[#83fc8e] dark:border-[#00531a]',
+        'Cukup Bersih' => 'bg-[#e0f2fe] text-[#0369a1] border-[#bae6fd] dark:bg-[#082f49] dark:text-[#7dd3fc] dark:border-[#0284c7]',
+        'Kotor' => 'bg-[#fef3c7] text-[#b45309] border-[#fde68a] dark:bg-[#451a03] dark:text-[#fcd34d] dark:border-[#78350f]',
+        'Sangat Kotor' => 'bg-[#ffdad6] text-[#ba1a1a] border-[#ffb4ab] dark:bg-[#410002] dark:text-[#ffb4ab] dark:border-[#93000a]',
+        default => 'bg-[#f5f3f3] text-[#5c3f3f] border-[#eae8e7] dark:bg-[#262727] dark:text-[#d1cfce] dark:border-[#3b3d3d]',
     };
 @endphp
 
