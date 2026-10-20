@@ -141,14 +141,14 @@
 
             </div>
 
-            <!-- Upload Foto Dokumentasi (Sebelum, Sesudah, dan Foto 360) -->
+            <!-- Upload Foto Dokumentasi (Sebelum dan Sesudah) -->
             <div class="space-y-4 pt-2">
                 <div>
-                    <h4 class="label-clean">Dokumentasi Foto Kebersihan & 360°</h4>
-                    <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5]">Ganti foto jika ada pembaruan dokumen visual</p>
+                    <h4 class="label-clean">Dokumentasi Foto Kebersihan</h4>
+                    <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5]">Ganti foto jika ada pembaruan dokumen visual (Maks 10MB)</p>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     
                     <!-- 1. Foto Sebelum Dibersihkan -->
                     <div x-data="{ preview: '{{ $monitoring->photo_before_url }}', fileName: '' }" class="bg-[#f5f3f3] dark:bg-[#262727] border border-[#eae8e7] dark:border-[#333535] rounded-xl p-4 flex flex-col justify-between">
@@ -260,112 +260,7 @@
                         @enderror
                     </div>
 
-                    <!-- 3. Foto Ruangan (360° atau Standar) -->
-                    <div x-data="{ 
-                            preview: '{{ $monitoring->photo_360_url }}', 
-                            fileName: '', 
-                            photoType: '{{ old('photo_360_type', $monitoring->photo_360_type ?? 'panorama_360') }}',
-                            detectedRatio: null,
-                            ratioWarning: false,
-                            onFileChange(e) {
-                                const file = e.target.files[0];
-                                if (!file) return;
-                                this.fileName = file.name;
-                                this.preview = URL.createObjectURL(file);
-                                const img = new Image();
-                                img.onload = () => {
-                                    const ratio = img.naturalWidth / img.naturalHeight;
-                                    this.detectedRatio = ratio.toFixed(2);
-                                    if (ratio < 1.85 || ratio > 2.15) {
-                                        this.ratioWarning = true;
-                                    } else {
-                                        this.ratioWarning = false;
-                                        this.photoType = 'panorama_360';
-                                    }
-                                };
-                                img.src = this.preview;
-                            }
-                         }" 
-                         class="bg-[#f5f3f3] dark:bg-[#262727] border border-[#eae8e7] dark:border-[#333535] rounded-xl p-4 flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <label class="text-xs font-semibold text-[#1b1c1c] dark:text-white flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full" :class="photoType === 'panorama_360' ? 'bg-[#dc143c]' : 'bg-[#0284c7]'"></span>
-                                    <span>Foto Ruangan / 360°</span>
-                                </label>
-                                <span class="text-[10px] text-[#5c3f3f] dark:text-[#8c8282]">Maks 50MB</span>
-                            </div>
 
-                            <!-- Photo Type Selector -->
-                            <div class="grid grid-cols-2 gap-1.5 mb-2.5">
-                                <label class="flex items-center gap-1.5 p-1.5 rounded-lg border cursor-pointer text-[11px] transition-all"
-                                       :class="photoType === 'panorama_360' ? 'bg-[#fff1f0] border-[#dc143c] text-[#dc143c] font-semibold dark:bg-[#3b0b14] dark:border-[#dc143c] dark:text-[#ffb3b3]' : 'border-[#eae8e7] text-[#5c3f3f] dark:border-[#333535] dark:text-[#c8c6c5] bg-white dark:bg-[#1f2020]'">
-                                    <input type="radio" name="photo_360_type" value="panorama_360" x-model="photoType" class="hidden">
-                                    <i class="fa-solid fa-panorama text-[#dc143c]"></i>
-                                    <span>360° Panorama</span>
-                                </label>
-                                <label class="flex items-center gap-1.5 p-1.5 rounded-lg border cursor-pointer text-[11px] transition-all"
-                                       :class="photoType === 'standard' ? 'bg-[#e0f2fe] border-[#0284c7] text-[#0284c7] font-semibold dark:bg-[#082f49] dark:border-[#0284c7] dark:text-[#7dd3fc]' : 'border-[#eae8e7] text-[#5c3f3f] dark:border-[#333535] dark:text-[#c8c6c5] bg-white dark:bg-[#1f2020]'">
-                                    <input type="radio" name="photo_360_type" value="standard" x-model="photoType" class="hidden">
-                                    <i class="fa-solid fa-image text-[#0284c7]"></i>
-                                    <span>Standar HD</span>
-                                </label>
-                            </div>
-
-                            <input type="file" 
-                                   x-ref="fileInput360"
-                                   id="photo_360_input"
-                                   name="photo_360" 
-                                   accept="image/*" 
-                                   @change="onFileChange($event)" 
-                                   class="hidden">
-
-                            <div x-show="!preview" class="py-3 text-center space-y-2">
-                                <div class="w-10 h-10 rounded-xl bg-white dark:bg-[#1f2020] border border-[#eae8e7] dark:border-[#333535] text-[#5c3f3f] dark:text-[#c8c6c5] flex items-center justify-center mx-auto text-base">
-                                    <i class="fa-solid fa-camera"></i>
-                                </div>
-                                <p class="text-[11px] text-[#5c3f3f] dark:text-[#8c8282]">Pilih foto panorama atau sudut ruangan</p>
-                                <div class="pt-1">
-                                    <button type="button" 
-                                            @click="$refs.fileInput360.click()" 
-                                            class="w-full btn-outline-neutral text-xs">
-                                        <i class="fa-solid fa-file-image text-xs"></i>
-                                        <span>Pilih Foto</span>
-                                    </button>
-                                </div>
-                            </div>
-
-                            <div x-show="preview" x-cloak class="space-y-2">
-                                <div class="relative rounded-lg overflow-hidden border border-[#eae8e7] dark:border-[#333535] bg-black h-32 flex items-center justify-center">
-                                    <img :src="preview" alt="Preview Foto" class="w-full h-full object-cover">
-                                    <span class="absolute bottom-1 left-1 px-1.5 py-0.5 rounded text-white font-semibold text-[9px]"
-                                          :class="photoType === 'panorama_360' ? 'bg-[#dc143c]' : 'bg-[#0284c7]'"
-                                          x-text="photoType === 'panorama_360' ? '360° Panorama' : 'Foto Standar HD'"></span>
-                                </div>
-
-                                <div x-show="ratioWarning && photoType === 'panorama_360'" class="p-2 rounded-lg bg-[#fef3c7] dark:bg-[#451a03] border border-[#fde68a] dark:border-[#78350f] text-[10px] text-[#b45309] dark:text-[#fcd34d]">
-                                    <div class="flex items-center gap-1 font-semibold">
-                                        <i class="fa-solid fa-triangle-exclamation"></i>
-                                        <span>Rasio <span x-text="detectedRatio + ':1'"></span> bukan 2:1</span>
-                                    </div>
-                                    <div class="mt-1 flex items-center justify-between">
-                                        <span>Ubah ke Foto Standar agar proporsional.</span>
-                                        <button type="button" @click="photoType = 'standard'" class="ml-1 px-1.5 py-0.5 bg-[#0284c7] text-white font-semibold rounded text-[9px]">Ubah</button>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-center justify-between gap-2 pt-1">
-                                    <button type="button" @click="$refs.fileInput360.click()" class="text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5] hover:underline cursor-pointer">
-                                        Ganti Foto
-                                    </button>
-                                    <span class="text-[10px] text-[#5c3f3f] dark:text-[#8c8282] truncate max-w-[120px]" x-text="fileName || 'Tersimpan'"></span>
-                                </div>
-                            </div>
-                        </div>
-                        @error('photo_360')
-                            <p class="text-[11px] text-[#ba1a1a] mt-1">{{ $message }}</p>
-                        @enderror
-                    </div>
 
                 </div>
             </div>

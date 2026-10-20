@@ -87,7 +87,7 @@
                     </div>
                     <div>
                         <div class="font-heading font-semibold text-base tracking-tight text-[#1b1c1c] dark:text-white">
-                            CLEAN<span class="text-[#dc143c]">TRACK</span>
+                            <span class="text-[#1b1c1c] dark:text-white">CLEAN</span><span class="text-[#dc143c]">TRACK</span>
                         </div>
                         <p class="text-[10px] text-[#5c3f3f] dark:text-[#c8c6c5] font-medium tracking-wide uppercase">
                             Monitoring Kebersihan
@@ -97,22 +97,6 @@
                 <button @click="sidebarOpen = false" class="lg:hidden text-[#5c3f3f] hover:text-[#1b1c1c] dark:hover:text-white p-1 rounded-lg">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
-            </div>
-
-            <!-- User Status Card -->
-            <div class="p-3 mx-3 my-3 rounded-xl bg-[#f5f3f3] dark:bg-[#262727] border border-[#eae8e7] dark:border-[#333535] flex items-center gap-3">
-                <div class="w-9 h-9 rounded-lg bg-[#dc143c] text-white flex items-center justify-center font-bold text-xs shrink-0">
-                    {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-                </div>
-                <div class="overflow-hidden flex-1">
-                    <h4 class="text-xs font-semibold text-[#1b1c1c] dark:text-white truncate">{{ Auth::user()->name }}</h4>
-                    <div class="flex items-center gap-1.5 mt-0.5">
-                        <span class="w-1.5 h-1.5 rounded-full {{ Auth::user()->role === 'admin' ? 'bg-[#dc143c]' : 'bg-[#00822d]' }}"></span>
-                        <span class="text-[11px] font-medium text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">
-                            {{ Auth::user()->role === 'admin' ? 'Administrator' : 'Petugas' }}
-                        </span>
-                    </div>
-                </div>
             </div>
 
             <!-- Navigation Links -->
@@ -204,9 +188,15 @@
                     </a>
 
                     <a href="{{ route('petugas.my-monitoring') }}" 
-                       class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('petugas.my-monitoring') || request()->routeIs('monitoring.show') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
+                       class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('petugas.my-monitoring') || (request()->routeIs('monitoring.show') && auth()->user()->role === 'petugas') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
                         <i class="fa-solid fa-list-check w-4 text-center {{ request()->routeIs('petugas.my-monitoring') ? 'text-[#dc143c] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5]' }}"></i>
                         <span>Riwayat Saya</span>
+                    </a>
+
+                    <a href="{{ route('petugas.reports.index') }}" 
+                       class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('petugas.reports.*') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
+                        <i class="fa-solid fa-file-lines w-4 text-center {{ request()->routeIs('petugas.reports.*') ? 'text-[#dc143c] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5]' }}"></i>
+                        <span>Laporan Kebersihan</span>
                     </a>
                 @endif
 
@@ -219,8 +209,55 @@
                 </a>
             </div>
 
-            <!-- Footer / Logout -->
-            <div class="p-3 border-t border-[#eae8e7] dark:border-[#2e3030]">
+            <!-- Footer: User Profile Dropdown & Logout -->
+            <div class="p-3 border-t border-[#eae8e7] dark:border-[#2e3030] space-y-2 shrink-0">
+                <!-- User Profile Dropdown / Dropup -->
+                <div class="relative" x-data="{ open: false }" @click.outside="open = false">
+                    <button @click="open = !open" 
+                            type="button"
+                            class="w-full flex items-center justify-between p-2 rounded-xl bg-[#f5f3f3] dark:bg-[#262727] hover:bg-[#eae8e7] dark:hover:bg-[#333535] border border-[#eae8e7] dark:border-[#333535] transition-colors text-left cursor-pointer group"
+                            title="Menu Profil"
+                            aria-label="Menu Profil">
+                        <div class="flex items-center gap-2.5 min-w-0">
+                            <div class="w-9 h-9 rounded-lg bg-[#dc143c] text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs">
+                                {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                            </div>
+                            <div class="min-w-0 flex-1">
+                                <span class="block text-xs font-semibold text-[#1b1c1c] dark:text-white leading-tight truncate">{{ Auth::user()->name }}</span>
+                                <div class="flex items-center gap-1.5 mt-0.5">
+                                    <span class="w-1.5 h-1.5 rounded-full {{ Auth::user()->role === 'admin' ? 'bg-[#dc143c]' : 'bg-[#00822d]' }}"></span>
+                                    <span class="text-[11px] font-medium text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider truncate">
+                                        {{ Auth::user()->role === 'admin' ? 'Administrator' : 'Petugas' }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <i class="fa-solid fa-chevron-up text-[10px] text-[#5c3f3f] dark:text-[#c8c6c5] group-hover:text-[#1b1c1c] dark:group-hover:text-white ml-2 shrink-0 transition-transform duration-200" :class="{ 'rotate-180': open }"></i>
+                    </button>
+
+                    <!-- Dropup Menu Content -->
+                    <div x-show="open" 
+                         x-cloak
+                         x-transition:enter="transition ease-out duration-100"
+                         x-transition:enter-start="transform opacity-0 translate-y-2 scale-95"
+                         x-transition:enter-end="transform opacity-100 translate-y-0 scale-100"
+                         x-transition:leave="transition ease-in duration-75"
+                         x-transition:leave-start="transform opacity-100 translate-y-0 scale-100"
+                         x-transition:leave-end="transform opacity-0 translate-y-2 scale-95"
+                         class="absolute bottom-full left-0 right-0 mb-2 rounded-xl bg-white dark:bg-[#1f2020] shadow-xl border border-[#eae8e7] dark:border-[#2e3030] py-1.5 z-50">
+                        <div class="px-4 py-2 border-b border-[#eae8e7] dark:border-[#2e3030]">
+                            <p class="text-xs font-semibold text-[#1b1c1c] dark:text-white truncate">{{ Auth::user()->name }}</p>
+                            <p class="text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5] truncate">{{ Auth::user()->email }}</p>
+                        </div>
+                        
+                        <a href="{{ route('profile.edit') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-[#1b1c1c] dark:text-[#f2f0f0] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#dc143c] transition-colors">
+                            <i class="fa-solid fa-user-pen text-[#5c3f3f] dark:text-[#c8c6c5] w-4"></i>
+                            <span>Edit Profil</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Logout Button -->
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
                     <button type="submit" 
@@ -261,54 +298,18 @@
                     <!-- Dark / Light Mode Toggle Button -->
                     <button type="button" 
                             onclick="toggleTheme()" 
-                            class="p-2 w-9 h-9 rounded-xl bg-[#f5f3f3] dark:bg-[#262727] text-[#5c3f3f] dark:text-[#ffb3b3] hover:bg-[#eae8e7] dark:hover:bg-[#333535] border border-[#eae8e7] dark:border-[#333535] flex items-center justify-center transition-colors focus:outline-none"
+                            class="h-9 px-3 rounded-xl bg-[#f5f3f3] dark:bg-[#262727] hover:bg-[#eae8e7] dark:hover:bg-[#333535] border border-[#eae8e7] dark:border-[#333535] inline-flex items-center gap-2 transition-colors focus:outline-none cursor-pointer shrink-0"
                             title="Ganti Mode Terang / Gelap"
                             aria-label="Toggle Theme">
-                        <i class="fa-solid fa-sun text-sm text-amber-500 hidden dark:block"></i>
-                        <i class="fa-solid fa-moon text-sm text-[#5c3f3f] block dark:hidden"></i>
+                        <span class="inline-flex items-center gap-1.5 dark:hidden">
+                            <i class="fa-solid fa-sun text-sm text-amber-500"></i>
+                            <span class="text-xs font-medium text-[#1b1c1c]">Mode Light</span>
+                        </span>
+                        <span class="hidden dark:inline-flex items-center gap-1.5">
+                            <i class="fa-solid fa-moon text-sm text-amber-300"></i>
+                            <span class="text-xs font-medium text-[#f2f0f0]">Mode Dark</span>
+                        </span>
                     </button>
-
-                    <!-- User Profile Dropdown -->
-                    <div class="relative" x-data="{ open: false }" @click.outside="open = false">
-                        <button @click="open = !open" class="flex items-center gap-2.5 p-1.5 rounded-xl hover:bg-[#f5f3f3] dark:hover:bg-[#262727] transition-colors border border-transparent hover:border-[#eae8e7] dark:hover:border-[#333535]">
-                            <div class="w-8 h-8 rounded-lg bg-[#dc143c] text-white font-bold flex items-center justify-center text-xs">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-                            </div>
-                            <div class="text-left hidden sm:block">
-                                <span class="block text-xs font-semibold text-[#1b1c1c] dark:text-white leading-tight">{{ Auth::user()->name }}</span>
-                                <span class="block text-[11px] text-[#dc143c] dark:text-[#ffb3b3] font-medium">{{ ucfirst(Auth::user()->role) }}</span>
-                            </div>
-                            <i class="fa-solid fa-chevron-down text-[10px] text-[#5c3f3f] dark:text-[#c8c6c5] hidden sm:block"></i>
-                        </button>
-
-                        <div x-show="open" 
-                             x-cloak
-                             x-transition:enter="transition ease-out duration-100"
-                             x-transition:enter-start="transform opacity-0 scale-95"
-                             x-transition:enter-end="transform opacity-100 scale-100"
-                             x-transition:leave="transition ease-in duration-75"
-                             x-transition:leave-start="transform opacity-100 scale-100"
-                             x-transition:leave-end="transform opacity-0 scale-95"
-                             class="absolute right-0 mt-2 w-52 rounded-xl bg-white dark:bg-[#1f2020] shadow-md border border-[#eae8e7] dark:border-[#2e3030] py-1.5 z-50">
-                            <div class="px-4 py-2 border-b border-[#eae8e7] dark:border-[#2e3030]">
-                                <p class="text-xs font-semibold text-[#1b1c1c] dark:text-white">{{ Auth::user()->name }}</p>
-                                <p class="text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5] truncate">{{ Auth::user()->email }}</p>
-                            </div>
-                            
-                            <a href="{{ route('profile.edit') }}" class="flex items-center gap-2.5 px-4 py-2 text-xs font-medium text-[#1b1c1c] dark:text-[#f2f0f0] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#dc143c] transition-colors">
-                                <i class="fa-solid fa-user-pen text-[#5c3f3f] w-4"></i>
-                                <span>Edit Profil</span>
-                            </a>
-                            <div class="border-t border-[#eae8e7] dark:border-[#2e3030] my-1"></div>
-                            <form action="{{ route('logout') }}" method="POST">
-                                @csrf
-                                <button type="submit" class="w-full text-left flex items-center gap-2.5 px-4 py-2 text-xs font-semibold text-[#ba1a1a] dark:text-[#ffb4ab] hover:bg-[#ffdad6]/40 dark:hover:bg-[#410002]/40 transition-colors">
-                                    <i class="fa-solid fa-arrow-right-from-bracket w-4"></i>
-                                    <span>Logout</span>
-                                </button>
-                            </form>
-                        </div>
-                    </div>
                 </div>
             </header>
 

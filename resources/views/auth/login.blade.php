@@ -35,11 +35,17 @@
     <div class="absolute top-5 right-5 z-20">
         <button type="button" 
                 onclick="toggleTheme()" 
-                class="p-2 w-9 h-9 rounded-xl bg-white dark:bg-[#1f2020] text-[#5c3f3f] dark:text-[#ffb3b3] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] border border-[#eae8e7] dark:border-[#2e3030] flex items-center justify-center transition-colors shadow-xs cursor-pointer"
+                class="h-9 px-3 rounded-xl bg-white dark:bg-[#1f2020] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] border border-[#eae8e7] dark:border-[#2e3030] inline-flex items-center gap-2 transition-colors shadow-xs cursor-pointer focus:outline-none"
                 title="Ganti Mode Terang / Gelap"
                 aria-label="Toggle Theme">
-            <i class="fa-solid fa-sun text-sm text-amber-500 hidden dark:block"></i>
-            <i class="fa-solid fa-moon text-sm text-[#5c3f3f] block dark:hidden"></i>
+            <span class="inline-flex items-center gap-1.5 dark:hidden">
+                <i class="fa-solid fa-sun text-sm text-amber-500"></i>
+                <span class="text-xs font-medium text-[#1b1c1c]">Mode Light</span>
+            </span>
+            <span class="hidden dark:inline-flex items-center gap-1.5">
+                <i class="fa-solid fa-moon text-sm text-amber-300"></i>
+                <span class="text-xs font-medium text-[#f2f0f0]">Mode Dark</span>
+            </span>
         </button>
     </div>
 
@@ -51,7 +57,7 @@
                 <i class="fa-solid fa-broom-ball text-xl"></i>
             </div>
             <h1 class="font-heading text-2xl font-semibold tracking-tight text-[#1b1c1c] dark:text-white">
-                CLEAN<span class="text-[#dc143c]">TRACK</span>
+                <span class="text-[#1b1c1c] dark:text-white">CLEAN</span><span class="text-[#dc143c]">TRACK</span>
             </h1>
             <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-1 font-medium tracking-wider uppercase">
                 Sistem Monitoring Kebersihan

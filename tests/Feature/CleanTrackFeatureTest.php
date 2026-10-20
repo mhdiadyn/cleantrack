@@ -619,4 +619,174 @@ class CleanTrackFeatureTest extends TestCase
         $response->assertRedirect(route('admin.monitoring.index'));
         $this->assertDatabaseMissing('cleaning_monitorings', ['id' => $monitoring->id]);
     }
+
+    public function test_monitoring_create_form_does_not_contain_room_photo_360_elements(): void
+    {
+        $petugas = User::where('role', 'petugas')->first();
+
+        $response = $this->actingAs($petugas)->get(route('monitoring.create'));
+        $response->assertStatus(200);
+        $response->assertSee('photo_before');
+        $response->assertSee('photo_after');
+        $response->assertSee('Foto Sebelum');
+        $response->assertSee('Foto Sesudah');
+        $response->assertDontSee('Foto Ruangan / 360°');
+        $response->assertDontSee('360° Panorama');
+        $response->assertDontSee('photo_360');
+    }
+
+    public function test_monitoring_edit_form_does_not_contain_room_photo_360_elements(): void
+    {
+        $petugas = User::where('role', 'petugas')->first();
+        $monitoring = CleaningMonitoring::where('user_id', $petugas->id)->first();
+
+        $response = $this->actingAs($petugas)->get(route('monitoring.edit', $monitoring));
+        $response->assertStatus(200);
+        $response->assertSee('photo_before');
+        $response->assertSee('photo_after');
+        $response->assertSee('Foto Sebelum');
+        $response->assertSee('Foto Sesudah');
+        $response->assertDontSee('Foto Ruangan / 360°');
+        $response->assertDontSee('360° Panorama');
+        $response->assertDontSee('photo_360');
+    }
+
+    public function test_petugas_can_access_laporan_kebersihan_with_metrics_and_own_data(): void
+    {
+        $petugas = User::where('email', 'andi@cleantrack.test')->first();
+
+        $response = $this->actingAs($petugas)->get(route('petugas.reports.index'));
+        $response->assertStatus(200);
+        $response->assertSee('Laporan Kebersihan Saya');
+        $response->assertSee('Total Pemeriksaan');
+        $response->assertSee('Pekerjaan Selesai');
+        $response->assertSee('Dalam Proses');
+        $response->assertSee('Perlu Tindakan');
+        $response->assertSee('Terapkan Filter');
+    }
+
+    public function test_petugas_only_sees_their_own_records_in_laporan(): void
+    {
+        $andi = User::where('email', 'andi@cleantrack.test')->first();
+        $budi = User::where('email', 'budi@cleantrack.test')->first();
+        $area = Area::first();
+
+        // Create monitoring for Budi
+        CleaningMonitoring::create([
+            'user_id' => $budi->id,
+            'area_id' => $area->id,
+            'cleanliness_condition' => 'Bersih',
+            'status' => 'Sudah Dibersihkan',
+            'notes' => 'Catatan Khusus Budi Yang Unik Sekali',
+            'check_date' => now()->toDateString(),
+            'check_time' => '10:00:00',
+        ]);
+
+        $response = $this->actingAs($andi)->get(route('petugas.reports.index'));
+        $response->assertStatus(200);
+        $response->assertDontSee('Catatan Khusus Budi Yang Unik Sekali');
+    }
+
+    public function test_petugas_laporan_filters_by_status_and_area(): void
+    {
+        $petugas = User::where('email', 'andi@cleantrack.test')->first();
+        $area1 = Area::first();
+        $area2 = Area::skip(1)->first();
+
+        CleaningMonitoring::create([
+            'user_id' => $petugas->id,
+            'area_id' => $area1->id,
+            'cleanliness_condition' => 'Bersih',
+            'status' => 'Sudah Dibersihkan',
+            'notes' => 'Tugas Selesai Area 1 Unik',
+            'check_date' => '2026-05-01',
+            'check_time' => '09:00:00',
+        ]);
+
+        CleaningMonitoring::create([
+            'user_id' => $petugas->id,
+            'area_id' => $area2->id,
+            'cleanliness_condition' => 'Kotor',
+            'status' => 'Perlu Dibersihkan',
+            'notes' => 'Tugas Belum Area 2 Unik',
+            'check_date' => '2026-05-02',
+            'check_time' => '10:00:00',
+        ]);
+
+        // Filter by status 'Sudah Dibersihkan'
+        $response = $this->actingAs($petugas)->get(route('petugas.reports.index', ['status' => 'Sudah Dibersihkan']));
+        $response->assertStatus(200);
+        $response->assertSee('Tugas Selesai Area 1 Unik');
+        $response->assertDontSee('Tugas Belum Area 2 Unik');
+
+        // Filter by area2
+        $responseArea = $this->actingAs($petugas)->get(route('petugas.reports.index', ['area_id' => $area2->id]));
+        $responseArea->assertStatus(200);
+        $responseArea->assertSee('Tugas Belum Area 2 Unik');
+        $responseArea->assertDontSee('Tugas Selesai Area 1 Unik');
+    }
+
+    public function test_gallery_route_remains_functional_for_both_roles(): void
+    {
+        $admin = User::where('role', 'admin')->first();
+        $petugas = User::where('role', 'petugas')->first();
+
+        $responseAdmin = $this->actingAs($admin)->get(route('gallery.index'));
+        $responseAdmin->assertStatus(200);
+        $responseAdmin->assertSee('Galeri');
+
+        $responsePetugas = $this->actingAs($petugas)->get(route('gallery.index'));
+        $responsePetugas->assertStatus(200);
+        $responsePetugas->assertSee('Galeri');
+    }
+
+    public function test_ui_profile_menu_in_sidebar_above_logout_for_both_admin_and_petugas(): void
+    {
+        $admin = User::where('role', 'admin')->first();
+        $petugas = User::where('role', 'petugas')->first();
+
+        foreach ([$admin, $petugas] as $user) {
+            $dashboardRoute = $user->role === 'admin' ? route('admin.dashboard') : route('petugas.dashboard');
+            $response = $this->actingAs($user)->get($dashboardRoute);
+            $response->assertStatus(200);
+
+            // User Profile Menu Dropup is present in sidebar above logout
+            $response->assertSee('Menu Profil');
+            $response->assertSee(strtoupper(substr($user->name, 0, 2)));
+            $response->assertSee($user->name);
+            $response->assertSee(route('profile.edit'));
+            $response->assertSee('Edit Profil');
+
+            // Logout button is present
+            $response->assertSee(route('logout'));
+            $response->assertSee('Keluar (Logout)');
+        }
+    }
+
+    public function test_ui_theme_toggle_shows_mode_light_and_mode_dark_labels(): void
+    {
+        $admin = User::where('role', 'admin')->first();
+        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
+        $response->assertStatus(200);
+
+        // Theme toggle contains Mode Light and Mode Dark labels
+        $response->assertSee('Mode Light');
+        $response->assertSee('Mode Dark');
+        $response->assertSee('toggleTheme()', false);
+    }
+
+    public function test_ui_cleantrack_logo_has_dark_mode_contrast_styling_for_both_roles(): void
+    {
+        $admin = User::where('role', 'admin')->first();
+        $petugas = User::where('role', 'petugas')->first();
+
+        foreach ([$admin, $petugas] as $user) {
+            $dashboardRoute = $user->role === 'admin' ? route('admin.dashboard') : route('petugas.dashboard');
+            $response = $this->actingAs($user)->get($dashboardRoute);
+            $response->assertStatus(200);
+
+            // Logo contains CLEAN with contrast class and TRACK with crimson color
+            $response->assertSee('<span class="text-[#1b1c1c] dark:text-white">CLEAN</span><span class="text-[#dc143c]">TRACK</span>', false);
+        }
+    }
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\FloorPlanController;
 use App\Http\Controllers\GalleryController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\Petugas\DashboardController as PetugasDashboardController;
+use App\Http\Controllers\Petugas\ReportController as PetugasReportController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -89,4 +90,5 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->as('petugas.')->group(function () {
     Route::get('/dashboard', [PetugasDashboardController::class, 'index'])->name('dashboard');
     Route::get('/riwayat', [MonitoringController::class, 'myMonitoring'])->name('my-monitoring');
+    Route::get('/laporan', [PetugasReportController::class, 'index'])->name('reports.index');
 });
