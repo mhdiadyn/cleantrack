@@ -118,6 +118,10 @@
                                        class="p-1.5 rounded-lg text-[#5c3f3f] hover:text-[#dc143c] hover:bg-[#fff1f0] dark:text-[#c8c6c5] dark:hover:text-[#ffb3b3] dark:hover:bg-[#3b0b14] transition-colors" title="Detail Area">
                                         <i class="fa-solid fa-eye text-xs"></i>
                                     </a>
+                                    <a href="{{ route('admin.areas.qr.print', $area->id) }}" target="_blank"
+                                       class="p-1.5 rounded-lg text-[#5c3f3f] hover:text-[#dc143c] hover:bg-[#fff1f0] dark:text-[#c8c6c5] dark:hover:text-[#ffb3b3] dark:hover:bg-[#3b0b14] transition-colors" title="Cetak QR Code">
+                                        <i class="fa-solid fa-qrcode text-xs"></i>
+                                    </a>
                                     <a href="{{ route('admin.areas.edit', $area->id) }}" 
                                        class="p-1.5 rounded-lg text-[#5c3f3f] hover:text-[#b45309] hover:bg-[#fef3c7] dark:text-[#c8c6c5] dark:hover:text-[#fcd34d] dark:hover:bg-[#451a03] transition-colors" title="Edit Area & Foto 360°">
                                         <i class="fa-solid fa-pen-to-square text-xs"></i>

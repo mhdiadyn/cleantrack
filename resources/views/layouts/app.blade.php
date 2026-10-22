@@ -181,6 +181,13 @@
                         <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#f5f3f3] dark:bg-[#333535] text-[#5c3f3f] dark:text-[#c8c6c5] font-semibold uppercase">360°</span>
                     </a>
 
+                    <a href="{{ route('petugas.scan') }}" 
+                       class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('petugas.scan') || request()->routeIs('scan.*') || request()->routeIs('petugas.room.*') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
+                        <i class="fa-solid fa-qrcode w-4 text-center {{ request()->routeIs('petugas.scan') || request()->routeIs('scan.*') || request()->routeIs('petugas.room.*') ? 'text-[#dc143c] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5]' }}"></i>
+                        <span class="flex-1">Scan QR Ruangan</span>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#dc143c] text-white font-semibold uppercase tracking-wider">Scan</span>
+                    </a>
+
                     <a href="{{ route('monitoring.create') }}" 
                        class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('monitoring.create') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
                         <i class="fa-solid fa-circle-plus w-4 text-center {{ request()->routeIs('monitoring.create') ? 'text-[#dc143c] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5]' }}"></i>

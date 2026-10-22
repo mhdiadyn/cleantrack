@@ -18,6 +18,7 @@ class Area extends Model
      */
     protected $fillable = [
         'name',
+        'qr_code',
         'location',
         'floor',
         'pos_x',
@@ -40,6 +41,7 @@ class Area extends Model
         'is_360',
         'is_standard',
         'photo_type_label',
+        'has_qr_code',
     ];
 
     /**
@@ -59,7 +61,76 @@ class Area extends Model
      */
     public function getCodeAttribute(): string
     {
-        return 'AR-'.str_pad($this->id, 3, '0', STR_PAD_LEFT);
+        return $this->qr_code ?: 'AR-'.str_pad((string) $this->id, 3, '0', STR_PAD_LEFT);
+    }
+
+    /**
+     * Check if area has a generated QR code.
+     */
+    public function hasQrCode(): bool
+    {
+        return ! empty($this->qr_code);
+    }
+
+    /**
+     * Accessor to check if area has QR code.
+     */
+    public function getHasQrCodeAttribute(): bool
+    {
+        return $this->hasQrCode();
+    }
+
+    /**
+     * Get the scan target URL for this area.
+     */
+    public function getQrCodeUrlAttribute(): string
+    {
+        $code = $this->qr_code ?: $this->code;
+
+        // Custom override from environment if set (e.g. QR_BASE_URL)
+        if ($override = env('QR_BASE_URL')) {
+            return rtrim($override, '/').'/scan/room/'.$code;
+        }
+
+        // If called inside an active HTTP request with a network host/IP (LAN IP or domain)
+        if (request()->hasHeader('host')) {
+            $host = request()->getHost();
+            if (! in_array($host, ['localhost', '127.0.0.1'], true)) {
+                return request()->getSchemeAndHttpHost().'/scan/room/'.$code;
+            }
+        }
+
+        // If app.url is explicitly configured with a server domain or external IP
+        $appUrl = config('app.url');
+        if (! empty($appUrl) && ! str_contains($appUrl, 'localhost') && ! str_contains($appUrl, '127.0.0.1')) {
+            return rtrim($appUrl, '/').'/scan/room/'.$code;
+        }
+
+        return url('/scan/room/'.$code);
+    }
+
+    /**
+     * Generate and persist a permanent QR code for this area if not already present.
+     */
+    public function generateQrCode(bool $force = false): string
+    {
+        if ($this->hasQrCode() && ! $force) {
+            return $this->qr_code;
+        }
+
+        $code = 'AR-'.str_pad((string) $this->id, 3, '0', STR_PAD_LEFT);
+
+        // Ensure uniqueness if collision occurs
+        $originalCode = $code;
+        $counter = 1;
+        while (static::where('qr_code', $code)->where('id', '!=', $this->id)->exists()) {
+            $code = $originalCode.'-'.$counter;
+            $counter++;
+        }
+
+        $this->update(['qr_code' => $code]);
+
+        return $code;
     }
 
     /**

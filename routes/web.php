@@ -11,6 +11,7 @@ use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\Petugas\DashboardController as PetugasDashboardController;
 use App\Http\Controllers\Petugas\ReportController as PetugasReportController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\QRCodeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -55,13 +56,22 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::get('/monitoring/{monitoring}', [MonitoringController::class, 'show'])->name('monitoring.show');
     Route::get('/monitoring/{monitoring}/edit', [MonitoringController::class, 'edit'])->name('monitoring.edit');
     Route::put('/monitoring/{monitoring}', [MonitoringController::class, 'update'])->name('monitoring.update');
+
+    // QR Code Room Resolution & Scanner (accessible by authenticated users)
+    Route::get('/scan', [QRCodeController::class, 'scanView'])->name('scan');
+    Route::get('/scan/room/{code}', [QRCodeController::class, 'resolveScan'])->name('scan.room');
+    Route::get('/scan/resolve', [QRCodeController::class, 'resolveScan'])->name('petugas.room.resolve');
 });
 
 // Admin Specific Routes
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
 
-    // Master Data Area
+    // Master Data Area & QR Code Actions
+    Route::post('areas/{area}/qr-generate', [QRCodeController::class, 'generate'])->name('areas.qr.generate');
+    Route::post('areas/qr-generate-all', [QRCodeController::class, 'generateAll'])->name('areas.qr.generate-all');
+    Route::get('areas/{area}/qr-print', [QRCodeController::class, 'print'])->name('areas.qr.print');
+    Route::get('areas/{area}/qr-download', [QRCodeController::class, 'download'])->name('areas.qr.download');
     Route::post('areas/{area}/update-360', [AreaController::class, 'updatePhoto360'])->name('areas.update-360');
     Route::post('areas/upload-360', [AreaController::class, 'uploadPhoto360General'])->name('areas.upload-360-general');
     Route::resource('areas', AreaController::class);
@@ -89,6 +99,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 // Petugas Specific Routes
 Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->as('petugas.')->group(function () {
     Route::get('/dashboard', [PetugasDashboardController::class, 'index'])->name('dashboard');
+    Route::get('/scan', [QRCodeController::class, 'scanView'])->name('scan');
     Route::get('/riwayat', [MonitoringController::class, 'myMonitoring'])->name('my-monitoring');
     Route::get('/laporan', [PetugasReportController::class, 'index'])->name('reports.index');
 });

@@ -113,6 +113,12 @@ class MonitoringController extends Controller
     {
         $areas = Area::where('is_active', true)->orderBy('name')->get();
         $selectedAreaId = $request->input('area_id');
+
+        // Backend check: ensure preselected area is active
+        if ($selectedAreaId && ! $areas->contains('id', (int) $selectedAreaId)) {
+            $selectedAreaId = null;
+        }
+
         $currentTime = Carbon::now('Asia/Jakarta');
 
         return view('monitoring.create', compact('areas', 'selectedAreaId', 'currentTime'));
@@ -124,7 +130,12 @@ class MonitoringController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'area_id' => ['required', 'exists:areas,id'],
+            'area_id' => [
+                'required',
+                Rule::exists('areas', 'id')->where(function ($query) {
+                    $query->where('is_active', true);
+                }),
+            ],
             'cleanliness_condition' => ['required', Rule::in(['Bersih', 'Cukup Bersih', 'Kotor', 'Sangat Kotor'])],
             'status' => ['required', Rule::in(['Belum Diperiksa', 'Perlu Dibersihkan', 'Sedang Dibersihkan', 'Sudah Dibersihkan'])],
             'start_time' => ['nullable', 'string', 'max:10'],
@@ -136,7 +147,7 @@ class MonitoringController extends Controller
             'photo_360_type' => ['nullable', 'string', 'in:panorama_360,standard'],
         ], [
             'area_id.required' => 'Silakan pilih area yang diperiksa.',
-            'area_id.exists' => 'Area yang dipilih tidak valid.',
+            'area_id.exists' => 'Area yang dipilih tidak valid atau sedang nonaktif.',
             'cleanliness_condition.required' => 'Kondisi kebersihan wajib dipilih.',
             'cleanliness_condition.in' => 'Kondisi kebersihan tidak valid.',
             'status.required' => 'Status kebersihan wajib dipilih.',

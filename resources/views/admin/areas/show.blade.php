@@ -75,6 +75,90 @@
         </div>
     </div>
 
+    <!-- QR Code Ruangan Card -->
+    <div class="card-clean p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-[#eae8e7] dark:border-[#2e3030]">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-[#fff1f0] text-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3] flex items-center justify-center text-lg shrink-0">
+                    <i class="fa-solid fa-qrcode"></i>
+                </div>
+                <div>
+                    <h3 class="font-heading text-sm font-semibold text-[#1b1c1c] dark:text-white">QR Code Pintu Ruangan</h3>
+                    <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5]">Gunakan untuk dicetak dan ditempel di dekat pintu ruangan agar dapat dipindai oleh petugas</p>
+                </div>
+            </div>
+
+            @if($area->hasQrCode())
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('admin.areas.qr.print', $area->id) }}" target="_blank" class="btn-primary text-xs">
+                        <i class="fa-solid fa-print mr-1.5"></i>
+                        <span>Cetak Label</span>
+                    </a>
+                    <a href="{{ route('admin.areas.qr.download', $area->id) }}" class="btn-outline-neutral text-xs">
+                        <i class="fa-solid fa-download mr-1.5 text-[#dc143c]"></i>
+                        <span>Unduh SVG</span>
+                    </a>
+                </div>
+            @endif
+        </div>
+
+        <div class="pt-5">
+            @if($area->hasQrCode())
+                <div class="flex flex-col md:flex-row items-center md:items-start gap-6">
+                    <div class="bg-white p-3 rounded-2xl border border-[#eae8e7] shadow-sm shrink-0">
+                        <div class="w-[140px] h-[140px] flex items-center justify-center">
+                            {!! SimpleSoftwareIO\QrCode\Facades\QrCode::size(140)->margin(1)->errorCorrection('H')->generate($area->qr_code_url) !!}
+                        </div>
+                    </div>
+
+                    <div class="flex-1 text-center md:text-left space-y-3">
+                        <div>
+                            <span class="text-[11px] font-semibold text-[#5c3f3f] dark:text-[#8c8282] uppercase tracking-wider block">Identitas Kode QR</span>
+                            <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mt-1">
+                                <span class="font-mono text-base font-bold text-[#1b1c1c] dark:text-white bg-[#f5f3f3] dark:bg-[#262727] px-3 py-1 rounded-lg border border-[#eae8e7] dark:border-[#333535]">
+                                    {{ $area->code }}
+                                </span>
+                                <span class="text-xs text-[#006622] dark:text-[#83fc8e] font-semibold bg-[#daffd5] dark:bg-[#003912] px-2.5 py-0.5 rounded-full border border-[#b2e5be] dark:border-[#00531a]">
+                                    <i class="fa-solid fa-check mr-1"></i> QR Aktif & Siap Digunakan
+                                </span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="text-[11px] font-semibold text-[#5c3f3f] dark:text-[#8c8282] uppercase tracking-wider block">Target URL Pemindaian</span>
+                            <p class="font-mono text-xs text-[#5c3f3f] dark:text-[#c8c6c5] bg-[#f5f3f3] dark:bg-[#262727] p-2.5 rounded-lg border border-[#eae8e7] dark:border-[#333535] mt-1 break-all">
+                                {{ $area->qr_code_url }}
+                            </p>
+                        </div>
+
+                        <p class="text-xs text-[#5c3f3f] dark:text-[#8c8282]">
+                            Petugas dapat membuka menu <strong>Scan QR Ruangan</strong> di HP atau menggunakan kamera HP biasa untuk langsung membuka data ruangan ini.
+                        </p>
+                    </div>
+                </div>
+            @else
+                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 p-5 rounded-xl bg-[#f5f3f3] dark:bg-[#262727] border border-[#eae8e7] dark:border-[#333535]">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 rounded-xl bg-white dark:bg-[#1f2020] text-[#5c3f3f] dark:text-[#8c8282] flex items-center justify-center text-xl border border-[#eae8e7] dark:border-[#333535]">
+                            <i class="fa-solid fa-qrcode"></i>
+                        </div>
+                        <div>
+                            <h4 class="font-heading text-xs font-semibold text-[#1b1c1c] dark:text-white">QR Code Belum Digenerate</h4>
+                            <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5]">Ruangan ini belum memiliki kode QR permanen. Buat sekarang untuk mencetak stiker pintu.</p>
+                        </div>
+                    </div>
+                    <form action="{{ route('admin.areas.qr.generate', $area->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn-primary text-xs shrink-0">
+                            <i class="fa-solid fa-plus-circle mr-1.5"></i>
+                            <span>Generate QR Code</span>
+                        </button>
+                    </form>
+                </div>
+            @endif
+        </div>
+    </div>
+
     <!-- Riwayat Pemeriksaan di Area Ini -->
     <div class="card-clean overflow-hidden">
         <div class="p-5 border-b border-[#eae8e7] dark:border-[#2e3030]">
