@@ -112,13 +112,10 @@ class MonitoringController extends Controller
     public function create(Request $request): View
     {
         $areas = Area::where('is_active', true)->orderBy('name')->get();
-        $selectedAreaId = $request->input('area_id');
-
-        // Backend check: ensure preselected area is active
-        if ($selectedAreaId && ! $areas->contains('id', (int) $selectedAreaId)) {
-            $selectedAreaId = null;
-        }
-
+        $requestedAreaId = $request->integer('area_id');
+        $selectedAreaId = $requestedAreaId && $areas->contains('id', $requestedAreaId)
+            ? $requestedAreaId
+            : null;
         $currentTime = Carbon::now('Asia/Jakarta');
 
         return view('monitoring.create', compact('areas', 'selectedAreaId', 'currentTime'));
@@ -130,12 +127,8 @@ class MonitoringController extends Controller
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
-            'area_id' => [
-                'required',
-                Rule::exists('areas', 'id')->where(function ($query) {
-                    $query->where('is_active', true);
-                }),
-            ],
+            'area_id' => ['nullable', 'integer', Rule::exists('areas', 'id')->where(fn ($query) => $query->where('is_active', true))],
+            'custom_area_name' => ['nullable', 'string', 'max:255', 'required_without:area_id'],
             'cleanliness_condition' => ['required', Rule::in(['Bersih', 'Cukup Bersih', 'Kotor', 'Sangat Kotor'])],
             'status' => ['required', Rule::in(['Belum Diperiksa', 'Perlu Dibersihkan', 'Sedang Dibersihkan', 'Sudah Dibersihkan'])],
             'start_time' => ['nullable', 'string', 'max:10'],
@@ -143,11 +136,11 @@ class MonitoringController extends Controller
             'notes' => ['nullable', 'string', 'max:1000'],
             'photo_before' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:10240'],
             'photo_after' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:10240'],
-            'photo_360' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:51200'],
-            'photo_360_type' => ['nullable', 'string', 'in:panorama_360,standard'],
         ], [
             'area_id.required' => 'Silakan pilih area yang diperiksa.',
-            'area_id.exists' => 'Area yang dipilih tidak valid atau sedang nonaktif.',
+            'area_id.exists' => 'Area yang dipilih tidak valid atau tidak aktif.',
+            'custom_area_name.required_without' => 'Silakan pilih area atau masukkan nama area bebas.',
+            'custom_area_name.max' => 'Nama area bebas maksimal 255 karakter.',
             'cleanliness_condition.required' => 'Kondisi kebersihan wajib dipilih.',
             'cleanliness_condition.in' => 'Kondisi kebersihan tidak valid.',
             'status.required' => 'Status kebersihan wajib dipilih.',
@@ -156,8 +149,6 @@ class MonitoringController extends Controller
             'photo_before.max' => 'Ukuran foto sebelum maksimal 10 MB.',
             'photo_after.image' => 'File foto sesudah harus berupa gambar.',
             'photo_after.max' => 'Ukuran foto sesudah maksimal 10 MB.',
-            'photo_360.image' => 'File foto 360 harus berupa gambar panorama.',
-            'photo_360.max' => 'Ukuran foto 360 maksimal 50 MB.',
             'notes.max' => 'Catatan maksimal 1000 karakter.',
         ]);
 
@@ -179,9 +170,13 @@ class MonitoringController extends Controller
             $endTime .= ':00';
         }
 
+        $areaId = $validated['area_id'] ?? null;
+        $customAreaName = $areaId ? null : trim($validated['custom_area_name'] ?? '');
+
         $data = [
             'user_id' => Auth::id(),
-            'area_id' => $validated['area_id'],
+            'area_id' => $areaId,
+            'custom_area_name' => $customAreaName ?: null,
             'cleanliness_condition' => $validated['cleanliness_condition'],
             'status' => $validated['status'],
             'start_time' => $startTime,
@@ -207,16 +202,6 @@ class MonitoringController extends Controller
             $path = 'cleaning_photos/'.$filename;
             Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
             $data['photo_after'] = $path;
-        }
-
-        // Handle photo_360 upload
-        if ($request->hasFile('photo_360')) {
-            $file = $request->file('photo_360');
-            $filename = '360_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-            $path = 'cleaning_photos/'.$filename;
-            Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
-            $data['photo_360'] = $path;
-            $data['photo_360_type'] = $request->input('photo_360_type', 'panorama_360');
         }
 
         $monitoring = CleaningMonitoring::create($data);
@@ -263,7 +248,8 @@ class MonitoringController extends Controller
         }
 
         $validated = $request->validate([
-            'area_id' => ['required', 'exists:areas,id'],
+            'area_id' => ['nullable', 'integer', Rule::exists('areas', 'id')->where(fn ($query) => $query->where('is_active', true))],
+            'custom_area_name' => ['nullable', 'string', 'max:255', 'required_without:area_id'],
             'cleanliness_condition' => ['required', Rule::in(['Bersih', 'Cukup Bersih', 'Kotor', 'Sangat Kotor'])],
             'status' => ['required', Rule::in(['Belum Diperiksa', 'Perlu Dibersihkan', 'Sedang Dibersihkan', 'Sudah Dibersihkan'])],
             'start_time' => ['nullable', 'string', 'max:10'],
@@ -271,11 +257,11 @@ class MonitoringController extends Controller
             'notes' => ['nullable', 'string', 'max:1000'],
             'photo_before' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:10240'],
             'photo_after' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:10240'],
-            'photo_360' => ['nullable', 'image', 'mimes:jpeg,png,jpg,webp', 'max:51200'],
-            'photo_360_type' => ['nullable', 'string', 'in:panorama_360,standard'],
         ], [
             'area_id.required' => 'Silakan pilih area.',
-            'area_id.exists' => 'Area yang dipilih tidak valid.',
+            'area_id.exists' => 'Area yang dipilih tidak valid atau tidak aktif.',
+            'custom_area_name.required_without' => 'Silakan pilih area atau masukkan nama area bebas.',
+            'custom_area_name.max' => 'Nama area bebas maksimal 255 karakter.',
             'cleanliness_condition.required' => 'Kondisi kebersihan wajib dipilih.',
             'cleanliness_condition.in' => 'Kondisi kebersihan tidak valid.',
             'status.required' => 'Status kebersihan wajib dipilih.',
@@ -284,8 +270,6 @@ class MonitoringController extends Controller
             'photo_before.max' => 'Ukuran foto sebelum maksimal 10 MB.',
             'photo_after.image' => 'File foto sesudah harus berupa gambar.',
             'photo_after.max' => 'Ukuran foto sesudah maksimal 10 MB.',
-            'photo_360.image' => 'File foto ruangan harus berupa gambar valid.',
-            'photo_360.max' => 'Ukuran foto ruangan maksimal 50 MB.',
             'notes.max' => 'Catatan maksimal 1000 karakter.',
         ]);
 
@@ -299,18 +283,18 @@ class MonitoringController extends Controller
             $endTime .= ':00';
         }
 
+        $areaId = $validated['area_id'] ?? null;
+        $customAreaName = $areaId ? null : trim($validated['custom_area_name'] ?? '');
+
         $data = [
-            'area_id' => $validated['area_id'],
+            'area_id' => $areaId,
+            'custom_area_name' => $customAreaName ?: null,
             'cleanliness_condition' => $validated['cleanliness_condition'],
             'status' => $validated['status'],
             'start_time' => $startTime,
             'end_time' => $endTime,
             'notes' => $validated['notes'] ?? null,
         ];
-
-        if ($request->filled('photo_360_type')) {
-            $data['photo_360_type'] = $request->input('photo_360_type');
-        }
 
         // Handle new photo_before
         if ($request->hasFile('photo_before')) {
@@ -336,19 +320,6 @@ class MonitoringController extends Controller
             $data['photo_after'] = $path;
         }
 
-        // Handle new photo_360
-        if ($request->hasFile('photo_360')) {
-            if ($monitoring->photo_360 && Storage::disk('public')->exists($monitoring->photo_360)) {
-                Storage::disk('public')->delete($monitoring->photo_360);
-            }
-            $file = $request->file('photo_360');
-            $filename = '360_'.time().'_'.uniqid().'.'.$file->getClientOriginalExtension();
-            $path = 'cleaning_photos/'.$filename;
-            Storage::disk('public')->put($path, file_get_contents($file->getPathname()));
-            $data['photo_360'] = $path;
-            $data['photo_360_type'] = $request->input('photo_360_type', 'panorama_360');
-        }
-
         $monitoring->update($data);
 
         return redirect()->route('monitoring.show', $monitoring->id)->with('success', 'Data monitoring kebersihan berhasil diperbarui!');
@@ -371,8 +342,8 @@ class MonitoringController extends Controller
             Storage::disk('public')->delete($monitoring->photo_after);
         }
 
-        if ($monitoring->photo_360 && Storage::disk('public')->exists($monitoring->photo_360)) {
-            Storage::disk('public')->delete($monitoring->photo_360);
+        if ($monitoring->room_photo && Storage::disk('public')->exists($monitoring->room_photo)) {
+            Storage::disk('public')->delete($monitoring->room_photo);
         }
 
         $monitoring->delete();

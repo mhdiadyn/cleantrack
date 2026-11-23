@@ -62,9 +62,7 @@ class DatabaseSeeder extends Seeder
             ]
         );
 
-        // 2. Create Areas with floor plan coordinates and 360 virtual tour images
-        $sample360Url = 'https://pannellum.org/images/alma.jpg';
-        $sample360Url2 = 'https://pannellum.org/images/jfk.jpg';
+        // 2. Create room records used by the facility gallery.
 
         $areasData = [
             // Lantai 1
@@ -75,7 +73,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 1,
                 'pos_x' => 18,
                 'pos_y' => 25,
-                'photo_360' => $sample360Url,
+                'photo' => null,
                 'is_active' => true,
             ],
             [
@@ -85,7 +83,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 1,
                 'pos_x' => 82,
                 'pos_y' => 25,
-                'photo_360' => null,
+                'photo' => null,
                 'is_active' => true,
             ],
             [
@@ -95,7 +93,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 1,
                 'pos_x' => 50,
                 'pos_y' => 25,
-                'photo_360' => $sample360Url2,
+                'photo' => null,
                 'is_active' => true,
             ],
             [
@@ -105,7 +103,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 1,
                 'pos_x' => 18,
                 'pos_y' => 75,
-                'photo_360' => null,
+                'photo' => null,
                 'is_active' => true,
             ],
             [
@@ -115,7 +113,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 1,
                 'pos_x' => 82,
                 'pos_y' => 75,
-                'photo_360' => null,
+                'photo' => null,
                 'is_active' => true,
             ],
 
@@ -127,7 +125,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 2,
                 'pos_x' => 20,
                 'pos_y' => 30,
-                'photo_360' => $sample360Url,
+                'photo' => null,
                 'is_active' => true,
             ],
             [
@@ -137,7 +135,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 2,
                 'pos_x' => 80,
                 'pos_y' => 30,
-                'photo_360' => null,
+                'photo' => null,
                 'is_active' => true,
             ],
             [
@@ -147,7 +145,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 2,
                 'pos_x' => 50,
                 'pos_y' => 70,
-                'photo_360' => $sample360Url2,
+                'photo' => null,
                 'is_active' => true,
             ],
             [
@@ -157,7 +155,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 2,
                 'pos_x' => 80,
                 'pos_y' => 70,
-                'photo_360' => $sample360Url,
+                'photo' => null,
                 'is_active' => true,
             ],
 
@@ -169,7 +167,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 3,
                 'pos_x' => 25,
                 'pos_y' => 35,
-                'photo_360' => $sample360Url2,
+                'photo' => null,
                 'is_active' => true,
             ],
             [
@@ -179,7 +177,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 3,
                 'pos_x' => 75,
                 'pos_y' => 35,
-                'photo_360' => $sample360Url,
+                'photo' => null,
                 'is_active' => true,
             ],
             [
@@ -189,7 +187,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 3,
                 'pos_x' => 30,
                 'pos_y' => 75,
-                'photo_360' => null,
+                'photo' => null,
                 'is_active' => true,
             ],
             [
@@ -199,7 +197,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 3,
                 'pos_x' => 80,
                 'pos_y' => 75,
-                'photo_360' => null,
+                'photo' => null,
                 'is_active' => true,
             ],
 
@@ -211,7 +209,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 4,
                 'pos_x' => 25,
                 'pos_y' => 35,
-                'photo_360' => $sample360Url,
+                'photo' => null,
                 'is_active' => true,
             ],
             [
@@ -221,7 +219,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 4,
                 'pos_x' => 75,
                 'pos_y' => 35,
-                'photo_360' => $sample360Url2,
+                'photo' => null,
                 'is_active' => true,
             ],
             [
@@ -231,7 +229,7 @@ class DatabaseSeeder extends Seeder
                 'floor' => 4,
                 'pos_x' => 30,
                 'pos_y' => 75,
-                'photo_360' => null,
+                'photo' => null,
                 'is_active' => true,
             ],
             [
@@ -241,13 +239,14 @@ class DatabaseSeeder extends Seeder
                 'floor' => 4,
                 'pos_x' => 80,
                 'pos_y' => 75,
-                'photo_360' => null,
+                'photo' => null,
                 'is_active' => true,
             ],
         ];
 
         $areas = [];
         foreach ($areasData as $data) {
+            unset($data['photo']);
             $areas[] = Area::updateOrCreate(['name' => $data['name']], $data);
         }
 
@@ -277,7 +276,7 @@ class DatabaseSeeder extends Seeder
                 'notes' => 'Lantai lobby sudah dipel dan diberi pewangi ruangan aroma lemon. Kaca pintu utama sudah dibersihkan.',
                 'photo_before' => 'cleaning_photos/sample_before.svg',
                 'photo_after' => 'cleaning_photos/sample_after.svg',
-                'photo_360' => $sample360Url,
+                'photo' => null,
                 'date' => $today->toDateString(),
                 'time' => '07:30:00',
             ],
@@ -291,7 +290,7 @@ class DatabaseSeeder extends Seeder
                 'notes' => 'Wastafel dan kloset sudah disikat dengan desinfektan. Sabun cuci tangan dan tisu telah diisi ulang.',
                 'photo_before' => 'cleaning_photos/sample_before.svg',
                 'photo_after' => 'cleaning_photos/sample_after.svg',
-                'photo_360' => null,
+                'photo' => null,
                 'date' => $today->toDateString(),
                 'time' => '08:15:00',
             ],
@@ -305,7 +304,7 @@ class DatabaseSeeder extends Seeder
                 'notes' => 'Ada tumpahan teh di lorong meja tim marketing, perlu segera dipel basah.',
                 'photo_before' => 'cleaning_photos/sample_before.svg',
                 'photo_after' => null,
-                'photo_360' => $sample360Url2,
+                'photo' => null,
                 'date' => $today->toDateString(),
                 'time' => '10:00:00',
             ],
@@ -319,7 +318,7 @@ class DatabaseSeeder extends Seeder
                 'notes' => 'Sink cuci piring dibersihkan, kulkas dan microwave bagian luar telah dilap bersih.',
                 'photo_before' => 'cleaning_photos/sample_before.svg',
                 'photo_after' => 'cleaning_photos/sample_after.svg',
-                'photo_360' => null,
+                'photo' => null,
                 'date' => $today->toDateString(),
                 'time' => '07:45:00',
             ],
@@ -333,7 +332,7 @@ class DatabaseSeeder extends Seeder
                 'notes' => 'Karpet divacuum, meja rapat dilap, dan tempat sampah telah dikosongkan untuk persiapan rapat direksi.',
                 'photo_before' => 'cleaning_photos/sample_before.svg',
                 'photo_after' => 'cleaning_photos/sample_after.svg',
-                'photo_360' => $sample360Url,
+                'photo' => null,
                 'date' => $today->toDateString(),
                 'time' => '08:45:00',
             ],
@@ -347,7 +346,7 @@ class DatabaseSeeder extends Seeder
                 'notes' => 'Sedang proses pengepelan lantai dan pembersihan kerak wastafel.',
                 'photo_before' => 'cleaning_photos/sample_before.svg',
                 'photo_after' => null,
-                'photo_360' => null,
+                'photo' => null,
                 'date' => $today->toDateString(),
                 'time' => '09:00:00',
             ],
@@ -361,7 +360,7 @@ class DatabaseSeeder extends Seeder
                 'notes' => 'Debu pada panel filter AC dibersihkan hati-hati.',
                 'photo_before' => 'cleaning_photos/sample_before.svg',
                 'photo_after' => 'cleaning_photos/sample_after.svg',
-                'photo_360' => $sample360Url2,
+                'photo' => null,
                 'date' => $today->toDateString(),
                 'time' => '11:00:00',
             ],
@@ -375,7 +374,7 @@ class DatabaseSeeder extends Seeder
                 'notes' => 'Selesai pembersihan pagi hari, meja dan kursi disterilisasi.',
                 'photo_before' => 'cleaning_photos/sample_before.svg',
                 'photo_after' => 'cleaning_photos/sample_after.svg',
-                'photo_360' => $sample360Url,
+                'photo' => null,
                 'date' => $today->toDateString(),
                 'time' => '08:00:00',
             ],
@@ -389,7 +388,7 @@ class DatabaseSeeder extends Seeder
                 'notes' => 'Panggung dan barisan kursi telah disapu dan dirapikan, sound system bebas debu.',
                 'photo_before' => 'cleaning_photos/sample_before.svg',
                 'photo_after' => 'cleaning_photos/sample_after.svg',
-                'photo_360' => $sample360Url2,
+                'photo' => null,
                 'date' => $today->toDateString(),
                 'time' => '09:15:00',
             ],
@@ -403,7 +402,7 @@ class DatabaseSeeder extends Seeder
                 'notes' => 'Area tanaman disiram, meja santai dilap bersih dari debu luar ruangan.',
                 'photo_before' => 'cleaning_photos/sample_before.svg',
                 'photo_after' => 'cleaning_photos/sample_after.svg',
-                'photo_360' => $sample360Url,
+                'photo' => null,
                 'date' => $today->toDateString(),
                 'time' => '09:40:00',
             ],
@@ -420,7 +419,7 @@ class DatabaseSeeder extends Seeder
                 'notes' => $entry['notes'],
                 'photo_before' => $entry['photo_before'],
                 'photo_after' => $entry['photo_after'],
-                'photo_360' => $entry['photo_360'],
+                'room_photo' => $entry['photo'],
                 'check_date' => $entry['date'],
                 'check_time' => $entry['time'],
             ]);

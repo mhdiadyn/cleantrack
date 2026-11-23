@@ -2,7 +2,7 @@
 
 @section('title', 'Data Master Area')
 @section('header_title', 'Master Data Area Kebersihan')
-@section('header_subtitle', 'Kelola daftar seluruh ruangan, fasilitas, koordinat denah, dan foto 360° yang dipantau')
+@section('header_subtitle', 'Kelola daftar seluruh ruangan dan fasilitas yang dipantau')
 
 @section('content')
 <div class="space-y-6">
@@ -38,9 +38,9 @@
         </form>
 
         <div class="flex items-center gap-2">
-            <a href="{{ route('floorplan.index') }}" class="btn-secondary">
+            <a href="{{ route('facility.index') }}" class="btn-secondary">
                 <i class="fa-solid fa-map-location-dot text-xs"></i>
-                <span>Lihat di Denah</span>
+                <span>Denah & Galeri Ruangan</span>
             </a>
             <a href="{{ route('admin.areas.create') }}" class="btn-primary">
                 <i class="fa-solid fa-plus text-xs"></i>
@@ -58,7 +58,7 @@
                         <th class="py-3 px-4 text-center w-12">No</th>
                         <th class="py-3 px-4">Nama Area & Kode</th>
                         <th class="py-3 px-4">Lokasi & Lantai</th>
-                        <th class="py-3 px-4 text-center">Foto 360°</th>
+                        <th class="py-3 px-4 text-center">Foto Ruangan</th>
                         <th class="py-3 px-4 text-center">Total Riwayat</th>
                         <th class="py-3 px-4 text-center">Status</th>
                         <th class="py-3 px-4 text-center">Aksi</th>
@@ -86,10 +86,8 @@
                                 <span class="text-[11px] text-[#5c3f3f] dark:text-[#8c8282]">Lantai {{ $area->floor ?? 1 }}</span>
                             </td>
                             <td class="py-3.5 px-4 text-center">
-                                @if($area->photo_360)
-                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#fff1f0] text-[#dc143c] border border-[#fecdd3] dark:bg-[#3b0b14] dark:text-[#ffb3b3] dark:border-[#831843]">
-                                        <i class="fa-solid fa-panorama"></i> 360° Aktif
-                                    </span>
+                                @if($area->photo_url)
+                                    <img src="{{ $area->photo_url }}" alt="Foto {{ $area->name }}" class="mx-auto h-12 w-16 rounded-lg object-cover">
                                 @else
                                     <span class="text-[#5c3f3f] dark:text-[#8c8282] text-[11px]">-</span>
                                 @endif
@@ -123,7 +121,7 @@
                                         <i class="fa-solid fa-qrcode text-xs"></i>
                                     </a>
                                     <a href="{{ route('admin.areas.edit', $area->id) }}" 
-                                       class="p-1.5 rounded-lg text-[#5c3f3f] hover:text-[#b45309] hover:bg-[#fef3c7] dark:text-[#c8c6c5] dark:hover:text-[#fcd34d] dark:hover:bg-[#451a03] transition-colors" title="Edit Area & Foto 360°">
+                                       class="p-1.5 rounded-lg text-[#5c3f3f] hover:text-[#b45309] hover:bg-[#fef3c7] dark:text-[#c8c6c5] dark:hover:text-[#fcd34d] dark:hover:bg-[#451a03] transition-colors" title="Edit Area">
                                         <i class="fa-solid fa-pen-to-square text-xs"></i>
                                     </a>
                                     <form action="{{ route('admin.areas.destroy', $area->id) }}" 

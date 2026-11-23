@@ -28,18 +28,53 @@
             font-family: 'Poppins', sans-serif;
         }
         @media print {
+            @page {
+                size: A5 portrait;
+                margin: 8mm;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
             body {
                 background: white !important;
                 padding: 0 !important;
             }
+
             .no-print {
                 display: none !important;
             }
+
             .print-area {
+                width: 140mm !important;
+                max-width: 140mm !important;
                 box-shadow: none !important;
                 border: 2px solid #1b1c1c !important;
                 margin: 0 auto !important;
                 page-break-inside: avoid;
+            }
+
+            .brand-logo {
+                width: 32px !important;
+                height: 32px !important;
+                display: block !important;
+                opacity: 1 !important;
+            }
+
+            .brand-clean {
+                color: #1b1c1c !important;
+            }
+
+            .brand-track,
+            .print-red {
+                color: #dc143c !important;
+            }
+
+            .print-red-background {
+                background: #dc143c !important;
+                color: #ffffff !important;
             }
         }
     </style>
@@ -69,12 +104,10 @@
         
         <!-- Header Brand CleanTrack -->
         <div class="flex items-center justify-center gap-2.5 pb-4 border-b-2 border-[#1b1c1c]">
-            <div class="w-8 h-8 rounded-lg bg-[#dc143c] text-white flex items-center justify-center text-sm font-bold">
-                <i class="fa-solid fa-broom-ball"></i>
-            </div>
+            <img src="{{ asset('favicon.svg') }}" alt="Logo CleanTrack" class="brand-logo w-8 h-8 rounded-lg shrink-0 object-contain">
             <div class="text-left">
-                <div class="font-heading font-bold text-base tracking-tight leading-none text-[#1b1c1c]">
-                    CLEAN<span class="text-[#dc143c]">TRACK</span>
+                <div class="font-heading font-bold text-base tracking-tight leading-none">
+                    <span class="brand-clean text-[#1b1c1c]">CLEAN</span><span class="brand-track text-[#dc143c]">TRACK</span>
                 </div>
                 <p class="text-[9px] font-semibold uppercase tracking-wider text-[#5c3f3f] mt-0.5">
                     Sistem Monitoring Kebersihan
@@ -104,7 +137,7 @@
 
         <!-- Scanning Instructions -->
         <div class="mt-4 pt-3 border-t border-dashed border-[#eae8e7]">
-            <div class="flex items-center justify-center gap-2 text-[#dc143c] text-xs font-semibold">
+            <div class="flex items-center justify-center gap-2 text-[#dc143c] print-red text-xs font-semibold">
                 <i class="fa-solid fa-camera"></i>
                 <span>Pindai QR untuk Monitoring</span>
             </div>

@@ -101,9 +101,8 @@
 
             <!-- Navigation Links -->
             <div class="flex-1 overflow-y-auto px-3 py-2 space-y-1 text-sm">
-                <div class="px-3 pb-1.5 pt-2 text-[11px] font-semibold text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">Menu Utama</div>
-
                 @if(Auth::user()->role === 'admin')
+                    <div class="px-3 pb-1.5 pt-2 text-[11px] font-semibold text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">Menu Utama</div>
                     <!-- ADMIN MENU -->
                     <a href="{{ route('admin.dashboard') }}" 
                        class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('admin.dashboard') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
@@ -111,18 +110,10 @@
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="{{ route('floorplan.index') }}" 
-                       class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('floorplan.*') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
-                        <i class="fa-solid fa-map-location-dot w-4 text-center {{ request()->routeIs('floorplan.*') ? 'text-[#dc143c] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5]' }}"></i>
-                        <span class="flex-1">Denah Fasilitas</span>
-                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#f5f3f3] dark:bg-[#333535] text-[#5c3f3f] dark:text-[#c8c6c5] font-semibold uppercase">Peta</span>
-                    </a>
-
-                    <a href="{{ route('gallery.index') }}" 
-                       class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('gallery.*') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
-                        <i class="fa-solid fa-images w-4 text-center {{ request()->routeIs('gallery.*') ? 'text-[#dc143c] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5]' }}"></i>
-                        <span class="flex-1">Galeri & 360°</span>
-                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#f5f3f3] dark:bg-[#333535] text-[#5c3f3f] dark:text-[#c8c6c5] font-semibold uppercase">360°</span>
+                    <a href="{{ route('facility.index') }}"
+                       class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('facility.*') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
+                        <i class="fa-solid fa-map-location-dot w-4 text-center {{ request()->routeIs('facility.*') ? 'text-[#dc143c] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5]' }}"></i>
+                        <span class="flex-1">Denah & Galeri Ruangan</span>
                     </a>
 
                     <a href="{{ route('monitoring.create') }}" 
@@ -161,24 +152,18 @@
 
                 @else
                     <!-- PETUGAS MENU -->
+                    <div class="px-3 pb-1.5 pt-2 text-[11px] font-semibold text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">Menu Utama</div>
+
                     <a href="{{ route('petugas.dashboard') }}" 
                        class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('petugas.dashboard') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
                         <i class="fa-solid fa-gauge-high w-4 text-center {{ request()->routeIs('petugas.dashboard') ? 'text-[#dc143c] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5]' }}"></i>
                         <span>Dashboard</span>
                     </a>
 
-                    <a href="{{ route('floorplan.index') }}" 
-                       class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('floorplan.*') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
-                        <i class="fa-solid fa-map-location-dot w-4 text-center {{ request()->routeIs('floorplan.*') ? 'text-[#dc143c] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5]' }}"></i>
-                        <span class="flex-1">Denah Fasilitas</span>
-                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#f5f3f3] dark:bg-[#333535] text-[#5c3f3f] dark:text-[#c8c6c5] font-semibold uppercase">Peta</span>
-                    </a>
-
-                    <a href="{{ route('gallery.index') }}" 
-                       class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('gallery.*') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
-                        <i class="fa-solid fa-images w-4 text-center {{ request()->routeIs('gallery.*') ? 'text-[#dc143c] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5]' }}"></i>
-                        <span class="flex-1">Galeri & 360°</span>
-                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-[#f5f3f3] dark:bg-[#333535] text-[#5c3f3f] dark:text-[#c8c6c5] font-semibold uppercase">360°</span>
+                    <a href="{{ route('facility.index') }}"
+                       class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('facility.*') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
+                        <i class="fa-solid fa-map-location-dot w-4 text-center {{ request()->routeIs('facility.*') ? 'text-[#dc143c] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5]' }}"></i>
+                        <span class="flex-1">Denah & Galeri Ruangan</span>
                     </a>
 
                     <a href="{{ route('petugas.scan') }}" 
@@ -193,6 +178,8 @@
                         <i class="fa-solid fa-circle-plus w-4 text-center {{ request()->routeIs('monitoring.create') ? 'text-[#dc143c] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5]' }}"></i>
                         <span>Pemeriksaan Kebersihan</span>
                     </a>
+
+                    <div class="pt-4 pb-1.5 px-3 text-[11px] font-semibold text-[#5c3f3f] dark:text-[#c8c6c5] uppercase tracking-wider">Monitoring &amp; Laporan</div>
 
                     <a href="{{ route('petugas.my-monitoring') }}" 
                        class="flex items-center gap-3 px-3 py-2 rounded-xl font-medium transition-colors duration-150 {{ request()->routeIs('petugas.my-monitoring') || (request()->routeIs('monitoring.show') && auth()->user()->role === 'petugas') ? 'bg-[#fff1f0] text-[#dc143c] font-semibold border-l-2 border-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'text-[#5c3f3f] dark:text-[#c8c6c5] hover:bg-[#f5f3f3] dark:hover:bg-[#262727] hover:text-[#1b1c1c] dark:hover:text-white' }}">
@@ -306,15 +293,15 @@
                     <button type="button" 
                             onclick="toggleTheme()" 
                             class="h-9 px-3 rounded-xl bg-[#f5f3f3] dark:bg-[#262727] hover:bg-[#eae8e7] dark:hover:bg-[#333535] border border-[#eae8e7] dark:border-[#333535] inline-flex items-center gap-2 transition-colors focus:outline-none cursor-pointer shrink-0"
-                            title="Ganti Mode Terang / Gelap"
-                            aria-label="Toggle Theme">
+                            title="Ganti tampilan terang / gelap"
+                            aria-label="Ganti tampilan terang dan gelap">
                         <span class="inline-flex items-center gap-1.5 dark:hidden">
                             <i class="fa-solid fa-sun text-sm text-amber-500"></i>
-                            <span class="text-xs font-medium text-[#1b1c1c]">Mode Light</span>
+                            <span class="text-xs font-medium text-[#1b1c1c]">Light</span>
                         </span>
                         <span class="hidden dark:inline-flex items-center gap-1.5">
                             <i class="fa-solid fa-moon text-sm text-amber-300"></i>
-                            <span class="text-xs font-medium text-[#f2f0f0]">Mode Dark</span>
+                            <span class="text-xs font-medium text-[#f2f0f0]">Dark</span>
                         </span>
                     </button>
                 </div>

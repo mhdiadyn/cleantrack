@@ -280,8 +280,8 @@
                 @forelse($monitorings as $index => $item)
                     <tr>
                         <td style="text-align: center;">{{ $index + 1 }}</td>
-                        <td><strong>{{ $item->area->name ?? '-' }}</strong></td>
-                        <td>{{ $item->area->location ?? '-' }}</td>
+                        <td><strong>{{ $item->display_area_name }}</strong></td>
+                        <td>{{ $item->display_area_location }}</td>
                         <td>{{ $item->user->name ?? '-' }}</td>
                         <td>
                             @php

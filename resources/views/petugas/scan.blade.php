@@ -56,7 +56,7 @@
                     <p class="text-xs font-medium text-white mb-1">Kamera Belum Aktif</p>
                     <p class="text-[11px] text-[#8c8282]">Klik tombol <strong>"Aktifkan Kamera"</strong> di bawah untuk memulai pemindaian</p>
                 </div>
-            </div>
+            </div> 
 
             <!-- Laptop Camera Shutter / Black Screen Helpful Hint -->
             <p class="text-[11px] text-center text-[#5c3f3f] dark:text-[#8c8282] mt-2">
@@ -180,6 +180,7 @@
         max-height: 380px !important;
         object-fit: cover !important;
         display: block !important;
+        transform: scaleX(-1);
         border-radius: 0.875rem !important;
     }
     #reader img[alt="Info icon"] {

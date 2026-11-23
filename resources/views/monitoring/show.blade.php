@@ -5,13 +5,43 @@
 @section('header_subtitle', 'Detail monitoring kebersihan dan evaluasi kondisi area')
 
 @section('styles')
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css"/>
 <style>
-    #monitoringPannellumContainer {
-        width: 100%;
-        height: 420px;
-        border-radius: 12px;
-        overflow: hidden;
+    .report-letterhead,
+    .report-letterhead * {
+        color: #ffffff !important;
+    }
+
+    .report-letterhead-logo {
+        background: rgba(255, 255, 255, 0.20) !important;
+        color: #ffffff !important;
+    }
+
+    .report-registration {
+        background: rgba(255, 255, 255, 0.10) !important;
+        color: #ffffff !important;
+    }
+
+    @media print {
+        .report-letterhead,
+        .report-letterhead * {
+            color: #ffffff !important;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        .report-letterhead {
+            background: #dc143c !important;
+        }
+
+        .report-letterhead-logo {
+            background: rgba(255, 255, 255, 0.20) !important;
+            color: #ffffff !important;
+        }
+
+        .report-registration {
+            background: rgba(255, 255, 255, 0.10) !important;
+            color: #ffffff !important;
+        }
     }
 </style>
 @endsection
@@ -60,22 +90,22 @@
     <div class="card-clean overflow-hidden print:shadow-none print:border-0">
         
         <!-- Report Header / Letterhead (Solid Crimson - No Gradient) -->
-        <div class="p-6 sm:p-8 bg-[#dc143c] text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="report-letterhead p-6 sm:p-8 bg-[#dc143c] text-white flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div class="flex items-center gap-4">
-                <div class="w-12 h-12 rounded-xl bg-white/20 text-white flex items-center justify-center text-xl shrink-0">
+                <div class="report-letterhead-logo w-12 h-12 rounded-xl bg-white/20 text-white flex items-center justify-center text-xl shrink-0">
                     <i class="fa-solid fa-file-shield"></i>
                 </div>
                 <div>
                     <span class="text-[10px] font-semibold uppercase tracking-wider text-white/80">Lembar Berita Acara</span>
-                    <h2 class="font-heading text-xl sm:text-2xl font-semibold">Laporan Pemeriksaan Kebersihan</h2>
+                    <h2 class="font-heading text-xl sm:text-2xl font-semibold text-white">Laporan Pemeriksaan Kebersihan</h2>
                     <p class="text-xs text-white/80 mt-0.5">Sistem Monitoring Terintegrasi &bull; CleanTrack</p>
                 </div>
             </div>
 
-            <div class="text-left sm:text-right bg-white/10 sm:bg-transparent p-3 sm:p-0 rounded-xl">
+            <div class="report-registration text-left sm:text-right bg-white/10 sm:bg-transparent p-3 sm:p-0 rounded-xl text-white">
                 <span class="text-[10px] font-semibold text-white/80 uppercase tracking-wider block">Nomor Registrasi Laporan</span>
                 <span class="font-mono text-base font-bold text-white">#CT-{{ str_pad($monitoring->id, 5, '0', STR_PAD_LEFT) }}</span>
-                <span class="text-[11px] text-white/80 block mt-0.5">{{ \Carbon\Carbon::parse($monitoring->check_date)->format('d F Y') }}</span>
+                <span class="text-[11px] text-white/80 block mt-0.5">{{ \Carbon\Carbon::parse($monitoring->check_date)->translatedFormat('d F Y') }}</span>
             </div>
         </div>
 
@@ -91,13 +121,13 @@
                         <span class="text-[10px] font-semibold text-[#5c3f3f] dark:text-[#8c8282] uppercase tracking-wider block">Nama Area</span>
                         <h4 class="font-heading text-base font-semibold text-[#1b1c1c] dark:text-white flex items-center gap-2 mt-0.5">
                             <i class="fa-solid fa-map-location-dot text-[#dc143c] dark:text-[#ffb3b3]"></i>
-                            <span>{{ $monitoring->area->name ?? '-' }} (Lantai {{ $monitoring->area->floor ?? 1 }})</span>
+                            <span>{{ $monitoring->display_area_name }}@if($monitoring->area) (Lantai {{ $monitoring->area->floor }})@endif</span>
                         </h4>
                     </div>
 
                     <div>
                         <span class="text-[10px] font-semibold text-[#5c3f3f] dark:text-[#8c8282] uppercase tracking-wider block">Lokasi Fasilitas</span>
-                        <p class="text-xs font-medium text-[#1b1c1c] dark:text-white mt-0.5">{{ $monitoring->area->location ?? '-' }}</p>
+                        <p class="text-xs font-medium text-[#1b1c1c] dark:text-white mt-0.5">{{ $monitoring->display_area_location }}</p>
                     </div>
 
                     @if($monitoring->area && $monitoring->area->description)
@@ -174,7 +204,8 @@
                             </span>
                             @if($monitoring->photo_before_url)
                                 <button type="button" 
-                                        @click="$dispatch('open-image-modal', { src: '{{ $monitoring->photo_before_url }}', title: 'Foto Sebelum - {{ $monitoring->area->name ?? '' }}' })"
+                                        data-area-name="{{ $monitoring->display_area_name }}"
+                                        @click="$dispatch('open-image-modal', { src: '{{ $monitoring->photo_before_url }}', title: 'Foto Sebelum - ' + $el.dataset.areaName })"
                                         class="text-[11px] font-semibold text-[#dc143c] dark:text-[#ffb3b3] hover:underline flex items-center gap-1 no-print cursor-pointer">
                                     <i class="fa-solid fa-magnifying-glass-plus"></i> Perbesar
                                 </button>
@@ -185,7 +216,8 @@
                             @if($monitoring->photo_before_url)
                                 <img src="{{ $monitoring->photo_before_url }}" 
                                      alt="Foto Sebelum" 
-                                     @click="$dispatch('open-image-modal', { src: '{{ $monitoring->photo_before_url }}', title: 'Foto Sebelum - {{ $monitoring->area->name ?? '' }}' })"
+                                     data-area-name="{{ $monitoring->display_area_name }}"
+                                     @click="$dispatch('open-image-modal', { src: '{{ $monitoring->photo_before_url }}', title: 'Foto Sebelum - ' + $el.dataset.areaName })"
                                      class="max-h-64 w-full object-cover rounded-lg border border-[#eae8e7] dark:border-[#333535] cursor-pointer hover:opacity-90 transition-opacity">
                             @else
                                 <div class="text-center text-[#5c3f3f] dark:text-[#8c8282] py-8">
@@ -205,7 +237,8 @@
                             </span>
                             @if($monitoring->photo_after_url)
                                 <button type="button" 
-                                        @click="$dispatch('open-image-modal', { src: '{{ $monitoring->photo_after_url }}', title: 'Foto Sesudah - {{ $monitoring->area->name ?? '' }}' })"
+                                        data-area-name="{{ $monitoring->display_area_name }}"
+                                        @click="$dispatch('open-image-modal', { src: '{{ $monitoring->photo_after_url }}', title: 'Foto Sesudah - ' + $el.dataset.areaName })"
                                         class="text-[11px] font-semibold text-[#006622] dark:text-[#83fc8e] hover:underline flex items-center gap-1 no-print cursor-pointer">
                                     <i class="fa-solid fa-magnifying-glass-plus"></i> Perbesar
                                 </button>
@@ -216,7 +249,8 @@
                             @if($monitoring->photo_after_url)
                                 <img src="{{ $monitoring->photo_after_url }}" 
                                      alt="Foto Sesudah" 
-                                     @click="$dispatch('open-image-modal', { src: '{{ $monitoring->photo_after_url }}', title: 'Foto Sesudah - {{ $monitoring->area->name ?? '' }}' })"
+                                     data-area-name="{{ $monitoring->display_area_name }}"
+                                     @click="$dispatch('open-image-modal', { src: '{{ $monitoring->photo_after_url }}', title: 'Foto Sesudah - ' + $el.dataset.areaName })"
                                      class="max-h-64 w-full object-cover rounded-lg border border-[#eae8e7] dark:border-[#333535] cursor-pointer hover:opacity-90 transition-opacity">
                             @else
                                 <div class="text-center text-[#5c3f3f] dark:text-[#8c8282] py-8">
@@ -230,47 +264,28 @@
                 </div>
             </div>
 
-            <!-- Virtual 360 / Room Photo View Box (If Available) -->
-            @if($monitoring->photo_360 || ($monitoring->area && $monitoring->area->photo_360))
-                @php
-                    $isPano360 = $monitoring->is_360;
-                    $roomPhotoUrl = $monitoring->photo_360_url ?: ($monitoring->area ? $monitoring->area->photo_360_url : '');
-                @endphp
-                @if($isPano360)
-                    <!-- Panorama 360 Equirectangular View -->
-                    <div class="rounded-xl border border-[#eae8e7] dark:border-[#333535] overflow-hidden bg-[#f5f3f3] dark:bg-[#262727] p-5 no-print">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-2">
-                                <span class="px-2 py-0.5 rounded-full bg-[#dc143c] text-white font-semibold text-[10px] uppercase">360° Interactive</span>
-                                <h4 class="font-heading font-semibold text-[#1b1c1c] dark:text-white text-sm">Dokumentasi Panorama 360° Ruangan</h4>
-                            </div>
-                            <span class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] font-mono">Format Equirectangular 360°</span>
-                        </div>
-                        <div id="monitoringPannellumContainer" style="width: 100%; height: 420px; border-radius: 12px; overflow: hidden;"></div>
+            @php
+                $roomPhotoUrl = $monitoring->room_photo_url ?: $monitoring->area?->photo_url;
+            @endphp
+            @if($roomPhotoUrl)
+                <div class="rounded-xl border border-[#eae8e7] dark:border-[#333535] overflow-hidden bg-[#f5f3f3] dark:bg-[#262727] p-5 no-print">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="font-heading font-semibold text-[#1b1c1c] dark:text-white text-sm">Foto Ruangan</h4>
+                        <button type="button"
+                                data-area-name="{{ $monitoring->display_area_name }}"
+                                @click="$dispatch('open-image-modal', { src: '{{ $roomPhotoUrl }}', title: 'Foto Ruangan - ' + $el.dataset.areaName })"
+                                class="text-xs font-semibold text-[#0284c7] dark:text-[#7dd3fc] hover:underline flex items-center gap-1 cursor-pointer">
+                            <i class="fa-solid fa-expand"></i> Pratinjau
+                        </button>
                     </div>
-                @else
-                    <!-- Standard High-Res Proportional Room Photo -->
-                    <div class="rounded-xl border border-[#eae8e7] dark:border-[#333535] overflow-hidden bg-[#f5f3f3] dark:bg-[#262727] p-5 no-print">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center gap-2">
-                                <span class="px-2 py-0.5 rounded-full bg-[#0284c7] text-white font-semibold text-[10px] uppercase">Foto Ruangan Standar HD</span>
-                                <h4 class="font-heading font-semibold text-[#1b1c1c] dark:text-white text-sm">Dokumentasi Visual Fasilitas Ruangan</h4>
-                            </div>
-                            <button type="button" 
-                                    @click="$dispatch('open-image-modal', { src: '{{ $roomPhotoUrl }}', title: 'Foto Fasilitas Ruangan - {{ $monitoring->area->name ?? '' }}' })"
-                                    class="text-xs font-semibold text-[#0284c7] dark:text-[#7dd3fc] hover:underline flex items-center gap-1 cursor-pointer">
-                                <i class="fa-solid fa-expand"></i> Perbesar Foto
-                            </button>
-                        </div>
-                        <div class="bg-black/90 rounded-lg overflow-hidden flex items-center justify-center p-3 min-h-[360px] max-h-[500px]">
-                            <img src="{{ $roomPhotoUrl }}" 
-                                 alt="Foto Fasilitas Ruangan" 
-                                 @click="$dispatch('open-image-modal', { src: '{{ $roomPhotoUrl }}', title: 'Foto Fasilitas Ruangan - {{ $monitoring->area->name ?? '' }}' })"
-                                 class="max-h-[460px] w-auto max-w-full object-contain rounded-lg cursor-pointer hover:opacity-95 transition-opacity">
-                        </div>
-                        <p class="text-[11px] text-[#5c3f3f] dark:text-[#8c8282] mt-2 text-center">Ditampilkan dengan rasio asli proporsional tanpa distorsi lengkung bola panorama.</p>
+                    <div class="bg-black/90 rounded-lg overflow-hidden flex items-center justify-center p-3 min-h-[220px] max-h-[500px]">
+                        <img src="{{ $roomPhotoUrl }}"
+                             alt="Foto {{ $monitoring->display_area_name }}"
+                             data-area-name="{{ $monitoring->display_area_name }}"
+                             @click="$dispatch('open-image-modal', { src: '{{ $roomPhotoUrl }}', title: 'Foto Ruangan - ' + $el.dataset.areaName })"
+                             class="max-h-[460px] w-auto max-w-full object-contain rounded-lg cursor-pointer hover:opacity-95 transition-opacity">
                     </div>
-                @endif
+                </div>
             @endif
 
             <!-- Catatan Evaluasi -->
@@ -312,25 +327,4 @@
     </div>
 
 </div>
-@endsection
-
-@section('scripts')
-@if(($monitoring->photo_360 || ($monitoring->area && $monitoring->area->photo_360)) && $monitoring->is_360)
-<script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        let panoUrl = '{{ $monitoring->photo_360_url ?: ($monitoring->area ? $monitoring->area->photo_360_url : "") }}';
-        if (!panoUrl || panoUrl.startsWith('sample:')) {
-            panoUrl = 'https://pannellum.org/images/alma.jpg';
-        }
-        pannellum.viewer('monitoringPannellumContainer', {
-            "type": "equirectangular",
-            "panorama": panoUrl,
-            "autoLoad": true,
-            "autoRotate": -1.5,
-            "compass": true
-        });
-    });
-</script>
-@endif
 @endsection

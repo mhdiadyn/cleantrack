@@ -4,11 +4,13 @@ namespace Tests\Feature;
 
 use App\Models\Area;
 use App\Models\CleaningMonitoring;
+use App\Models\FloorPlan;
 use App\Models\User;
 use Database\Seeders\DatabaseSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -29,6 +31,13 @@ class CleanTrackFeatureTest extends TestCase
         $response->assertSee('CLEAN');
         $response->assertSee('TRACK');
         $response->assertSee('Sistem Monitoring');
+        $response->assertSee('Mhdiadyn_');
+        $response->assertSee('Light');
+        $response->assertSee('Dark');
+        $response->assertSee('placeholder="Masukkan alamat email"', false);
+        $response->assertDontSee('nama@cleantrack.test');
+        $response->assertDontSee('Mode Light');
+        $response->assertDontSee('Mode Dark');
     }
 
     public function test_admin_can_login_with_correct_credentials(): void
@@ -173,6 +182,63 @@ class CleanTrackFeatureTest extends TestCase
         Storage::disk('public')->assertExists($monitoring->photo_after);
     }
 
+    public function test_admin_can_save_a_custom_area_name_for_one_inspection(): void
+    {
+        $admin = User::where('role', 'admin')->firstOrFail();
+
+        $response = $this->actingAs($admin)->post(route('monitoring.store'), [
+            'custom_area_name' => 'Area Parkir Samping',
+            'cleanliness_condition' => 'Bersih',
+            'status' => 'Sudah Dibersihkan',
+        ]);
+
+        $response->assertRedirect();
+        $this->assertDatabaseHas('cleaning_monitorings', [
+            'user_id' => $admin->id,
+            'area_id' => null,
+            'custom_area_name' => 'Area Parkir Samping',
+        ]);
+        $this->assertDatabaseMissing('areas', ['name' => 'Area Parkir Samping']);
+
+        $monitoring = CleaningMonitoring::where('user_id', $admin->id)->where('custom_area_name', 'Area Parkir Samping')->firstOrFail();
+        $this->get(route('monitoring.show', $monitoring))->assertSee('Area Parkir Samping');
+    }
+
+    public function test_petugas_can_save_a_custom_area_name_for_one_inspection(): void
+    {
+        $petugas = User::where('role', 'petugas')->firstOrFail();
+
+        $response = $this->actingAs($petugas)->post(route('monitoring.store'), [
+            'custom_area_name' => 'Gudang Peralatan Barat',
+            'cleanliness_condition' => 'Bersih',
+            'status' => 'Sudah Dibersihkan',
+        ]);
+
+        $response->assertRedirect(route('petugas.my-monitoring'));
+        $this->assertDatabaseHas('cleaning_monitorings', [
+            'user_id' => $petugas->id,
+            'area_id' => null,
+            'custom_area_name' => 'Gudang Peralatan Barat',
+        ]);
+        $this->assertDatabaseMissing('areas', ['name' => 'Gudang Peralatan Barat']);
+
+        $this->get(route('petugas.my-monitoring'))->assertSee('Gudang Peralatan Barat');
+    }
+
+    public function test_monitoring_requires_an_existing_or_custom_area_name(): void
+    {
+        $petugas = User::where('role', 'petugas')->firstOrFail();
+        $monitoringCount = CleaningMonitoring::count();
+
+        $response = $this->actingAs($petugas)->post(route('monitoring.store'), [
+            'cleanliness_condition' => 'Bersih',
+            'status' => 'Sudah Dibersihkan',
+        ]);
+
+        $response->assertSessionHasErrors('custom_area_name');
+        $this->assertSame($monitoringCount, CleaningMonitoring::count());
+    }
+
     public function test_petugas_only_sees_their_own_history_in_my_monitoring(): void
     {
         $andi = User::where('email', 'andi@cleantrack.test')->first();
@@ -231,146 +297,197 @@ class CleanTrackFeatureTest extends TestCase
         $responsePrint->assertSee('Laporan Rekapitulasi Monitoring Kebersihan');
     }
 
-    public function test_interactive_floorplan_and_api_are_accessible(): void
+    public function test_facility_gallery_is_available_to_admin_and_petugas_for_four_floors(): void
     {
         $admin = User::where('role', 'admin')->first();
-
-        // Floor plan page
-        $response = $this->actingAs($admin)->get(route('floorplan.index'));
-        $response->assertStatus(200);
-        $response->assertSee('Denah Fasilitas Interaktif');
-        $response->assertSee('Lantai 1');
-
-        // Floor plan JSON API
-        $responseApi = $this->actingAs($admin)->get(route('floorplan.data'));
-        $responseApi->assertStatus(200);
-        $responseApi->assertJsonStructure([
-            'floor',
-            'areas',
-            'stats' => ['bersih', 'perlu_tindakan', 'kotor', 'belum_dimonitor'],
-        ]);
-    }
-
-    public function test_facility_gallery_and_360_are_accessible_with_filters(): void
-    {
         $petugas = User::where('email', 'andi@cleantrack.test')->first();
 
-        $response = $this->actingAs($petugas)->get(route('gallery.index'));
-        $response->assertStatus(200);
-        $response->assertSee('Galeri Keseluruhan Ruangan & 360°');
-        $response->assertSee('360° Virtual Tour');
-        $response->assertSee('Sebelum vs Sesudah');
+        foreach ([$admin, $petugas] as $user) {
+            $response = $this->actingAs($user)->get(route('facility.index'));
+            $response->assertOk();
+            $response->assertSee('Denah & Galeri Ruangan');
+            $response->assertSee('Lantai 1');
+            $response->assertSee('Lantai 2');
+            $response->assertSee('Lantai 3');
+            $response->assertSee('Lantai 4');
+            $response->assertDontSee('360°');
+            $response->assertDontSee('floorplan.data');
+        }
 
-        // Filter 360 tab
-        $response360 = $this->actingAs($petugas)->get(route('gallery.index', ['type' => '360']));
-        $response360->assertStatus(200);
+        foreach ([1, 2, 3, 4] as $floor) {
+            $response = $this->actingAs($petugas)->get(route('facility.index', ['floor' => $floor]));
+            $response->assertOk();
+            $response->assertSee("Lantai {$floor}");
+            $response->assertSee('DEMO / SEMENTARA');
+            $response->assertSee('role="button" tabindex="0"', false);
 
-        // Filter comparison tab
-        $responseComparison = $this->actingAs($petugas)->get(route('gallery.index', ['type' => 'comparison']));
-        $responseComparison->assertStatus(200);
+            foreach (config("facility_demo.floors.{$floor}") as $room) {
+                $response->assertSee($room['name']);
+            }
+        }
 
-        // Search in gallery
-        $responseSearch = $this->actingAs($petugas)->get(route('gallery.index', ['search' => 'Toilet']));
-        $responseSearch->assertStatus(200);
+        $this->actingAs($petugas)->get(route('facility.index', ['floor' => 5]))->assertNotFound();
     }
 
-    public function test_admin_can_upload_a_360_photo_for_an_area(): void
+    public function test_interactive_room_details_use_the_latest_monitoring_and_keep_photos(): void
+    {
+        Storage::fake('public');
+        $petugas = User::where('email', 'andi@cleantrack.test')->firstOrFail();
+        $area = Area::create([
+            'name' => 'Area Uji Denah Interaktif',
+            'location' => 'Gedung DEMO',
+            'floor' => '3',
+            'description' => 'Deskripsi area uji yang tampil pada detail.',
+        ]);
+        $needsCleaningArea = Area::create([
+            'name' => 'Area Perlu Dibersihkan',
+            'location' => 'Gedung DEMO',
+            'floor' => '3',
+        ]);
+        $uninspectedArea = Area::create([
+            'name' => 'Area Belum Diperiksa',
+            'location' => 'Gedung DEMO',
+            'floor' => '3',
+        ]);
+        $paths = [
+            'monitoring/test-before.jpg',
+            'monitoring/test-after.jpg',
+            'monitoring/test-room.jpg',
+        ];
+
+        foreach ($paths as $path) {
+            Storage::disk('public')->put($path, 'photo data');
+        }
+
+        CleaningMonitoring::create([
+            'user_id' => $petugas->id,
+            'area_id' => $area->id,
+            'cleanliness_condition' => 'Bersih',
+            'status' => 'Sudah Dibersihkan',
+            'check_date' => '2026-11-17',
+            'check_time' => '10:00:00',
+            'photo_before' => $paths[0],
+            'photo_after' => $paths[1],
+            'room_photo' => $paths[2],
+        ]);
+        CleaningMonitoring::create([
+            'user_id' => $petugas->id,
+            'area_id' => $area->id,
+            'cleanliness_condition' => 'Kotor',
+            'status' => 'Perlu Dibersihkan',
+            'check_date' => '2026-11-16',
+            'check_time' => '11:00:00',
+        ]);
+        CleaningMonitoring::create([
+            'user_id' => $petugas->id,
+            'area_id' => $needsCleaningArea->id,
+            'cleanliness_condition' => 'Kotor',
+            'status' => 'Perlu Dibersihkan',
+            'check_date' => '2026-11-17',
+            'check_time' => '09:00:00',
+        ]);
+
+        $response = $this->actingAs($petugas)->get(route('facility.index', ['floor' => 3]));
+
+        $response->assertOk();
+        $response->assertSee('Area Uji Denah Interaktif');
+        $response->assertSee('Deskripsi area uji yang tampil pada detail.');
+        $response->assertSee('Bersih');
+        $response->assertSee('<title>Area Uji Denah Interaktif — Bersih</title>', false);
+        $response->assertSee('<title>Area Perlu Dibersihkan — Perlu dibersihkan</title>', false);
+        $response->assertSee('<title>Area Belum Diperiksa — Belum diperiksa</title>', false);
+        $response->assertSee('17/11/2026');
+        $response->assertSee($petugas->name);
+        $response->assertSee('role="button" tabindex="0"', false);
+
+        foreach ($paths as $path) {
+            $response->assertSee(Storage::disk('public')->url($path), false);
+        }
+
+        foreach ($paths as $path) {
+            Storage::disk('public')->assertExists($path);
+        }
+    }
+
+    public function test_admin_can_upload_and_replace_independent_floor_plans(): void
     {
         Storage::fake('public');
         $admin = User::where('role', 'admin')->first();
+
+        $this->actingAs($admin)->post(route('admin.floor-plans.store', ['floor' => 1]), [
+            'floor_plan' => UploadedFile::fake()->image('floor-one.jpg'),
+        ])->assertRedirect(route('facility.index', ['floor' => 1]));
+
+        $this->actingAs($admin)->post(route('admin.floor-plans.store', ['floor' => 2]), [
+            'floor_plan' => UploadedFile::fake()->createWithContent('floor-two.pdf', '%PDF-1.4 test document'),
+        ])->assertRedirect(route('facility.index', ['floor' => 2]));
+
+        $floorOne = FloorPlan::where('floor', 1)->firstOrFail();
+        $floorTwo = FloorPlan::where('floor', 2)->firstOrFail();
+        $this->assertNotSame($floorOne->file_path, $floorTwo->file_path);
+        Storage::disk('public')->assertExists($floorOne->file_path);
+        Storage::disk('public')->assertExists($floorTwo->file_path);
+
+        $oldFloorOnePath = $floorOne->file_path;
+        $this->actingAs($admin)->post(route('admin.floor-plans.store', ['floor' => 1]), [
+            'floor_plan' => UploadedFile::fake()->image('replacement.jpg'),
+        ])->assertRedirect(route('facility.index', ['floor' => 1]));
+
+        $this->assertSame(1, FloorPlan::where('floor', 1)->count());
+        $this->assertSame(2, FloorPlan::count());
+        $this->assertNotSame($oldFloorOnePath, $floorOne->fresh()->file_path);
+        Storage::disk('public')->assertMissing($oldFloorOnePath);
+        Storage::disk('public')->assertExists($floorTwo->fresh()->file_path);
+    }
+
+    public function test_petugas_cannot_upload_floor_plans_or_manage_room_photos(): void
+    {
+        Storage::fake('public');
+        $petugas = User::where('email', 'andi@cleantrack.test')->first();
         $area = Area::first();
 
-        $response = $this->actingAs($admin)
-            ->from(route('gallery.index'))
-            ->post(route('admin.areas.update-360', $area), [
-                'photo_360' => UploadedFile::fake()->image('panorama.html')->mimeType('image/jpeg'),
-            ]);
+        $this->actingAs($petugas)->post(route('admin.floor-plans.store', ['floor' => 1]), [
+            'floor_plan' => UploadedFile::fake()->image('unauthorized.jpg'),
+        ])->assertRedirect(route('petugas.dashboard'));
 
-        $response->assertRedirect(route('gallery.index'));
+        $this->actingAs($petugas)->post(route('admin.areas.photo.store', $area), [
+            'photo' => UploadedFile::fake()->image('unauthorized.jpg'),
+        ])->assertRedirect(route('petugas.dashboard'));
+
+        $this->actingAs($petugas)->delete(route('admin.areas.photo.destroy', $area))
+            ->assertRedirect(route('petugas.dashboard'));
+        $this->assertNull($area->fresh()->photo);
+    }
+
+    public function test_admin_can_upload_replace_and_delete_a_standard_room_photo(): void
+    {
+        Storage::fake('public');
+        $admin = User::where('role', 'admin')->first();
+        $area = Area::firstOrFail();
+
+        $this->actingAs($admin)->post(route('admin.areas.photo.store', $area), [
+            'photo' => UploadedFile::fake()->image('room-photo.jpg'),
+        ])->assertRedirect();
+
         $area->refresh();
-        $this->assertStringStartsWith('areas_360/', $area->photo_360);
-        $this->assertNotSame('html', pathinfo($area->photo_360, PATHINFO_EXTENSION));
-        Storage::disk('public')->assertExists($area->photo_360);
-    }
+        $firstPhoto = $area->photo;
+        $this->assertNotNull($firstPhoto);
+        Storage::disk('public')->assertExists($firstPhoto);
 
-    public function test_area_form_uploads_ignore_client_provided_file_extensions(): void
-    {
-        Storage::fake('public');
-        $admin = User::where('role', 'admin')->first();
+        $this->actingAs($admin)->post(route('admin.areas.photo.store', $area), [
+            'photo' => UploadedFile::fake()->image('replacement-room-photo.png'),
+        ])->assertRedirect();
 
-        $this->actingAs($admin)
-            ->post(route('admin.areas.store'), [
-                'name' => 'Area Upload Test',
-                'location' => 'Gedung A',
-                'floor' => 1,
-                'pos_x' => 50,
-                'pos_y' => 50,
-                'is_active' => 1,
-                'photo_360' => UploadedFile::fake()->image('created-area.html')->mimeType('image/jpeg'),
-            ])
-            ->assertRedirect(route('admin.areas.index'));
-
-        $createdArea = Area::where('name', 'Area Upload Test')->firstOrFail();
-        $this->assertNotSame('html', pathinfo($createdArea->photo_360, PATHINFO_EXTENSION));
-        Storage::disk('public')->assertExists($createdArea->photo_360);
-
-        $existingArea = Area::firstOrFail();
-
-        $this->actingAs($admin)
-            ->put(route('admin.areas.update', $existingArea), [
-                'name' => $existingArea->name,
-                'location' => $existingArea->location,
-                'floor' => $existingArea->floor,
-                'pos_x' => $existingArea->pos_x,
-                'pos_y' => $existingArea->pos_y,
-                'is_active' => 1,
-                'photo_360' => UploadedFile::fake()->image('updated-area.html')->mimeType('image/jpeg'),
-            ])
-            ->assertRedirect(route('admin.areas.index'));
-
-        $existingArea->refresh();
-        $this->assertNotSame('html', pathinfo($existingArea->photo_360, PATHINFO_EXTENSION));
-        Storage::disk('public')->assertExists($existingArea->photo_360);
-    }
-
-    public function test_admin_can_upload_360_via_general_endpoint(): void
-    {
-        Storage::fake('public');
-        $admin = User::where('role', 'admin')->first();
-        $area = Area::where('floor', 3)->first() ?? Area::first();
-
-        $response = $this->actingAs($admin)
-            ->from(route('gallery.index'))
-            ->post(route('admin.areas.upload-360-general'), [
-                'area_id' => $area->id,
-                'photo_360' => UploadedFile::fake()->image('panorama360.html')->mimeType('image/jpeg'),
-            ]);
-
-        $response->assertRedirect(route('gallery.index'));
         $area->refresh();
-        $this->assertStringStartsWith('areas_360/', $area->photo_360);
-        $this->assertNotSame('html', pathinfo($area->photo_360, PATHINFO_EXTENSION));
-        Storage::disk('public')->assertExists($area->photo_360);
-    }
+        $this->assertNotSame($firstPhoto, $area->photo);
+        Storage::disk('public')->assertMissing($firstPhoto);
+        $replacementPhoto = $area->photo;
+        Storage::disk('public')->assertExists($replacementPhoto);
 
-    public function test_upload_360_rejects_file_exceeding_50mb(): void
-    {
-        Storage::fake('public');
-        $admin = User::where('role', 'admin')->first();
-        $area = Area::first();
-
-        // Create a fake file that exceeds 50MB (51201 KB)
-        $oversizedFile = UploadedFile::fake()->create('huge_360.jpg', 51201, 'image/jpeg');
-
-        $response = $this->actingAs($admin)
-            ->from(route('gallery.index'))
-            ->post(route('admin.areas.update-360', $area), [
-                'photo_360' => $oversizedFile,
-            ]);
-
-        $response->assertSessionHasErrors(['photo_360']);
-        $errors = session('errors');
-        $this->assertStringContainsString('50 MB', $errors->first('photo_360'));
+        $this->actingAs($admin)->delete(route('admin.areas.photo.destroy', $area))
+            ->assertRedirect();
+        $this->assertNull($area->fresh()->photo);
+        Storage::disk('public')->assertMissing($replacementPhoto);
     }
 
     public function test_admin_can_export_report_to_excel_and_word(): void
@@ -390,19 +507,39 @@ class CleanTrackFeatureTest extends TestCase
         $wordResponse->assertSee('CLEANTRACK FACILITY MANAGEMENT');
     }
 
-    public function test_floorplan_supports_floors_up_to_floor_4(): void
+    public function test_floor_plan_pdf_is_previewed_for_the_selected_floor(): void
     {
         $admin = User::where('role', 'admin')->first();
+        Storage::fake('public');
 
-        // Lantai 3
-        $responseFloor3 = $this->actingAs($admin)->get(route('floorplan.index', ['floor' => 3]));
-        $responseFloor3->assertStatus(200);
-        $responseFloor3->assertSee('Lantai 3');
+        $this->actingAs($admin)->post(route('admin.floor-plans.store', ['floor' => 3]), [
+            'floor_plan' => UploadedFile::fake()->createWithContent('floor-three.pdf', '%PDF-1.4 test document'),
+        ])->assertRedirect(route('facility.index', ['floor' => 3]));
 
-        // Lantai 4
-        $responseFloor4 = $this->actingAs($admin)->get(route('floorplan.index', ['floor' => 4]));
-        $responseFloor4->assertStatus(200);
-        $responseFloor4->assertSee('Lantai 4');
+        $floorPlan = FloorPlan::where('floor', 3)->firstOrFail();
+        $response = $this->actingAs($admin)->get(route('facility.index', ['floor' => 3]));
+        $response->assertOk();
+        $response->assertSee('Dokumen PDF');
+        $response->assertSee(Storage::disk('public')->url($floorPlan->file_path), false);
+        $response->assertSee('Lantai 3');
+    }
+
+    public function test_legacy_360_columns_are_removed_without_dropping_room_photo_paths(): void
+    {
+        $area = Area::firstOrFail();
+        $monitoring = CleaningMonitoring::firstOrFail();
+        $legacyAreaPhotoPath = 'areas_360/legacy-area.jpg';
+        $legacyMonitoringPhotoPath = 'monitoring_360/legacy-monitoring.jpg';
+
+        $area->update(['photo' => $legacyAreaPhotoPath]);
+        $monitoring->update(['room_photo' => $legacyMonitoringPhotoPath]);
+
+        $this->assertFalse(Schema::hasColumn('areas', 'photo_360'));
+        $this->assertFalse(Schema::hasColumn('areas', 'photo_type'));
+        $this->assertFalse(Schema::hasColumn('cleaning_monitorings', 'photo_360'));
+        $this->assertFalse(Schema::hasColumn('cleaning_monitorings', 'photo_360_type'));
+        $this->assertSame($legacyAreaPhotoPath, $area->fresh()->photo);
+        $this->assertSame($legacyMonitoringPhotoPath, $monitoring->fresh()->room_photo);
     }
 
     public function test_monitoring_records_start_and_end_time_and_calculates_duration(): void
@@ -435,104 +572,32 @@ class CleanTrackFeatureTest extends TestCase
         Storage::disk('public')->assertExists($monitoring->photo_after);
     }
 
-    public function test_area_photo_type_defaults_to_panorama_360_for_backward_compatibility(): void
-    {
-        $area = Area::first();
-        $this->assertNotNull($area);
-        $this->assertEquals('panorama_360', $area->photo_type);
-        $this->assertTrue($area->is_360);
-        $this->assertFalse($area->is_standard);
-        $this->assertEquals('Panorama 360° Virtual', $area->photo_type_label);
-    }
-
-    public function test_admin_can_upload_standard_room_photo_and_switch_types(): void
+    public function test_room_gallery_displays_room_and_monitoring_photos_for_both_roles(): void
     {
         Storage::fake('public');
         $admin = User::where('role', 'admin')->first();
-        $area = Area::first();
-
-        // 1. Upload as standard room photo
-        $response = $this->actingAs($admin)->post(route('admin.areas.update-360', $area->id), [
-            'photo_360' => UploadedFile::fake()->image('standard_room.jpg', 1920, 1080),
-            'photo_type' => 'standard',
-        ]);
-
-        $response->assertRedirect();
-        $response->assertSessionHas('success');
-
-        $area->refresh();
-        $this->assertEquals('standard', $area->photo_type);
-        $this->assertTrue($area->is_standard);
-        $this->assertFalse($area->is_360);
-        $this->assertEquals('Foto Ruangan Standar', $area->photo_type_label);
-        Storage::disk('public')->assertExists($area->photo_360);
-
-        // 2. Upload as true 360 panorama via general endpoint
-        $response2 = $this->actingAs($admin)->post(route('admin.areas.upload-360-general'), [
-            'area_id' => $area->id,
-            'photo_360' => UploadedFile::fake()->image('equirectangular_360.jpg', 4000, 2000),
-            'photo_type' => 'panorama_360',
-        ]);
-
-        $response2->assertRedirect();
-        $area->refresh();
-        $this->assertEquals('panorama_360', $area->photo_type);
-        $this->assertTrue($area->is_360);
-        $this->assertEquals('Panorama 360° Virtual', $area->photo_type_label);
-    }
-
-    public function test_gallery_displays_separated_tabs_and_filters(): void
-    {
-        $admin = User::where('role', 'admin')->first();
-
-        // 1. Default gallery page
-        $response = $this->actingAs($admin)->get(route('gallery.index'));
-        $response->assertStatus(200);
-        $response->assertSee('Panorama 360°');
-        $response->assertSee('Foto Standar HD');
-        $response->assertSee('Semua Foto');
-
-        // 2. Filter for 360 only
-        $response360 = $this->actingAs($admin)->get(route('gallery.index', ['type' => '360']));
-        $response360->assertStatus(200);
-
-        // 3. Filter for standard photos only
-        $responseStandard = $this->actingAs($admin)->get(route('gallery.index', ['type' => 'standard']));
-        $responseStandard->assertStatus(200);
-    }
-
-    public function test_monitoring_supports_standard_and_360_room_photos(): void
-    {
-        Storage::fake('public');
         $petugas = User::where('email', 'andi@cleantrack.test')->first();
-        $area = Area::first();
-
-        $response = $this->actingAs($petugas)->post(route('monitoring.store'), [
-            'area_id' => $area->id,
-            'cleanliness_condition' => 'Bersih',
-            'status' => 'Sudah Dibersihkan',
-            'start_time' => '09:00',
-            'end_time' => '09:30',
-            'notes' => 'Pemeriksaan dengan foto standar.',
-            'photo_before' => UploadedFile::fake()->image('before.jpg'),
-            'photo_after' => UploadedFile::fake()->image('after.jpg'),
-            'photo_360' => UploadedFile::fake()->image('room_detail.jpg', 1600, 1200),
-            'photo_360_type' => 'standard',
+        $area = Area::firstOrFail();
+        $monitoring = CleaningMonitoring::where('area_id', $area->id)->firstOrFail();
+        $areaPhoto = UploadedFile::fake()->image('existing-room-photo.jpg')->store('room-photos', 'public');
+        $roomPhoto = UploadedFile::fake()->image('legacy-room-photo.jpg')->store('monitoring-photos', 'public');
+        $photoBefore = UploadedFile::fake()->image('before.jpg')->store('monitoring-photos', 'public');
+        $photoAfter = UploadedFile::fake()->image('after.jpg')->store('monitoring-photos', 'public');
+        $area->update(['photo' => $areaPhoto]);
+        $monitoring->update([
+            'room_photo' => $roomPhoto,
+            'photo_before' => $photoBefore,
+            'photo_after' => $photoAfter,
         ]);
 
-        $response->assertRedirect(route('petugas.my-monitoring'));
-
-        $monitoring = CleaningMonitoring::where('area_id', $area->id)->latest('id')->first();
-        $this->assertNotNull($monitoring);
-        $this->assertEquals('standard', $monitoring->photo_360_type);
-        $this->assertTrue($monitoring->is_standard);
-        $this->assertFalse($monitoring->is_360);
-
-        // Check show page renders without Pannellum 360 initialization for standard photo
-        $showResponse = $this->actingAs($petugas)->get(route('monitoring.show', $monitoring->id));
-        $showResponse->assertStatus(200);
-        $showResponse->assertSee('Foto Ruangan Standar HD');
-        $showResponse->assertDontSee('initialPannellum');
+        foreach ([$admin, $petugas] as $user) {
+            $response = $this->actingAs($user)->get(route('facility.index', ['floor' => $area->floor]));
+            $response->assertOk();
+            $response->assertSee(Storage::disk('public')->url($areaPhoto), false);
+            $response->assertSee(Storage::disk('public')->url($roomPhoto), false);
+            $response->assertSee(Storage::disk('public')->url($photoBefore), false);
+            $response->assertSee(Storage::disk('public')->url($photoAfter), false);
+        }
     }
 
     public function test_user_can_view_profile_page(): void
@@ -620,7 +685,7 @@ class CleanTrackFeatureTest extends TestCase
         $this->assertDatabaseMissing('cleaning_monitorings', ['id' => $monitoring->id]);
     }
 
-    public function test_monitoring_create_form_does_not_contain_room_photo_360_elements(): void
+    public function test_monitoring_create_form_keeps_before_and_after_photo_uploads(): void
     {
         $petugas = User::where('role', 'petugas')->first();
 
@@ -630,12 +695,10 @@ class CleanTrackFeatureTest extends TestCase
         $response->assertSee('photo_after');
         $response->assertSee('Foto Sebelum');
         $response->assertSee('Foto Sesudah');
-        $response->assertDontSee('Foto Ruangan / 360°');
-        $response->assertDontSee('360° Panorama');
-        $response->assertDontSee('photo_360');
+        $response->assertDontSee('room_photo');
     }
 
-    public function test_monitoring_edit_form_does_not_contain_room_photo_360_elements(): void
+    public function test_monitoring_edit_form_keeps_before_and_after_photo_uploads(): void
     {
         $petugas = User::where('role', 'petugas')->first();
         $monitoring = CleaningMonitoring::where('user_id', $petugas->id)->first();
@@ -646,9 +709,7 @@ class CleanTrackFeatureTest extends TestCase
         $response->assertSee('photo_after');
         $response->assertSee('Foto Sebelum');
         $response->assertSee('Foto Sesudah');
-        $response->assertDontSee('Foto Ruangan / 360°');
-        $response->assertDontSee('360° Panorama');
-        $response->assertDontSee('photo_360');
+        $response->assertDontSee('room_photo');
     }
 
     public function test_petugas_can_access_laporan_kebersihan_with_metrics_and_own_data(): void
@@ -726,18 +787,18 @@ class CleanTrackFeatureTest extends TestCase
         $responseArea->assertDontSee('Tugas Selesai Area 1 Unik');
     }
 
-    public function test_gallery_route_remains_functional_for_both_roles(): void
+    public function test_facility_route_remains_functional_for_both_roles(): void
     {
         $admin = User::where('role', 'admin')->first();
         $petugas = User::where('role', 'petugas')->first();
 
-        $responseAdmin = $this->actingAs($admin)->get(route('gallery.index'));
-        $responseAdmin->assertStatus(200);
-        $responseAdmin->assertSee('Galeri');
+        $responseAdmin = $this->actingAs($admin)->get(route('facility.index'));
+        $responseAdmin->assertOk();
+        $responseAdmin->assertSee('Denah & Galeri Ruangan');
 
-        $responsePetugas = $this->actingAs($petugas)->get(route('gallery.index'));
-        $responsePetugas->assertStatus(200);
-        $responsePetugas->assertSee('Galeri');
+        $responsePetugas = $this->actingAs($petugas)->get(route('facility.index'));
+        $responsePetugas->assertOk();
+        $responsePetugas->assertSee('Denah & Galeri Ruangan');
     }
 
     public function test_ui_profile_menu_in_sidebar_above_logout_for_both_admin_and_petugas(): void
@@ -763,16 +824,21 @@ class CleanTrackFeatureTest extends TestCase
         }
     }
 
-    public function test_ui_theme_toggle_shows_mode_light_and_mode_dark_labels(): void
+    public function test_ui_theme_toggle_uses_light_and_dark_labels_for_both_roles(): void
     {
         $admin = User::where('role', 'admin')->first();
-        $response = $this->actingAs($admin)->get(route('admin.dashboard'));
-        $response->assertStatus(200);
+        $petugas = User::where('role', 'petugas')->first();
 
-        // Theme toggle contains Mode Light and Mode Dark labels
-        $response->assertSee('Mode Light');
-        $response->assertSee('Mode Dark');
-        $response->assertSee('toggleTheme()', false);
+        foreach ([$admin, $petugas] as $user) {
+            $dashboardRoute = $user->role === 'admin' ? route('admin.dashboard') : route('petugas.dashboard');
+            $response = $this->actingAs($user)->get($dashboardRoute);
+            $response->assertStatus(200);
+            $response->assertSee('>Light</span>', false);
+            $response->assertSee('>Dark</span>', false);
+            $response->assertDontSee('Mode Light');
+            $response->assertDontSee('Mode Dark');
+            $response->assertSee('toggleTheme()', false);
+        }
     }
 
     public function test_ui_cleantrack_logo_has_dark_mode_contrast_styling_for_both_roles(): void

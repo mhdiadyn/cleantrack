@@ -56,7 +56,11 @@
             </div>
         </form>
 
-        <div>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('petugas.reports.print', request()->query()) }}" target="_blank" class="btn-outline-neutral">
+                <i class="fa-solid fa-print text-xs"></i>
+                <span>Cetak Lembar Laporan</span>
+            </a>
             <a href="{{ route('monitoring.create') }}" class="btn-primary">
                 <i class="fa-solid fa-plus text-xs"></i>
                 <span>Pemeriksaan Baru</span>
@@ -87,8 +91,8 @@
                                 {{ $monitorings->firstItem() + $index }}
                             </td>
                             <td class="py-3.5 px-4">
-                                <div class="font-semibold text-[#1b1c1c] dark:text-white">{{ $item->area->name ?? '-' }}</div>
-                                <div class="text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5]">{{ $item->area->location ?? '-' }}</div>
+                                <div class="font-semibold text-[#1b1c1c] dark:text-white">{{ $item->display_area_name }}</div>
+                                <div class="text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5]">{{ $item->display_area_location }}</div>
                             </td>
                             <td class="py-3.5 px-4">
                                 <x-badge-condition :condition="$item->cleanliness_condition" />
@@ -114,7 +118,8 @@
                                 <div class="flex items-center justify-center gap-1.5">
                                     @if($item->photo_before_url)
                                         <button type="button" 
-                                                @click="$dispatch('open-image-modal', { src: '{{ $item->photo_before_url }}', title: 'Foto Sebelum - {{ $item->area->name ?? '' }}' })"
+                                                data-area-name="{{ $item->display_area_name }}"
+                                                @click="$dispatch('open-image-modal', { src: '{{ $item->photo_before_url }}', title: 'Foto Sebelum - ' + $el.dataset.areaName })"
                                                 class="w-7 h-7 rounded-lg overflow-hidden border border-[#eae8e7] dark:border-[#333535] hover:border-[#dc143c] transition-all shrink-0 cursor-pointer" title="Foto Sebelum">
                                             <img src="{{ $item->photo_before_url }}" alt="Sebelum" class="w-full h-full object-cover">
                                         </button>
@@ -122,7 +127,8 @@
 
                                     @if($item->photo_after_url)
                                         <button type="button" 
-                                                @click="$dispatch('open-image-modal', { src: '{{ $item->photo_after_url }}', title: 'Foto Sesudah - {{ $item->area->name ?? '' }}' })"
+                                                data-area-name="{{ $item->display_area_name }}"
+                                                @click="$dispatch('open-image-modal', { src: '{{ $item->photo_after_url }}', title: 'Foto Sesudah - ' + $el.dataset.areaName })"
                                                 class="w-7 h-7 rounded-lg overflow-hidden border border-[#b2e5be] dark:border-[#00531a] hover:border-[#00822d] transition-all shrink-0 cursor-pointer" title="Foto Sesudah">
                                             <img src="{{ $item->photo_after_url }}" alt="Sesudah" class="w-full h-full object-cover">
                                         </button>
@@ -145,6 +151,10 @@
                                     <a href="{{ route('monitoring.edit', $item->id) }}" 
                                        class="p-1.5 rounded-lg text-[#5c3f3f] hover:text-[#b45309] hover:bg-[#fef3c7] dark:text-[#c8c6c5] dark:hover:text-[#fcd34d] dark:hover:bg-[#451a03] transition-colors" title="Edit Data">
                                         <i class="fa-solid fa-pen-to-square text-xs"></i>
+                                    </a>
+                                    <a href="{{ route('monitoring.show', $item->id) }}" target="_blank"
+                                       class="p-1.5 rounded-lg text-[#5c3f3f] hover:text-[#dc143c] hover:bg-[#fff1f0] dark:text-[#c8c6c5] dark:hover:text-[#ffb3b3] dark:hover:bg-[#3b0b14] transition-colors" title="Cetak Lembar Laporan menjadi PDF">
+                                        <i class="fa-solid fa-print text-xs"></i>
                                     </a>
                                 </div>
                             </td>

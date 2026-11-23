@@ -26,6 +26,7 @@ class CleaningMonitoring extends Model
     protected $fillable = [
         'user_id',
         'area_id',
+        'custom_area_name',
         'cleanliness_condition',
         'start_time',
         'end_time',
@@ -33,8 +34,7 @@ class CleaningMonitoring extends Model
         'notes',
         'photo_before',
         'photo_after',
-        'photo_360',
-        'photo_360_type',
+        'room_photo',
         'check_date',
         'check_time',
     ];
@@ -120,6 +120,30 @@ class CleaningMonitoring extends Model
     }
 
     /**
+     * Get the area name saved for this inspection.
+     */
+    public function getDisplayAreaNameAttribute(): string
+    {
+        return $this->custom_area_name ?: ($this->area?->name ?? '-');
+    }
+
+    /**
+     * Get the area code saved for this inspection.
+     */
+    public function getDisplayAreaCodeAttribute(): ?string
+    {
+        return $this->area?->code ?? ($this->custom_area_name ? 'Manual' : null);
+    }
+
+    /**
+     * Get the location saved for this inspection.
+     */
+    public function getDisplayAreaLocationAttribute(): string
+    {
+        return $this->area?->location ?? ($this->custom_area_name ? 'Input manual' : '-');
+    }
+
+    /**
      * Get URL for photo_before.
      */
     public function getPhotoBeforeUrlAttribute(): ?string
@@ -151,56 +175,16 @@ class CleaningMonitoring extends Model
         return asset('storage/'.ltrim($this->photo_after, '/'));
     }
 
-    /**
-     * Get URL for photo_360.
-     */
-    public function getPhoto360UrlAttribute(): ?string
+    public function getRoomPhotoUrlAttribute(): ?string
     {
-        if ($this->photo_360) {
-            if (str_starts_with($this->photo_360, 'http://') || str_starts_with($this->photo_360, 'https://')) {
-                return $this->photo_360;
+        if ($this->room_photo) {
+            if (str_starts_with($this->room_photo, 'http://') || str_starts_with($this->room_photo, 'https://')) {
+                return $this->room_photo;
             }
 
-            return asset('storage/'.ltrim($this->photo_360, '/'));
-        }
-
-        // Fallback to area's 360 photo if available
-        if ($this->area && $this->area->photo_360_url) {
-            return $this->area->photo_360_url;
+            return asset('storage/'.ltrim($this->room_photo, '/'));
         }
 
         return null;
-    }
-
-    /**
-     * Get resolved photo type for 360/room photo.
-     */
-    public function getResolvedPhoto360TypeAttribute(): string
-    {
-        if ($this->photo_360) {
-            return $this->photo_360_type ?: 'panorama_360';
-        }
-
-        if ($this->area && $this->area->photo_type) {
-            return $this->area->photo_type;
-        }
-
-        return 'panorama_360';
-    }
-
-    /**
-     * Check if monitoring photo 360 is a panoramic equirectangular photo.
-     */
-    public function getIs360Attribute(): bool
-    {
-        return $this->resolved_photo_360_type === 'panorama_360';
-    }
-
-    /**
-     * Check if monitoring photo is a standard room photo.
-     */
-    public function getIsStandardAttribute(): bool
-    {
-        return $this->resolved_photo_360_type === 'standard';
     }
 }

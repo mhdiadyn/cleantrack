@@ -12,7 +12,7 @@
         <div class="p-6 border-b border-[#eae8e7] dark:border-[#2e3030] flex items-center justify-between bg-[#f5f3f3] dark:bg-[#262727]">
             <div>
                 <h3 class="font-heading text-base font-semibold text-[#1b1c1c] dark:text-white">Perbarui Hasil Pemeriksaan</h3>
-                <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-0.5">ID Monitoring: #{{ $monitoring->id }} &bull; {{ $monitoring->area->name ?? '' }}</p>
+                <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-0.5">ID Monitoring: #{{ $monitoring->id }} &bull; {{ $monitoring->display_area_name }}</p>
             </div>
             <a href="{{ route('monitoring.show', $monitoring->id) }}" class="btn-outline-neutral text-xs">
                 <i class="fa-solid fa-arrow-left text-[10px]"></i>
@@ -49,19 +49,14 @@
 
             <!-- Pilih Area -->
             <div>
-                <label for="area_id" class="label-clean">
+                <label for="area_combobox" class="label-clean">
                     Area yang Diperiksa <span class="text-[#ba1a1a]">*</span>
                 </label>
-                <select id="area_id" name="area_id" required class="input-clean @error('area_id') border-[#ba1a1a] @enderror">
-                    @foreach($areas as $area)
-                        <option value="{{ $area->id }}" {{ old('area_id', $monitoring->area_id) == $area->id ? 'selected' : '' }}>
-                            {{ $area->code }} - {{ $area->name }} (Lantai {{ $area->floor }} &bull; {{ $area->location }})
-                        </option>
-                    @endforeach
-                </select>
-                @error('area_id')
-                    <p class="text-[11px] text-[#ba1a1a] dark:text-[#ffb4ab] mt-1">{{ $message }}</p>
-                @enderror
+                @include('monitoring._area_combobox', [
+                    'areas'          => $areas,
+                    'selectedAreaId' => $monitoring->area_id,
+                    'customAreaName' => $monitoring->custom_area_name,
+                ])
             </div>
 
             <!-- Jam Mulai & Jam Selesai Pembersihan -->

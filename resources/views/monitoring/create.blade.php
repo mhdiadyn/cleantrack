@@ -48,22 +48,14 @@
 
             <!-- Pilih Area -->
             <div>
-                <label for="area_id" class="label-clean">
+                <label for="area_combobox" class="label-clean">
                     Pilih Area yang Diperiksa <span class="text-[#ba1a1a]">*</span>
                 </label>
-                <div class="relative">
-                    <select id="area_id" name="area_id" required class="input-clean text-sm @error('area_id') border-[#ba1a1a] @enderror">
-                        <option value="">-- Pilih Ruangan / Fasilitas --</option>
-                        @foreach($areas as $area)
-                            <option value="{{ $area->id }}" {{ old('area_id', $selectedAreaId) == $area->id ? 'selected' : '' }}>
-                                {{ $area->code }} - {{ $area->name }} (Lantai {{ $area->floor }} &bull; {{ $area->location }})
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                @error('area_id')
-                    <p class="text-[11px] text-[#ba1a1a] dark:text-[#ffb4ab] mt-1">{{ $message }}</p>
-                @enderror
+                @include('monitoring._area_combobox', [
+                    'areas'          => $areas,
+                    'selectedAreaId' => $selectedAreaId ?? null,
+                    'customAreaName' => old('custom_area_name'),
+                ])
             </div>
 
             <!-- Jam Mulai & Jam Selesai Pembersihan -->

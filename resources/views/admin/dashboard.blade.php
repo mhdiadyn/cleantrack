@@ -19,7 +19,7 @@
                     Selamat Datang, {{ Auth::user()->name }}
                 </h2>
                 <p class="text-xs sm:text-sm text-[#5c3f3f] dark:text-[#c8c6c5] mt-1 max-w-2xl">
-                    Pantau kondisi kebersihan area fasilitas secara visual di denah interaktif, cek dokumentasi foto 360°, dan kelola laporan kebersihan harian.
+                    Lihat denah gedung dan dokumentasi foto ruangan, serta kelola laporan kebersihan harian.
                 </p>
             </div>
             <div class="flex flex-wrap items-center gap-2.5">
@@ -27,13 +27,9 @@
                     <i class="fa-solid fa-plus text-xs"></i>
                     <span>Catat Baru</span>
                 </a>
-                <a href="{{ route('floorplan.index') }}" class="btn-secondary">
+                <a href="{{ route('facility.index') }}" class="btn-secondary">
                     <i class="fa-solid fa-map-location-dot text-xs"></i>
-                    <span>Denah Gedung</span>
-                </a>
-                <a href="{{ route('gallery.index') }}" class="btn-outline-neutral">
-                    <i class="fa-solid fa-images text-xs"></i>
-                    <span>Galeri & 360°</span>
+                    <span>Denah & Galeri Ruangan</span>
                 </a>
             </div>
         </div>
@@ -199,8 +195,8 @@
                         <tr class="hover:bg-[#fbf9f8] dark:hover:bg-[#262727]/60 transition-colors">
                             <td class="py-3.5 px-4 text-center font-medium text-[#5c3f3f] dark:text-[#8c8282]">{{ $index + 1 }}</td>
                             <td class="py-3.5 px-4">
-                                <div class="font-semibold text-[#1b1c1c] dark:text-white">{{ $item->area->name ?? '-' }} (Lt {{ $item->area->floor ?? 1 }})</div>
-                                <div class="text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5]">{{ $item->area->location ?? '-' }}</div>
+                                <div class="font-semibold text-[#1b1c1c] dark:text-white">{{ $item->display_area_name }}@if($item->area) (Lt {{ $item->area->floor }})@endif</div>
+                                <div class="text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5]">{{ $item->display_area_location }}</div>
                             </td>
                             <td class="py-3.5 px-4">
                                 <div class="flex items-center gap-2">

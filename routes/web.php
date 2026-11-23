@@ -5,8 +5,7 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\FloorPlanController;
-use App\Http\Controllers\GalleryController;
+use App\Http\Controllers\FacilityController;
 use App\Http\Controllers\MonitoringController;
 use App\Http\Controllers\Petugas\DashboardController as PetugasDashboardController;
 use App\Http\Controllers\Petugas\ReportController as PetugasReportController;
@@ -43,12 +42,7 @@ Route::middleware(['auth', 'role'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    // Interactive Floor Plan (Denah Ruangan)
-    Route::get('/denah', [FloorPlanController::class, 'index'])->name('floorplan.index');
-    Route::get('/api/floorplan/data', [FloorPlanController::class, 'getMapData'])->name('floorplan.data');
-
-    // Room Media Gallery & 360 Virtual Views (Galeri Keseluruhan Ruangan)
-    Route::get('/galeri', [GalleryController::class, 'index'])->name('gallery.index');
+    Route::get('/denah-galeri', [FacilityController::class, 'index'])->name('facility.index');
 
     // Monitoring Operations accessible by authenticated users
     Route::get('/monitoring/create', [MonitoringController::class, 'create'])->name('monitoring.create');
@@ -72,8 +66,11 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->as('admin.')->group(
     Route::post('areas/qr-generate-all', [QRCodeController::class, 'generateAll'])->name('areas.qr.generate-all');
     Route::get('areas/{area}/qr-print', [QRCodeController::class, 'print'])->name('areas.qr.print');
     Route::get('areas/{area}/qr-download', [QRCodeController::class, 'download'])->name('areas.qr.download');
-    Route::post('areas/{area}/update-360', [AreaController::class, 'updatePhoto360'])->name('areas.update-360');
-    Route::post('areas/upload-360', [AreaController::class, 'uploadPhoto360General'])->name('areas.upload-360-general');
+    Route::post('floor-plans/{floor}', [FacilityController::class, 'storeFloorPlan'])
+        ->whereNumber('floor')
+        ->name('floor-plans.store');
+    Route::post('areas/{area}/room-photo', [AreaController::class, 'storeRoomPhoto'])->name('areas.photo.store');
+    Route::delete('areas/{area}/room-photo', [AreaController::class, 'destroyRoomPhoto'])->name('areas.photo.destroy');
     Route::resource('areas', AreaController::class);
 
     // User Management
@@ -102,4 +99,7 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->as('petugas.')->
     Route::get('/scan', [QRCodeController::class, 'scanView'])->name('scan');
     Route::get('/riwayat', [MonitoringController::class, 'myMonitoring'])->name('my-monitoring');
     Route::get('/laporan', [PetugasReportController::class, 'index'])->name('reports.index');
+    Route::get('/laporan/cetak', [PetugasReportController::class, 'print'])->name('reports.print');
+    Route::get('/laporan/excel', [PetugasReportController::class, 'exportExcel'])->name('reports.excel');
+    Route::get('/laporan/word', [PetugasReportController::class, 'exportWord'])->name('reports.word');
 });

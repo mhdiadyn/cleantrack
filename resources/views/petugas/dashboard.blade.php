@@ -19,7 +19,7 @@
                     Halo, {{ Auth::user()->name }}!
                 </h2>
                 <p class="text-xs sm:text-sm text-[#5c3f3f] dark:text-[#c8c6c5] mt-1 max-w-xl">
-                    Periksa status kebersihan ruangan hari ini, catat temuan, dan lampirkan bukti foto serta dokumentasi 360°.
+                    Periksa status kebersihan ruangan hari ini, lihat denah dan galeri foto, lalu catat hasil pemeriksaan.
                 </p>
             </div>
             
@@ -28,9 +28,9 @@
                     <i class="fa-solid fa-clipboard-check text-xs"></i>
                     <span>Mulai Pemeriksaan</span>
                 </a>
-                <a href="{{ route('floorplan.index') }}" class="btn-secondary">
+                <a href="{{ route('facility.index') }}" class="btn-secondary">
                     <i class="fa-solid fa-map-location-dot text-xs"></i>
-                    <span>Denah Gedung</span>
+                    <span>Denah & Galeri Ruangan</span>
                 </a>
             </div>
         </div>
@@ -218,8 +218,8 @@
                         <tr class="hover:bg-[#fbf9f8] dark:hover:bg-[#262727]/60 transition-colors">
                             <td class="py-3.5 px-4 text-center font-medium text-[#5c3f3f] dark:text-[#8c8282]">{{ $index + 1 }}</td>
                             <td class="py-3.5 px-4">
-                                <div class="font-semibold text-[#1b1c1c] dark:text-white">{{ $item->area->name ?? '-' }} (Lt {{ $item->area->floor ?? 1 }})</div>
-                                <div class="text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5]">{{ $item->area->location ?? '-' }}</div>
+                                <div class="font-semibold text-[#1b1c1c] dark:text-white">{{ $item->display_area_name }}@if($item->area) (Lt {{ $item->area->floor }})@endif</div>
+                                <div class="text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5]">{{ $item->display_area_location }}</div>
                             </td>
                             <td class="py-3.5 px-4">
                                 <x-badge-condition :condition="$item->cleanliness_condition" />

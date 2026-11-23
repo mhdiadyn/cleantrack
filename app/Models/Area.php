@@ -23,8 +23,7 @@ class Area extends Model
         'floor',
         'pos_x',
         'pos_y',
-        'photo_360',
-        'photo_type',
+        'photo',
         'description',
         'is_active',
     ];
@@ -37,10 +36,7 @@ class Area extends Model
     protected $appends = [
         'code',
         'current_status',
-        'photo_360_url',
-        'is_360',
-        'is_standard',
-        'photo_type_label',
+        'photo_url',
         'has_qr_code',
     ];
 
@@ -172,43 +168,16 @@ class Area extends Model
         return $this->hasOne(CleaningMonitoring::class, 'area_id')->latestOfMany();
     }
 
-    /**
-     * Get URL for photo_360.
-     */
-    public function getPhoto360UrlAttribute(): ?string
+    public function getPhotoUrlAttribute(): ?string
     {
-        if (! $this->photo_360) {
+        if (! $this->photo) {
             return null;
         }
 
-        if (str_starts_with($this->photo_360, 'http://') || str_starts_with($this->photo_360, 'https://')) {
-            return $this->photo_360;
+        if (str_starts_with($this->photo, 'http://') || str_starts_with($this->photo, 'https://')) {
+            return $this->photo;
         }
 
-        return asset('storage/'.ltrim($this->photo_360, '/'));
-    }
-
-    /**
-     * Check if area photo is a 360 degree panoramic view.
-     */
-    public function getIs360Attribute(): bool
-    {
-        return empty($this->photo_type) || $this->photo_type === 'panorama_360';
-    }
-
-    /**
-     * Check if area photo is a standard (non-360) room photo.
-     */
-    public function getIsStandardAttribute(): bool
-    {
-        return $this->photo_type === 'standard';
-    }
-
-    /**
-     * Get human-readable photo type label.
-     */
-    public function getPhotoTypeLabelAttribute(): string
-    {
-        return $this->is_standard ? 'Foto Ruangan Standar' : 'Panorama 360° Virtual';
+        return asset('storage/'.ltrim($this->photo, '/'));
     }
 }

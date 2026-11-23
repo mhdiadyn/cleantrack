@@ -210,7 +210,8 @@ class QRCodeFeatureTest extends TestCase
             ->get(route('monitoring.create', ['area_id' => $this->area->id]));
 
         $response->assertStatus(200);
-        $response->assertSee('value="'.$this->area->id.'" selected', false);
+        // The area ID is passed as initAreaId to the Alpine.js combobox
+        $response->assertSee('initAreaId:    \''.$this->area->id.'\'', false);
     }
 
     public function test_monitoring_create_ignores_inactive_area_id_parameter(): void
@@ -225,8 +226,8 @@ class QRCodeFeatureTest extends TestCase
             ->get(route('monitoring.create', ['area_id' => $inactiveArea->id]));
 
         $response->assertStatus(200);
-        // Inactive area should not be selected
-        $response->assertDontSee('value="'.$inactiveArea->id.'" selected', false);
+        // Inactive area should not be passed as initAreaId to the combobox
+        $response->assertDontSee('initAreaId:    \''.$inactiveArea->id.'\'', false);
     }
 
     public function test_monitoring_store_rejects_inactive_area_id(): void

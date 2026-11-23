@@ -78,21 +78,31 @@
                             Periode: <b class="text-[#1b1c1c] dark:text-white">{{ request('start_date') ? \Carbon\Carbon::parse(request('start_date'))->format('d/m/Y') : 'Awal' }}</b> s/d <b class="text-[#1b1c1c] dark:text-white">{{ request('end_date') ? \Carbon\Carbon::parse(request('end_date'))->format('d/m/Y') : 'Sekarang' }}</b>
                         </span>
                     @else
-                        <span>Menampilkan seluruh arsip data pekerjaan saya</span>
+                        <span>Periode: <b class="text-[#1b1c1c] dark:text-white">Seluruh Tanggal</b></span>
                     @endif
                 </div>
 
-                <div class="flex items-center gap-2">
-                    @if(request()->hasAny(['start_date', 'end_date', 'area_id', 'status', 'condition']))
-                        <a href="{{ route('petugas.reports.index') }}" class="btn-outline-neutral text-xs">
-                            <i class="fa-solid fa-rotate-left text-[11px]"></i>
-                            <span>Reset</span>
-                        </a>
-                    @endif
+                <div class="flex flex-wrap items-center gap-2">
+                    <a href="{{ route('petugas.reports.index') }}" class="btn-outline-neutral text-xs">
+                        <i class="fa-solid fa-rotate-left text-[11px]"></i>
+                        <span>Reset</span>
+                    </a>
                     <button type="submit" class="btn-primary text-xs">
                         <i class="fa-solid fa-filter text-xs"></i>
                         <span>Terapkan Filter</span>
                     </button>
+                    <a href="{{ route('petugas.reports.excel', request()->query()) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#00822d] hover:bg-[#006622] text-white font-semibold text-xs transition-colors">
+                        <i class="fa-solid fa-file-excel"></i>
+                        <span>Excel</span>
+                    </a>
+                    <a href="{{ route('petugas.reports.word', request()->query()) }}" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#0284c7] hover:bg-[#0369a1] text-white font-semibold text-xs transition-colors">
+                        <i class="fa-solid fa-file-word"></i>
+                        <span>Word</span>
+                    </a>
+                    <a href="{{ route('petugas.reports.print', request()->query()) }}" target="_blank" class="btn-secondary text-xs">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Cetak PDF</span>
+                    </a>
                 </div>
             </div>
         </form>
@@ -207,9 +217,9 @@
                                 </div>
                             </td>
                             <td class="py-3.5 px-4">
-                                <span class="font-semibold text-[#1b1c1c] dark:text-white block">{{ $item->area->name ?? '-' }}</span>
+                                <span class="font-semibold text-[#1b1c1c] dark:text-white block">{{ $item->display_area_name }}</span>
                                 <span class="text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5]">
-                                    {{ $item->area->location ?? '-' }} 
+                                    {{ $item->display_area_location }}
                                     @if($item->area && $item->area->floor)
                                         (Lt {{ $item->area->floor }})
                                     @endif
