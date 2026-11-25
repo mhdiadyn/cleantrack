@@ -121,7 +121,7 @@
                         <span class="text-[10px] font-semibold text-[#5c3f3f] dark:text-[#8c8282] uppercase tracking-wider block">Nama Area</span>
                         <h4 class="font-heading text-base font-semibold text-[#1b1c1c] dark:text-white flex items-center gap-2 mt-0.5">
                             <i class="fa-solid fa-map-location-dot text-[#dc143c] dark:text-[#ffb3b3]"></i>
-                            <span>{{ $monitoring->display_area_name }}@if($monitoring->area) (Lantai {{ $monitoring->area->floor }})@endif</span>
+                            <span>{{ $monitoring->display_area_name }}@if($monitoring->area) ({{ $monitoring->area->floor_label }})@endif</span>
                         </h4>
                     </div>
 

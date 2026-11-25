@@ -83,7 +83,7 @@
                                     <i class="fa-solid fa-location-dot text-[#dc143c] dark:text-[#ffb3b3] mr-1 text-[11px]"></i>
                                     {{ $area->location }}
                                 </div>
-                                <span class="text-[11px] text-[#5c3f3f] dark:text-[#8c8282]">Lantai {{ $area->floor ?? 1 }}</span>
+                                <span class="text-[11px] text-[#5c3f3f] dark:text-[#8c8282]">{{ $area->floor_label }}</span>
                             </td>
                             <td class="py-3.5 px-4 text-center">
                                 @if($area->photo_url)

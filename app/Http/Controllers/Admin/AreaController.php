@@ -7,6 +7,7 @@ use App\Models\Area;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class AreaController extends Controller
@@ -45,7 +46,9 @@ class AreaController extends Controller
      */
     public function create(): View
     {
-        return view('admin.areas.create');
+        return view('admin.areas.create', [
+            'floorLabels' => config('facility_demo.floor_labels'),
+        ]);
     }
 
     /**
@@ -57,7 +60,7 @@ class AreaController extends Controller
             'name' => ['required', 'string', 'max:255', 'unique:areas,name'],
             'location' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'floor' => ['required', 'integer', 'min:1', 'max:4'],
+            'floor' => ['required', 'integer', Rule::in(array_keys(config('facility_demo.floor_labels')))],
             'is_active' => ['nullable', 'boolean'],
         ], [
             'name.required' => 'Nama area wajib diisi.',
@@ -92,7 +95,10 @@ class AreaController extends Controller
      */
     public function edit(Area $area): View
     {
-        return view('admin.areas.edit', compact('area'));
+        return view('admin.areas.edit', [
+            'area' => $area,
+            'floorLabels' => config('facility_demo.floor_labels'),
+        ]);
     }
 
     /**
@@ -104,7 +110,7 @@ class AreaController extends Controller
             'name' => ['required', 'string', 'max:255', 'unique:areas,name,'.$area->id],
             'location' => ['required', 'string', 'max:255'],
             'description' => ['nullable', 'string', 'max:1000'],
-            'floor' => ['required', 'integer', 'min:1', 'max:4'],
+            'floor' => ['required', 'integer', Rule::in(array_keys(config('facility_demo.floor_labels')))],
             'is_active' => ['nullable', 'boolean'],
         ], [
             'name.required' => 'Nama area wajib diisi.',

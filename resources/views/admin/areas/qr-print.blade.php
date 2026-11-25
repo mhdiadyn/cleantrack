@@ -124,7 +124,7 @@
                 {{ $area->name }}
             </h1>
             <p class="text-xs text-[#5c3f3f] font-medium mt-1">
-                {{ $area->location }} &bull; Lantai {{ $area->floor }}
+                {{ $area->location }} &bull; {{ $area->floor_label }}
             </p>
         </div>
 

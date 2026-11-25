@@ -399,71 +399,75 @@
             <!-- Specular Edge Accent -->
             <div class="ct-specular absolute -top-24 -left-24 w-48 h-48 rounded-full blur-2xl pointer-events-none"></div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+            <div class="grid grid-cols-1 grid-rows-[auto_1fr_auto] lg:grid-cols-12 lg:grid-rows-1 gap-8 lg:gap-10 items-center">
                 
                 <!-- Left Section: Brand & Headline Typography -->
-                <div class="order-2 flex flex-col justify-between text-left space-y-6 lg:order-1 lg:col-span-6">
+                <div class="contents text-left lg:col-span-6 lg:flex lg:flex-col lg:justify-between lg:space-y-6">
                     
-                    <!-- Decorative Top Metadata Tags -->
-                    <div class="flex items-center justify-between text-xs tracking-wider font-medium">
-                        <div class="inline-flex items-center gap-2">
-                            <span class="w-2 h-2 rounded-full bg-[#ff2a55] animate-pulse"></span>
-                            <span class="ct-topbar-brand uppercase font-semibold tracking-wider">CLEANTRACK</span>
+                    <div class="order-1 space-y-6 lg:order-none">
+                        <!-- Decorative Top Metadata Tags -->
+                        <div class="flex items-center justify-between text-xs tracking-wider font-medium">
+                            <div class="inline-flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-[#ff2a55] animate-pulse"></span>
+                                <span class="ct-topbar-brand uppercase font-semibold tracking-wider">CLEANTRACK</span>
+                            </div>
+                            <span class="ct-topbar-label text-[11px] uppercase tracking-widest">Monitoring Kebersihan</span>
                         </div>
-                        <span class="ct-topbar-label text-[11px] uppercase tracking-widest">Monitoring Kebersihan</span>
-                    </div>
 
-                    <!-- CleanTrack Brand Icon Badge -->
-                    <div class="inline-flex items-center gap-3">
-                        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#8a001a] via-[#dc143c] to-[#ff4d6d] p-0.5 shadow-[0_0_20px_rgba(220,20,60,0.5)]">
-                            <div class="w-full h-full bg-[#120206]/60 backdrop-blur-xs rounded-[14px] flex items-center justify-center">
-                                <i class="fa-solid fa-broom-ball text-xl text-white"></i>
+                        <!-- CleanTrack Brand Icon Badge -->
+                        <div class="inline-flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#8a001a] via-[#dc143c] to-[#ff4d6d] p-0.5 shadow-[0_0_20px_rgba(220,20,60,0.5)]">
+                                <div class="w-full h-full bg-[#120206]/60 backdrop-blur-xs rounded-[14px] flex items-center justify-center">
+                                    <i class="fa-solid fa-broom-ball text-xl text-white"></i>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="font-heading text-xl font-bold tracking-tight block leading-tight ct-text-primary">
+                                    CLEAN<span class="text-[#ff3b5c]">TRACK</span>
+                                </span>
+                                <span class="text-[11px] ct-text-muted font-medium tracking-wide">Enterprise Hygiene System</span>
                             </div>
                         </div>
-                        <div>
-                            <span class="font-heading text-xl font-bold tracking-tight block leading-tight ct-text-primary">
-                                CLEAN<span class="text-[#ff3b5c]">TRACK</span>
-                            </span>
-                            <span class="text-[11px] ct-text-muted font-medium tracking-wide">Enterprise Hygiene System</span>
+
+                        <!-- Main Bold Headline -->
+                        <div class="pt-2">
+                            <h1 class="font-heading text-3xl sm:text-4xl lg:text-[42px] font-extrabold tracking-tight leading-[1.12] ct-text-primary">
+                                Clean Spaces,<br>
+                                <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ff4d6d] via-[#dc143c] to-[#c9002b]">Better Standards.</span>
+                            </h1>
+                            <p class="text-xs sm:text-sm ct-text-secondary mt-3.5 leading-relaxed font-normal max-w-md">
+                                Sistem Monitoring Kebersihan untuk pemantauan area yang lebih teratur, terukur, dan efisien.
+                            </p>
                         </div>
                     </div>
 
-                    <!-- Main Bold Headline -->
-                    <div class="pt-2">
-                        <h1 class="font-heading text-3xl sm:text-4xl lg:text-[42px] font-extrabold tracking-tight leading-[1.12] ct-text-primary">
-                            Clean Spaces,<br>
-                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#ff4d6d] via-[#dc143c] to-[#c9002b]">Better Standards.</span>
-                        </h1>
-                        <p class="text-xs sm:text-sm ct-text-secondary mt-3.5 leading-relaxed font-normal max-w-md">
-                            Sistem Monitoring Kebersihan untuk pemantauan area yang lebih teratur, terukur, dan efisien.
-                        </p>
-                    </div>
+                    <div class="order-3 space-y-6 lg:order-none">
+                        <!-- Key Feature Highlights (Badges) -->
+                        <div class="pt-1 flex flex-wrap gap-2 text-[11px] font-medium">
+                            <span class="ct-badge inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                                <i class="fa-solid fa-qrcode text-[#dc143c]"></i>
+                                <span>Audit QR Code</span>
+                            </span>
+                            <span class="ct-badge inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                                <i class="fa-solid fa-clock-rotate-left text-[#dc143c]"></i>
+                                <span>Log Real-Time</span>
+                            </span>
+                            <span class="ct-badge inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                                <i class="fa-solid fa-vr-cardboard text-[#dc143c]"></i>
+                                <span>Galeri Foto Ruangan</span>
+                            </span>
+                        </div>
 
-                    <!-- Key Feature Highlights (Badges) -->
-                    <div class="pt-1 flex flex-wrap gap-2 text-[11px] font-medium">
-                        <span class="ct-badge inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <i class="fa-solid fa-qrcode text-[#dc143c]"></i>
-                            <span>Audit QR Code</span>
-                        </span>
-                        <span class="ct-badge inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <i class="fa-solid fa-clock-rotate-left text-[#dc143c]"></i>
-                            <span>Log Real-Time</span>
-                        </span>
-                        <span class="ct-badge inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full backdrop-blur-sm">
-                            <i class="fa-solid fa-vr-cardboard text-[#dc143c]"></i>
-                            <span>Galeri Foto Ruangan</span>
-                        </span>
-                    </div>
-
-                    <!-- Footer Tag -->
-                    <div class="pt-2 ct-footer-border border-t flex items-center justify-between text-[11px] ct-text-faint">
-                        <span>&copy; {{ date('Y') }} Mhdiadyn_</span>
-                        <span class="tracking-wide">Standard Compliance</span>
+                        <!-- Footer Tag -->
+                        <div class="pt-2 ct-footer-border border-t flex items-center justify-between text-[11px] ct-text-faint">
+                            <span>&copy; {{ date('Y') }} CleanTrack Mhd.</span>
+                            <span class="tracking-wide">Standard Compliance</span>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Right Section: Login Form Panel -->
-                <div class="order-1 lg:order-2 lg:col-span-6">
+                <div class="order-2 self-center lg:order-none lg:col-span-6">
                     <div class="glass-subpanel rounded-2xl sm:rounded-3xl p-6 sm:p-7 relative">
                         
                         <div class="mb-5">

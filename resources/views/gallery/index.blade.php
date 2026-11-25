@@ -40,7 +40,7 @@
                    'bg-crimson text-white' => $currentFloor === $floor,
                    'bg-neutral-100 text-neutral-700 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700' => $currentFloor !== $floor,
                ])>
-                Lantai {{ $floor }}
+                {{ $floorLabels[$floor] }}
             </a>
         @endforeach
     </nav>
@@ -51,7 +51,7 @@
                 <div>
                     <div class="flex flex-wrap items-center gap-2">
                         <h2 id="interactive-floor-plan-heading" class="text-lg font-semibold text-neutral-900 dark:text-white">
-                            Denah Fasilitas Interaktif — Lantai {{ $currentFloor }}
+                            Denah Fasilitas Interaktif — {{ $currentFloorLabel }}
                         </h2>
                         <span class="rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-amber-800 dark:border-amber-700 dark:bg-amber-950/40 dark:text-amber-200">DEMO / SEMENTARA</span>
                     </div>
@@ -76,14 +76,10 @@
 
         <div class="overflow-auto bg-neutral-50 p-3 dark:bg-neutral-950 sm:p-5">
             <svg id="interactiveFloorPlan" viewBox="0 0 1000 {{ $diagramHeight }}" role="img"
-                 aria-label="Denah ilustrasi interaktif Lantai {{ $currentFloor }}"
-                 class="mx-auto h-auto w-full min-w-[760px] transition-[width] duration-150">
-                <rect x="14" y="14" width="972" height="{{ $diagramHeight - 28 }}" rx="14"
-                      class="fill-white stroke-neutral-500 dark:fill-neutral-900 dark:stroke-neutral-500" stroke-width="8" />
-                <rect x="28" y="258" width="944" height="100" rx="8"
-                      class="fill-neutral-100 dark:fill-neutral-800" />
-                <path d="M28 258H972 M28 358H972" class="stroke-neutral-400 dark:stroke-neutral-600" stroke-width="5" stroke-dasharray="14 8" />
-                <text x="500" y="300" text-anchor="middle" class="fill-neutral-500 dark:fill-neutral-300" font-size="18" font-weight="700">JALUR SIRKULASI · DEMO</text>
+                 aria-label="Denah ilustrasi interaktif {{ $currentFloorLabel }}"
+                  class="mx-auto h-auto w-full min-w-[760px] transition-[width] duration-150">
+                 <rect x="14" y="14" width="972" height="{{ $diagramHeight - 28 }}" rx="14"
+                       class="fill-white stroke-neutral-500 dark:fill-neutral-900 dark:stroke-neutral-500" stroke-width="8" />
 
                 @foreach ($diagramRooms as $room)
                     @php
@@ -113,21 +109,21 @@
             </svg>
         </div>
         <p class="border-t border-border-clean px-5 py-3 text-xs text-neutral-500 dark:text-neutral-400">
-            Ruangan ilustrasi berlabel DEMO belum terhubung ke Area. Area operasional yang tidak cocok dengan nama contoh ditampilkan terpisah di bagian bawah diagram, dengan status dari data monitoring sebenarnya.
+            Posisi pada diagram hanya ilustrasi dan tidak menggambarkan ukuran atau denah aktual. Nama ruangan dan status mengikuti data area aktif.
         </p>
     </section>
 
     <section class="card-clean overflow-hidden" aria-labelledby="floor-plan-heading">
         <div class="flex flex-col gap-4 border-b border-border-clean p-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
             <div>
-                <h2 id="floor-plan-heading" class="text-lg font-semibold text-neutral-900 dark:text-white">Dokumen Denah Referensi — Lantai {{ $currentFloor }}</h2>
+                <h2 id="floor-plan-heading" class="text-lg font-semibold text-neutral-900 dark:text-white">Dokumen Denah Referensi — {{ $currentFloorLabel }}</h2>
                 <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">Dokumen yang diunggah Admin. Denah interaktif di atas masih berupa ilustrasi DEMO.</p>
             </div>
 
             @if (auth()->user()->role === 'admin')
                 <form action="{{ route('admin.floor-plans.store', ['floor' => $currentFloor]) }}" method="POST" enctype="multipart/form-data" class="flex flex-col gap-2 sm:flex-row sm:items-center">
                     @csrf
-                    <label class="sr-only" for="floor_plan">Pilih file denah Lantai {{ $currentFloor }}</label>
+                    <label class="sr-only" for="floor_plan">Pilih file denah {{ $currentFloorLabel }}</label>
                     <input id="floor_plan" name="floor_plan" type="file" accept=".jpg,.jpeg,.png,.pdf" required
                            class="block w-full max-w-sm text-xs text-neutral-600 file:mr-3 file:rounded-lg file:border-0 file:bg-neutral-100 file:px-3 file:py-2 file:text-xs file:font-semibold dark:text-neutral-300 dark:file:bg-neutral-800">
                     <button type="submit" class="btn-primary shrink-0">
@@ -141,7 +137,7 @@
             <div class="space-y-4 p-4 sm:p-6">
                 <div class="flex flex-wrap items-center justify-between gap-3">
                     <p class="text-xs text-neutral-500 dark:text-neutral-400">
-                        {{ $floorPlan->is_pdf ? 'Dokumen PDF' : 'Gambar denah' }} · Lantai {{ $currentFloor }}
+                        {{ $floorPlan->is_pdf ? 'Dokumen PDF' : 'Gambar denah' }} · {{ $currentFloorLabel }}
                     </p>
                     @unless ($floorPlan->is_pdf)
                         <div class="flex items-center gap-2">
@@ -155,12 +151,12 @@
 
                 @if ($floorPlan->is_pdf)
                     <div class="overflow-hidden rounded-xl border border-border-clean bg-neutral-100 dark:bg-neutral-900">
-                        <iframe src="{{ $floorPlan->file_url }}" title="Pratinjau denah Lantai {{ $currentFloor }}" class="h-[65vh] min-h-96 w-full"></iframe>
+                        <iframe src="{{ $floorPlan->file_url }}" title="Pratinjau denah {{ $currentFloorLabel }}" class="h-[65vh] min-h-96 w-full"></iframe>
                     </div>
                     <a href="{{ $floorPlan->file_url }}" target="_blank" rel="noopener" class="text-sm font-semibold text-crimson hover:underline">Buka dokumen denah di tab baru</a>
                 @else
                     <div class="max-h-[70vh] overflow-auto rounded-xl border border-border-clean bg-neutral-100 p-3 text-center dark:bg-neutral-900 sm:p-6">
-                        <img id="floorPlanImage" src="{{ $floorPlan->file_url }}" alt="Denah Fasilitas Lantai {{ $currentFloor }}"
+                        <img id="floorPlanImage" src="{{ $floorPlan->file_url }}" alt="Denah Fasilitas {{ $currentFloorLabel }}"
                              class="mx-auto h-auto max-h-[65vh] max-w-full origin-center object-contain transition-transform duration-150">
                     </div>
                 @endif
@@ -170,7 +166,7 @@
                 <span class="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-300">
                     <i class="fa-regular fa-map text-xl" aria-hidden="true"></i>
                 </span>
-                <h3 class="font-semibold text-neutral-900 dark:text-white">Denah Lantai {{ $currentFloor }} belum tersedia</h3>
+                <h3 class="font-semibold text-neutral-900 dark:text-white">Denah {{ $currentFloorLabel }} belum tersedia</h3>
                 <p class="mt-2 max-w-lg text-sm text-neutral-500 dark:text-neutral-400">
                     Belum ada dokumen denah untuk lantai ini. Admin dapat mengunggah denah resmi dalam format JPG, JPEG, PNG, atau PDF.
                 </p>
@@ -180,7 +176,7 @@
 
     <section class="card-clean overflow-hidden" aria-labelledby="room-gallery-heading">
         <div class="border-b border-border-clean p-5 sm:px-6">
-            <h2 id="room-gallery-heading" class="text-lg font-semibold text-neutral-900 dark:text-white">Galeri Ruangan — Lantai {{ $currentFloor }}</h2>
+            <h2 id="room-gallery-heading" class="text-lg font-semibold text-neutral-900 dark:text-white">Galeri Ruangan — {{ $currentFloorLabel }}</h2>
             <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">Foto dikelompokkan berdasarkan ruangan pada lantai yang dipilih.</p>
         </div>
 
@@ -191,7 +187,7 @@
                         <div class="flex min-h-48 items-center justify-center bg-neutral-100 p-3 dark:bg-neutral-800">
                             @if ($area->photo_url)
                                 <button type="button" class="h-48 w-full cursor-zoom-in" data-image-url="{{ $area->photo_url }}"
-                                        data-image-caption="{{ $area->name }} — Lantai {{ $currentFloor }}" onclick="openRoomPhotoPreview(this)">
+                                        data-image-caption="{{ $area->name }} — {{ $currentFloorLabel }}" onclick="openRoomPhotoPreview(this)">
                                     <img src="{{ $area->photo_url }}" alt="Foto {{ $area->name }}" class="h-full w-full object-contain">
                                 </button>
                             @else
@@ -238,7 +234,7 @@
             </div>
         @else
             <div class="px-6 py-12 text-center text-sm text-neutral-500 dark:text-neutral-400">
-                Belum ada data ruangan untuk Lantai {{ $currentFloor }}. Area yang ditambahkan ke lantai ini akan muncul di sini.
+                Belum ada data ruangan untuk {{ $currentFloorLabel }}. Area yang ditambahkan ke lantai ini akan muncul di sini.
             </div>
         @endif
     </section>
@@ -269,7 +265,7 @@
                         <div class="mb-3">
                             <h3 class="font-semibold text-neutral-900 dark:text-white">{{ $monitoring->display_area_name }}</h3>
                             <p class="text-xs text-neutral-500 dark:text-neutral-400">
-                                Lantai {{ $currentFloor }} · {{ \Carbon\Carbon::parse($monitoring->check_date)->format('d/m/Y') }}
+                                {{ $currentFloorLabel }} · {{ \Carbon\Carbon::parse($monitoring->check_date)->format('d/m/Y') }}
                             </p>
                         </div>
                         <div class="grid grid-cols-2 gap-3">
@@ -297,7 +293,7 @@
             </div>
         @else
             <div class="px-6 py-12 text-center text-sm text-neutral-500 dark:text-neutral-400">
-                Belum ada dokumentasi foto monitoring untuk ruangan di Lantai {{ $currentFloor }}.
+                Belum ada dokumentasi foto monitoring untuk ruangan di {{ $currentFloorLabel }}.
             </div>
         @endif
     </section>
@@ -387,7 +383,7 @@
 
         document.getElementById('facilityRoomName').textContent = room.name;
         document.getElementById('facilityRoomCode').textContent = room.code;
-        document.getElementById('facilityRoomFloor').textContent = `Lantai ${room.floor}`;
+        document.getElementById('facilityRoomFloor').textContent = room.floor;
         document.getElementById('facilityRoomCategory').textContent = room.category;
         document.getElementById('facilityRoomDescription').textContent = room.description;
         document.getElementById('facilityRoomLastChecked').textContent = room.last_checked;

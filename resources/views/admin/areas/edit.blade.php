@@ -44,8 +44,8 @@
                 <div>
                     <label for="floor" class="label-clean">Lantai Gedung <span class="text-[#ba1a1a]">*</span></label>
                     <select id="floor" name="floor" required class="input-clean">
-                        @foreach(range(1, 4) as $floor)
-                            <option value="{{ $floor }}" {{ old('floor', $area->floor ?? 1) == $floor ? 'selected' : '' }}>Lantai {{ $floor }}</option>
+                        @foreach($floorLabels as $floor => $label)
+                            <option value="{{ $floor }}" {{ old('floor', $area->floor ?? 1) == $floor ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>
                     @error('floor')

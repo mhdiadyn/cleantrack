@@ -195,7 +195,7 @@
                         <tr class="hover:bg-[#fbf9f8] dark:hover:bg-[#262727]/60 transition-colors">
                             <td class="py-3.5 px-4 text-center font-medium text-[#5c3f3f] dark:text-[#8c8282]">{{ $index + 1 }}</td>
                             <td class="py-3.5 px-4">
-                                <div class="font-semibold text-[#1b1c1c] dark:text-white">{{ $item->display_area_name }}@if($item->area) (Lt {{ $item->area->floor }})@endif</div>
+                                <div class="font-semibold text-[#1b1c1c] dark:text-white">{{ $item->display_area_name }}@if($item->area) ({{ $item->area->floor_label }})@endif</div>
                                 <div class="text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5]">{{ $item->display_area_location }}</div>
                             </td>
                             <td class="py-3.5 px-4">

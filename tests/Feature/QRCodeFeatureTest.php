@@ -25,7 +25,7 @@ class QRCodeFeatureTest extends TestCase
 
         $this->admin = User::where('role', 'admin')->first();
         $this->petugas = User::where('role', 'petugas')->first();
-        $this->area = Area::first();
+        $this->area = Area::where('name', 'Lobby Utama')->firstOrFail();
     }
 
     public function test_admin_can_view_area_details_with_qr_code_panel(): void

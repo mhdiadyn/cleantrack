@@ -11,9 +11,14 @@
         
         <!-- Left: User Identity Card -->
         <div class="card-clean p-6 flex flex-col items-center text-center">
-            <div class="w-18 h-18 rounded-2xl bg-[#dc143c] text-white font-bold text-2xl flex items-center justify-center shadow-xs mb-4">
-                {{ strtoupper(substr($user->name, 0, 2)) }}
-            </div>
+            @if ($user->profile_photo_url)
+                <img src="{{ $user->profile_photo_url }}" alt="Foto profil {{ $user->name }}"
+                     class="mb-4 h-20 w-20 rounded-2xl object-cover shadow-xs">
+            @else
+                <div class="mb-4 flex h-20 w-20 items-center justify-center rounded-2xl bg-[#dc143c] text-2xl font-bold text-white shadow-xs">
+                    {{ strtoupper(substr($user->name, 0, 2)) }}
+                </div>
+            @endif
             <h3 class="font-heading text-base font-semibold text-[#1b1c1c] dark:text-white">{{ $user->name }}</h3>
             <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-0.5">{{ $user->email }}</p>
 
@@ -44,9 +49,19 @@
                 <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-0.5">Ubah nama, email, nomor kontak atau ganti kata sandi</p>
             </div>
 
-            <form action="{{ route('profile.update') }}" method="POST" class="p-6 space-y-5">
+            <form action="{{ route('profile.update') }}" method="POST" enctype="multipart/form-data" class="p-6 space-y-5">
                 @csrf
                 @method('PATCH')
+
+                <div>
+                    <label for="profile_photo" class="label-clean">Foto Profil</label>
+                    <input type="file" id="profile_photo" name="profile_photo" accept=".jpg,.jpeg,.png,.webp"
+                           class="input-clean @error('profile_photo') border-[#ba1a1a] @enderror">
+                    <p class="mt-1 text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5]">Format JPG, PNG, atau WebP. Ukuran maksimal 2 MB.</p>
+                    @error('profile_photo')
+                        <p class="mt-1 text-[11px] text-[#ba1a1a] dark:text-[#ffb4ab]">{{ $message }}</p>
+                    @enderror
+                </div>
 
                 <!-- Nama Lengkap -->
                 <div>

@@ -2,7 +2,7 @@
 
 @section('title', 'Tambah Area Baru')
 @section('header_title', 'Tambah Area Kebersihan')
-@section('header_subtitle', 'Daftarkan ruangan atau zona baru pada salah satu dari empat lantai gedung')
+@section('header_subtitle', 'Daftarkan ruangan atau zona di basement atau salah satu dari empat lantai gedung')
 
 @section('content')
 <div class="max-w-3xl mx-auto">
@@ -45,8 +45,8 @@
                 <div>
                     <label for="floor" class="label-clean">Lantai Gedung <span class="text-[#ba1a1a]">*</span></label>
                     <select id="floor" name="floor" required class="input-clean">
-                        @foreach(range(1, 4) as $floor)
-                            <option value="{{ $floor }}" {{ old('floor', 1) == $floor ? 'selected' : '' }}>Lantai {{ $floor }}</option>
+                        @foreach($floorLabels as $floor => $label)
+                            <option value="{{ $floor }}" {{ old('floor', 1) == $floor ? 'selected' : '' }}>{{ $label }}</option>
                         @endforeach
                     </select>
                     @error('floor')

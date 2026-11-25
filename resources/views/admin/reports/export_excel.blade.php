@@ -86,7 +86,7 @@
                     <td class="text-center">{{ $m->formatted_end_time ? $m->formatted_end_time . ' WIB' : ($m->check_time ? substr($m->check_time, 0, 5) . ' WIB' : '-') }}</td>
                     <td class="text-center">{{ $m->duration_text ?? '-' }}</td>
                     <td><b>{{ $m->display_area_code }}</b> - {{ $m->display_area_name }}</td>
-                    <td>{{ $m->display_area_location }}@if($m->area) (Lt {{ $m->area->floor }})@endif</td>
+                    <td>{{ $m->display_area_location }}@if($m->area) ({{ $m->area->floor_label }})@endif</td>
                     <td>{{ $m->user->name ?? '-' }}</td>
                     <td class="{{ $condClass }} text-center">{{ $m->cleanliness_condition }}</td>
                     <td class="text-center">{{ $m->status }}</td>

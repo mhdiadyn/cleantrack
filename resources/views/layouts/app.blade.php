@@ -213,9 +213,14 @@
                             title="Menu Profil"
                             aria-label="Menu Profil">
                         <div class="flex items-center gap-2.5 min-w-0">
-                            <div class="w-9 h-9 rounded-lg bg-[#dc143c] text-white font-bold flex items-center justify-center text-xs shrink-0 shadow-xs">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-                            </div>
+                            @if (Auth::user()->profile_photo_url)
+                                <img src="{{ Auth::user()->profile_photo_url }}" alt="Foto profil {{ Auth::user()->name }}"
+                                     class="h-9 w-9 shrink-0 rounded-lg object-cover shadow-xs">
+                            @else
+                                <div class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#dc143c] text-xs font-bold text-white shadow-xs">
+                                    {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
+                                </div>
+                            @endif
                             <div class="min-w-0 flex-1">
                                 <span class="block text-xs font-semibold text-[#1b1c1c] dark:text-white leading-tight truncate">{{ Auth::user()->name }}</span>
                                 <div class="flex items-center gap-1.5 mt-0.5">

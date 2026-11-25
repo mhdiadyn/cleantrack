@@ -126,7 +126,7 @@
                     <td class="text-center">{{ $m->formatted_end_time ? $m->formatted_end_time : ($m->check_time ? substr($m->check_time, 0, 5) : '-') }}</td>
                     <td class="text-center">{{ $m->duration_text ?? '-' }}</td>
                     <td><strong>{{ $m->display_area_code }}</strong><br>{{ $m->display_area_name }}</td>
-                    <td>{{ $m->display_area_location }}@if($m->area) (Lt {{ $m->area->floor }})@endif</td>
+                    <td>{{ $m->display_area_location }}@if($m->area) ({{ $m->area->floor_label }})@endif</td>
                     <td>{{ $m->user->name ?? '-' }}</td>
                     <td class="text-center"><strong>{{ $m->cleanliness_condition }}</strong></td>
                     <td class="text-center">{{ $m->status }}</td>

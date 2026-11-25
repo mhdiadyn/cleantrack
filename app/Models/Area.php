@@ -180,4 +180,9 @@ class Area extends Model
 
         return asset('storage/'.ltrim($this->photo, '/'));
     }
+
+    public function getFloorLabelAttribute(): string
+    {
+        return config('facility_demo.floor_labels.'.$this->floor, 'Lantai '.$this->floor);
+    }
 }

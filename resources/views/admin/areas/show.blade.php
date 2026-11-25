@@ -31,7 +31,7 @@
                     </div>
                     <p class="text-xs text-[#5c3f3f] dark:text-[#c8c6c5] mt-1 flex items-center gap-1.5">
                         <i class="fa-solid fa-location-dot text-[#dc143c] dark:text-[#ffb3b3]"></i>
-                        <span>{{ $area->location }} &bull; Lantai {{ $area->floor ?? 1 }} &bull; Kode: {{ $area->code }}</span>
+                        <span>{{ $area->location }} &bull; {{ $area->floor_label }} &bull; Kode: {{ $area->code }}</span>
                     </p>
                 </div>
             </div>

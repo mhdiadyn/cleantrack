@@ -220,8 +220,8 @@
                                 <span class="font-semibold text-[#1b1c1c] dark:text-white block">{{ $item->display_area_name }}</span>
                                 <span class="text-[11px] text-[#5c3f3f] dark:text-[#c8c6c5]">
                                     {{ $item->display_area_location }}
-                                    @if($item->area && $item->area->floor)
-                                        (Lt {{ $item->area->floor }})
+                                    @if($item->area)
+                                        ({{ $item->area->floor_label }})
                                     @endif
                                 </span>
                             </td>

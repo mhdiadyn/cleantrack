@@ -12,7 +12,7 @@ use Illuminate\View\View;
 
 class FacilityController extends Controller
 {
-    private const FLOORS = [1, 2, 3, 4];
+    private const FLOORS = [0, 1, 2, 3, 4];
 
     public function index(Request $request): View
     {
@@ -21,6 +21,7 @@ class FacilityController extends Controller
 
         $areas = Area::query()
             ->where('floor', $currentFloor)
+            ->where('is_active', true)
             ->orderBy('name')
             ->select('areas.*')
             ->selectSub(
@@ -65,7 +66,7 @@ class FacilityController extends Controller
             $roomDetails[$roomKey] = [
                 'name' => $roomName,
                 'code' => $area?->code ?? 'DEMO-L'.$currentFloor.'-'.str_pad((string) ($slotIndex + 1), 2, '0', STR_PAD_LEFT),
-                'floor' => $currentFloor,
+                'floor' => config('facility_demo.floor_labels.'.$currentFloor),
                 'category' => $area ? 'Belum ditentukan' : $slot['category'],
                 'description' => $area
                     ? ($area->description ?: 'Deskripsi ruangan belum tersedia.')
@@ -100,7 +101,7 @@ class FacilityController extends Controller
             $roomDetails[$roomKey] = [
                 'name' => $area->name,
                 'code' => $area->code,
-                'floor' => $currentFloor,
+                'floor' => config('facility_demo.floor_labels.'.$currentFloor),
                 'category' => 'Belum ditentukan',
                 'description' => $area->description ?: 'Deskripsi ruangan belum tersedia.',
                 'status' => $status['key'],
@@ -158,6 +159,8 @@ class FacilityController extends Controller
             'diagramHeight' => $diagramHeight,
             'diagramRooms' => $diagramRooms,
             'floors' => self::FLOORS,
+            'floorLabels' => config('facility_demo.floor_labels'),
+            'currentFloorLabel' => config('facility_demo.floor_labels.'.$currentFloor),
             'floorPlan' => $floorPlan,
             'monitorings' => $monitorings,
             'roomDetails' => $roomDetails,
@@ -238,6 +241,11 @@ class FacilityController extends Controller
 
         return redirect()
             ->route('facility.index', ['floor' => $floor])
-            ->with('success', "Denah Lantai {$floor} berhasil disimpan.");
+            ->with('success', 'Denah '.$this->floorLabel($floor).' berhasil disimpan.');
+    }
+
+    private function floorLabel(int $floor): string
+    {
+        return config('facility_demo.floor_labels.'.$floor, 'Lantai '.$floor);
     }
 }

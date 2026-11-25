@@ -74,9 +74,14 @@
                             </td>
                             <td class="py-3.5 px-4">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-8 h-8 rounded-lg {{ $u->role === 'admin' ? 'bg-[#fff1f0] text-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'bg-[#f5f3f3] text-[#5c3f3f] dark:bg-[#262727] dark:text-[#c8c6c5]' }} font-semibold text-xs flex items-center justify-center shrink-0 border border-[#eae8e7] dark:border-[#333535]">
-                                        {{ strtoupper(substr($u->name, 0, 2)) }}
-                                    </div>
+                                    @if ($u->profile_photo_url)
+                                        <img src="{{ $u->profile_photo_url }}" alt="Foto profil {{ $u->name }}"
+                                             class="h-8 w-8 shrink-0 rounded-lg border border-[#eae8e7] object-cover dark:border-[#333535]">
+                                    @else
+                                        <div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#eae8e7] text-xs font-semibold {{ $u->role === 'admin' ? 'bg-[#fff1f0] text-[#dc143c] dark:bg-[#3b0b14] dark:text-[#ffb3b3]' : 'bg-[#f5f3f3] text-[#5c3f3f] dark:bg-[#262727] dark:text-[#c8c6c5]' }} dark:border-[#333535]">
+                                            {{ strtoupper(substr($u->name, 0, 2)) }}
+                                        </div>
+                                    @endif
                                     <div>
                                         <div class="font-semibold text-[#1b1c1c] dark:text-white flex items-center gap-2">
                                             <span>{{ $u->name }}</span>

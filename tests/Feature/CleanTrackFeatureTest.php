@@ -12,6 +12,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\File\UploadedFile as SymfonyUploadedFile;
 use Tests\TestCase;
 
 class CleanTrackFeatureTest extends TestCase
@@ -31,7 +32,7 @@ class CleanTrackFeatureTest extends TestCase
         $response->assertSee('CLEAN');
         $response->assertSee('TRACK');
         $response->assertSee('Sistem Monitoring');
-        $response->assertSee('Mhdiadyn_');
+        $response->assertSee('CleanTrack Mhd.');
         $response->assertSee('Light');
         $response->assertSee('Dark');
         $response->assertSee('placeholder="Masukkan alamat email"', false);
@@ -297,7 +298,7 @@ class CleanTrackFeatureTest extends TestCase
         $responsePrint->assertSee('Laporan Rekapitulasi Monitoring Kebersihan');
     }
 
-    public function test_facility_gallery_is_available_to_admin_and_petugas_for_four_floors(): void
+    public function test_facility_gallery_shows_basement_and_four_floors_for_admin_and_petugas(): void
     {
         $admin = User::where('role', 'admin')->first();
         $petugas = User::where('email', 'andi@cleantrack.test')->first();
@@ -314,10 +315,10 @@ class CleanTrackFeatureTest extends TestCase
             $response->assertDontSee('floorplan.data');
         }
 
-        foreach ([1, 2, 3, 4] as $floor) {
+        foreach (array_keys(config('facility_demo.floor_labels')) as $floor) {
             $response = $this->actingAs($petugas)->get(route('facility.index', ['floor' => $floor]));
             $response->assertOk();
-            $response->assertSee("Lantai {$floor}");
+            $response->assertSee(config("facility_demo.floor_labels.{$floor}"));
             $response->assertSee('DEMO / SEMENTARA');
             $response->assertSee('role="button" tabindex="0"', false);
 
@@ -326,7 +327,52 @@ class CleanTrackFeatureTest extends TestCase
             }
         }
 
+        $basementResponse = $this->actingAs($petugas)->get(route('facility.index', ['floor' => 0]));
+        $basementResponse->assertSee('Parkiran Basement');
+        $basementResponse->assertSee('Dapur Basement');
+        $basementResponse->assertSee('Ruang Billiard Basement');
+        $basementResponse->assertSee('Gudang Basement');
+        $basementResponse->assertSee('WC Basement');
+        $this->assertSame(
+            ['Dapur Basement', 'Gudang Basement', 'Parkiran Basement', 'Ruang Billiard Basement', 'WC Basement'],
+            Area::query()->where('floor', 0)->where('is_active', true)->orderBy('name')->pluck('name')->all()
+        );
+        $this->assertDatabaseHas('areas', [
+            'name' => 'WC Basement',
+            'location' => 'Gedung A Basement (Di samping dapur)',
+            'floor' => '0',
+        ]);
+
+        $rooftopResponse = $this->actingAs($petugas)->get(route('facility.index', ['floor' => 4]));
+        $rooftopResponse->assertSee('Rooftop');
+        $rooftopResponse->assertDontSee('Ruang Pusat Kontrol &amp; CCTV');
+        $rooftopResponse->assertDontSee('Ruang Arsip &amp; Dokumen');
+        $rooftopResponse->assertDontSee('Toilet &amp; Shower Lantai 4');
+        $this->assertSame(
+            ['Rooftop'],
+            Area::query()->where('floor', 4)->where('is_active', true)->pluck('name')->all()
+        );
+
         $this->actingAs($petugas)->get(route('facility.index', ['floor' => 5]))->assertNotFound();
+    }
+
+    public function test_admin_can_create_a_room_in_the_basement(): void
+    {
+        $admin = User::where('role', 'admin')->firstOrFail();
+
+        $this->actingAs($admin)->post(route('admin.areas.store'), [
+            'name' => 'Area Tes Basement',
+            'location' => 'Gedung A Basement',
+            'floor' => 0,
+            'description' => 'Ruangan basement untuk pengujian.',
+            'is_active' => true,
+        ])->assertRedirect(route('admin.areas.index'));
+
+        $this->assertDatabaseHas('areas', [
+            'name' => 'Area Tes Basement',
+            'floor' => '0',
+            'is_active' => true,
+        ]);
     }
 
     public function test_interactive_room_details_use_the_latest_monitoring_and_keep_photos(): void
@@ -418,12 +464,18 @@ class CleanTrackFeatureTest extends TestCase
             'floor_plan' => UploadedFile::fake()->image('floor-one.jpg'),
         ])->assertRedirect(route('facility.index', ['floor' => 1]));
 
+        $this->actingAs($admin)->post(route('admin.floor-plans.store', ['floor' => 0]), [
+            'floor_plan' => UploadedFile::fake()->image('basement.jpg'),
+        ])->assertRedirect(route('facility.index', ['floor' => 0]));
+
         $this->actingAs($admin)->post(route('admin.floor-plans.store', ['floor' => 2]), [
             'floor_plan' => UploadedFile::fake()->createWithContent('floor-two.pdf', '%PDF-1.4 test document'),
         ])->assertRedirect(route('facility.index', ['floor' => 2]));
 
         $floorOne = FloorPlan::where('floor', 1)->firstOrFail();
+        $basement = FloorPlan::where('floor', 0)->firstOrFail();
         $floorTwo = FloorPlan::where('floor', 2)->firstOrFail();
+        Storage::disk('public')->assertExists($basement->file_path);
         $this->assertNotSame($floorOne->file_path, $floorTwo->file_path);
         Storage::disk('public')->assertExists($floorOne->file_path);
         Storage::disk('public')->assertExists($floorTwo->file_path);
@@ -434,7 +486,7 @@ class CleanTrackFeatureTest extends TestCase
         ])->assertRedirect(route('facility.index', ['floor' => 1]));
 
         $this->assertSame(1, FloorPlan::where('floor', 1)->count());
-        $this->assertSame(2, FloorPlan::count());
+        $this->assertSame(3, FloorPlan::count());
         $this->assertNotSame($oldFloorOnePath, $floorOne->fresh()->file_path);
         Storage::disk('public')->assertMissing($oldFloorOnePath);
         Storage::disk('public')->assertExists($floorTwo->fresh()->file_path);
@@ -577,7 +629,7 @@ class CleanTrackFeatureTest extends TestCase
         Storage::fake('public');
         $admin = User::where('role', 'admin')->first();
         $petugas = User::where('email', 'andi@cleantrack.test')->first();
-        $area = Area::firstOrFail();
+        $area = Area::where('name', 'Lobby Utama')->firstOrFail();
         $monitoring = CleaningMonitoring::where('area_id', $area->id)->firstOrFail();
         $areaPhoto = UploadedFile::fake()->image('existing-room-photo.jpg')->store('room-photos', 'public');
         $roomPhoto = UploadedFile::fake()->image('legacy-room-photo.jpg')->store('monitoring-photos', 'public');
@@ -628,6 +680,75 @@ class CleanTrackFeatureTest extends TestCase
         $this->assertEquals('Andi Pratama Update', $petugas->name);
         $this->assertEquals('andi.baru@cleantrack.test', $petugas->email);
         $this->assertEquals('089988776655', $petugas->phone);
+    }
+
+    public function test_user_can_upload_and_replace_their_profile_photo(): void
+    {
+        Storage::fake('public');
+        $petugas = User::where('email', 'andi@cleantrack.test')->firstOrFail();
+
+        $this->actingAs($petugas)->patch(route('profile.update'), [
+            'name' => $petugas->name,
+            'email' => $petugas->email,
+            'profile_photo' => UploadedFile::fake()->image('profile.jpg'),
+        ])->assertRedirect()->assertSessionHas('success');
+
+        $petugas->refresh();
+        $firstPhotoPath = $petugas->profile_photo_path;
+        $this->assertNotNull($firstPhotoPath);
+        Storage::disk('public')->assertExists($firstPhotoPath);
+        $this->assertStringContainsString($firstPhotoPath, $petugas->profile_photo_url);
+
+        $this->actingAs($petugas)->patch(route('profile.update'), [
+            'name' => $petugas->name,
+            'email' => $petugas->email,
+            'profile_photo' => UploadedFile::fake()->image('replacement.png'),
+        ])->assertRedirect()->assertSessionHas('success');
+
+        $petugas->refresh();
+        $this->assertNotSame($firstPhotoPath, $petugas->profile_photo_path);
+        Storage::disk('public')->assertMissing($firstPhotoPath);
+        Storage::disk('public')->assertExists($petugas->profile_photo_path);
+        $this->actingAs($petugas)->get(route('profile.edit'))
+            ->assertSee($petugas->profile_photo_url, false)
+            ->assertSee('enctype="multipart/form-data"', false);
+    }
+
+    public function test_user_cannot_upload_a_non_image_as_their_profile_photo(): void
+    {
+        Storage::fake('public');
+        $petugas = User::where('email', 'andi@cleantrack.test')->firstOrFail();
+
+        $this->actingAs($petugas)->patch(route('profile.update'), [
+            'name' => $petugas->name,
+            'email' => $petugas->email,
+            'profile_photo' => UploadedFile::fake()->create('profile.pdf', 20, 'application/pdf'),
+        ])->assertSessionHasErrors([
+            'profile_photo' => 'Foto profil harus berupa gambar.',
+        ]);
+
+        $this->assertNull($petugas->fresh()->profile_photo_path);
+        Storage::disk('public')->assertDirectoryEmpty('profile-photos');
+    }
+
+    public function test_user_can_update_profile_when_photo_field_has_no_uploaded_file(): void
+    {
+        Storage::fake('public');
+        $petugas = User::where('email', 'andi@cleantrack.test')->firstOrFail();
+        $existingPhotoPath = 'profile-photos/existing.jpg';
+        Storage::disk('public')->put($existingPhotoPath, 'existing profile photo');
+        $petugas->update(['profile_photo_path' => $existingPhotoPath]);
+        $emptyUpload = new SymfonyUploadedFile('', 'profile.jpg', 'image/jpeg', UPLOAD_ERR_NO_FILE, true);
+
+        $this->actingAs($petugas)->patch(route('profile.update'), [
+            'name' => 'Andi Tanpa Foto',
+            'email' => $petugas->email,
+            'profile_photo' => $emptyUpload,
+        ])->assertRedirect()->assertSessionHas('success');
+
+        $this->assertSame('Andi Tanpa Foto', $petugas->fresh()->name);
+        $this->assertSame($existingPhotoPath, $petugas->fresh()->profile_photo_path);
+        Storage::disk('public')->assertExists($existingPhotoPath);
     }
 
     public function test_user_can_change_password_with_correct_current_password(): void

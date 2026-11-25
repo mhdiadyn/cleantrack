@@ -11,7 +11,7 @@
 @php
     $areaList = $areas->map(fn ($a) => [
         'id'    => $a->id,
-        'label' => ($a->code ?? '') . ' - ' . $a->name . ' (Lantai ' . $a->floor . ' • ' . $a->location . ')',
+        'label' => ($a->code ?? '') . ' - ' . $a->name . ' (' . $a->floor_label . ' • ' . $a->location . ')',
         'name'  => $a->name,
     ])->values()->toJson();
 
@@ -25,7 +25,7 @@
     } elseif ($initAreaId) {
         $found = $areas->firstWhere('id', (int) $initAreaId);
         if ($found) {
-            $initLabel = ($found->code ?? '') . ' - ' . $found->name . ' (Lantai ' . $found->floor . ' • ' . $found->location . ')';
+            $initLabel = ($found->code ?? '') . ' - ' . $found->name . ' (' . $found->floor_label . ' • ' . $found->location . ')';
         }
     }
 @endphp
@@ -244,4 +244,3 @@ function areaCombobox({ areas, initAreaId, initCustom, initLabel }) {
 </script>
 @endpush
 @endonce
-

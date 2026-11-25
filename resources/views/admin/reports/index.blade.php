@@ -194,7 +194,7 @@
                                 <span class="text-[10px] font-mono font-semibold text-[#dc143c] dark:text-[#ffb3b3]">{{ $item->display_area_code }}</span>
                             </td>
                             <td class="py-3.5 px-4 text-[#5c3f3f] dark:text-[#c8c6c5]">
-                                {{ $item->display_area_location }}@if($item->area) <span class="text-[11px]">(Lt {{ $item->area->floor }})</span>@endif
+                                {{ $item->display_area_location }}@if($item->area) <span class="text-[11px]">({{ $item->area->floor_label }})</span>@endif
                             </td>
                             <td class="py-3.5 px-4 font-medium text-[#1b1c1c] dark:text-white">
                                 {{ $item->user->name ?? '-' }}
